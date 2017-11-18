@@ -1,4 +1,4 @@
-package restaurant.database.tabobj;
+package restaurant.database.po;
 
 import java.util.Date;
 
@@ -24,7 +24,8 @@ public class Employee {
     // 住址
     private String address;
 
-    public Employee(String id, String name, Integer age, String sex, String nativePlace, String position, Integer salary, Date hiredate, String contactWay, String address) {
+    public Employee(String id, String name, Integer age, String sex, String nativePlace, String position,
+                    Integer salary, Date hiredate, String contactWay, String address) {
         this.id = id;
         this.name = name;
         this.age = age;

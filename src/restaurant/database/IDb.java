@@ -1,6 +1,6 @@
 package restaurant.database;
 
-import restaurant.database.tabobj.Employee;
+import restaurant.database.po.Employee;
 
 import java.util.List;
 

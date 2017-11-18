@@ -1,8 +1,8 @@
-package programer.test.database;
+package programmer.test.database;
 
 import restaurant.database.DbFactory;
 import restaurant.database.IDb;
-import restaurant.database.tabobj.Employee;
+import restaurant.database.po.Employee;
 
 import java.util.List;
 

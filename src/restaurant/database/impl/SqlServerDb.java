@@ -1,7 +1,7 @@
 package restaurant.database.impl;
 
 import restaurant.database.IDb;
-import restaurant.database.tabobj.Employee;
+import restaurant.database.po.Employee;
 
 import java.sql.*;
 import java.util.ArrayList;
