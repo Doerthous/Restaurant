@@ -28,8 +28,14 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="ec5c1" class="javax.swing.JButton" binding="button1" default-binding="true">
-            <constraints border-constraint="North"/>
+          <component id="e27ab" class="javax.swing.JComboBox" binding="comboBox1" default-binding="true">
+            <constraints border-constraint="West"/>
+            <properties>
+              <model/>
+            </properties>
+          </component>
+          <component id="10340" class="javax.swing.JButton" binding="button1" default-binding="true">
+            <constraints border-constraint="Center"/>
             <properties>
               <text value="Button"/>
             </properties>

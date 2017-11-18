@@ -13,4 +13,5 @@ import java.util.List;
  */
 public interface IEmployeeService {
     List<Employee> getAllEmployee();
+    //List<Employee> getEmployeeBySex(String name);
 }
