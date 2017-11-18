@@ -15,10 +15,10 @@ public class EmployeeService implements IEmployeeService {
     private IDb db;
     public EmployeeService() {
         db = DbFactory.getDb(DbFactory.DbType.SqlServer);
+        db.init("jdbc:sqlserver://192.168.155.1:1433;DatabaseName=OrderDish", "ODuser","1234567890");
     }
     @Override
     public List<Employee> getAllEmployee() {
-        db.init("jdbc:sqlserver://192.168.155.1:1433;DatabaseName=OrderDish", "ODuser","1234567890");
         List<restaurant.database.po.Employee> pems = db.getAllEmployee();
         List<Employee> vems = new ArrayList<>();
         for(restaurant.database.po.Employee pem : pems){
