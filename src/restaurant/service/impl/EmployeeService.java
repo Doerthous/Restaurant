@@ -27,4 +27,17 @@ public class EmployeeService implements IEmployeeService {
         }
         return vems;
     }
+
+    @Override
+    public List<Employee> getEmployeeBySex(String sex) {
+        List<restaurant.database.po.Employee> pems = db.getAllEmployee();
+        List<Employee> vems = new ArrayList<>();
+        for(restaurant.database.po.Employee pem : pems){
+            if(pem.getSex().equals(sex)) {
+                vems.add(new Employee(pem.getId(), pem.getName(), pem.getAge(), pem.getSex(), pem.getNativePlace(),
+                        pem.getPosition(), pem.getSalary(), pem.getHiredate(), pem.getContactWay(), pem.getAddress()));
+            }
+        }
+        return vems;
+    }
 }
