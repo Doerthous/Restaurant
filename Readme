@@ -1,0 +1,5 @@
+1. ui层与service层交互的vo对象的属性应全为String类型
+2. service层与data层交互的po对象的属性对应与数据库中字段的属性
+3. service层负责vo与po间的转换，保证ui层传入data层的数据有效
+4. service层为ui层提供事件监听注册函数，当有消息来时由service层通知ui层（service层封装communication层）
+5. communication层为service层提供事件监听注册函数，当有消息来时由service层通知ui层

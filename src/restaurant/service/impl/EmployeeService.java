@@ -29,6 +29,16 @@ public class EmployeeService implements IEmployeeService {
     }
 
     @Override
+    public List<Employee> getEmployeeByName(String name, Boolean fuzzy) {
+        return null;
+    }
+
+    @Override
+    public List<Employee> getEmployeeByAgeRange(Integer inf, Integer sup) {
+        return null;
+    }
+
+    @Override
     public List<Employee> getEmployeeBySex(String sex) {
         List<restaurant.database.po.Employee> pems = db.getAllEmployee();
         List<Employee> vems = new ArrayList<>();
@@ -39,5 +49,25 @@ public class EmployeeService implements IEmployeeService {
             }
         }
         return vems;
+    }
+
+    @Override
+    public List<Employee> getEmployeeByPosition(String position) {
+        return null;
+    }
+
+    @Override
+    public List<Employee> getEmployeeBySalaryRange(Integer inf, Integer sup) {
+        return null;
+    }
+
+    @Override
+    public List<Employee> getEmployeeByHiredateRange(Integer inf, Integer sup) {
+        return null;
+    }
+
+    @Override
+    public List<Employee> getEmployeeByNativePlace(String nativePlace, Boolean fuzzy) {
+        return null;
     }
 }

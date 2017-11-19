@@ -1,5 +1,6 @@
 package restaurant.database;
 
+import restaurant.database.po.Dish;
 import restaurant.database.po.Employee;
 
 import java.util.List;
@@ -18,4 +19,14 @@ public interface IDb {
     List<Employee> getEmployeeBySalaryRange(Integer inf, Integer sup);
     List<Employee> getEmployeeByHiredateRange(Integer inf, Integer sup);
     List<Employee> getEmployeeByNativePlace(String nativePlace, Boolean fuzzy); // 籍贯
+
+
+    /*
+        菜品表操作
+     */
+    List<Dish> getAllDish();
+    List<Dish> getDishByName(String name);
+    List<Dish> getDishByType(String type);
+    List<Dish> getDishByPriceRange(Float inf, Float sup);
+    List<Dish> getDishMenu();
 }
