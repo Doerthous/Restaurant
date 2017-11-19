@@ -12,7 +12,7 @@ public class DishService implements IDishService {
     private IDb db;
     public DishService() {
         db = DbFactory.getDb(DbFactory.DbType.SqlServer);
-        db.init("jdbc:sqlserver://192.168.155.1:1433;DatabaseName=OrderDish", "ODuser","1234567890");
+        db.init("jdbc:sqlserver://"+IDb.serverIp+":1433;DatabaseName=OrderDish", "ODuser","1234567890");
     }
 
     @Override
