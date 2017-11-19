@@ -28,6 +28,8 @@ public class UITest {
     private JTextArea textArea1;
     private JButton button1;
     private JComboBox comboBox1;
+    private JButton button2;
+    private JTextField textField1;
     /*
         这是ui层与service层的接口
      */
@@ -40,8 +42,13 @@ public class UITest {
          */
         comboBox1.addItem("男");
         comboBox1.addItem("女");
+        comboBox1.addItem("全部");
         button1.addActionListener(e -> {
-            List<Employee> ems = null;// = service.getEmployeeBySex(comboBox1.getSelectedItem().toString());
+            if(textField1.getAccessibleContext().toString()!=null)
+            {
+
+            }
+            List<Employee> ems = service.getEmployeeBySex(comboBox1.getSelectedItem().toString());
             String text = "";
             for(Employee em : ems){
                 text += em.toString()+'\n';

@@ -2,7 +2,9 @@ package restaurant.service;
 
 import restaurant.service.vo.Employee;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /*
     UI层与Service层的接口
@@ -20,4 +22,10 @@ public interface IEmployeeService {
     List<Employee> getEmployeeBySalaryRange(Integer inf, Integer sup);
     List<Employee> getEmployeeByHiredateRange(Integer inf, Integer sup);
     List<Employee> getEmployeeByNativePlace(String nativePlace, Boolean fuzzy); // 籍贯
+    List<Employee> getEmployeeByCondition(List<Map<String, String>> condition);
+
+    Boolean addNewEmployee(Employee employee);
+    Boolean modifyEmployee(Employee employee);
+    Boolean deteleEmployee(Employee employee);
+    Boolean deteleEmployees(List<Employee> employees);
 }

@@ -7,6 +7,7 @@ import restaurant.service.vo.Employee;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by YMS on 2017/11/18.
@@ -68,6 +69,31 @@ public class EmployeeService implements IEmployeeService {
 
     @Override
     public List<Employee> getEmployeeByNativePlace(String nativePlace, Boolean fuzzy) {
+        return null;
+    }
+
+    @Override
+    public List<Employee> getEmployeeByCondition(List<Map<String, String>> condition) {
+        return null;
+    }
+
+    @Override
+    public Boolean addNewEmployee(Employee employee) {
+        return null;
+    }
+
+    @Override
+    public Boolean modifyEmployee(Employee employee) {
+        return null;
+    }
+
+    @Override
+    public Boolean deteleEmployee(Employee employee) {
+        return null;
+    }
+
+    @Override
+    public Boolean deteleEmployees(List<Employee> employees) {
         return null;
     }
 }
