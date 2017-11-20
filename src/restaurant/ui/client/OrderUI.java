@@ -1,8 +1,10 @@
 package restaurant.ui.client;
 
-import programmer.test.ui.component.*;
+import programmer.test.ui.component.ModifiedFlowLayout;
+import programmer.test.ui.component.OrderDishCard;
+import programmer.test.ui.component.ShadowBorder;
+import programmer.test.ui.component.VFlowLayout;
 import restaurant.ui.ColorConstants;
-import sun.security.provider.SHA;
 
 import javax.swing.*;
 import java.awt.*;
