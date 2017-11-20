@@ -34,7 +34,7 @@ public class OrderUI extends JPanel{
         cNorth.add(new JButton("荤菜"));
         cNorth.add(new JButton("素菜"));
         cNorth.add(new JButton(">"));
-        cCenter = new JPanel();
+        cCenter = new JPanel(); // new ScrollablePanel();
         cCenter.setLayout(new ModifiedFlowLayout(FlowLayout.LEFT));
         cCenter.setBackground(ColorConstants.background);
         JScrollPane cCenterScrollPane = new JScrollPane(cCenter);
