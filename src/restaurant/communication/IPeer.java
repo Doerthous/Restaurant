@@ -4,6 +4,7 @@ import java.util.List;
 
 public interface IPeer extends ICommands {
     // 线程、socket相关
+    String BROADCAST_ADDR = "255.255.255.255";
     void send(IData data);
     void listen();
     void stop();

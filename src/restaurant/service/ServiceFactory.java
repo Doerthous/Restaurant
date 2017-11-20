@@ -1,5 +1,6 @@
 package restaurant.service;
 
+import restaurant.service.impl.ClientService;
 import restaurant.service.impl.DishService;
 import restaurant.service.impl.EmployeeService;
 
@@ -11,4 +12,5 @@ public class ServiceFactory {
         return new EmployeeService();
     }
     public static IDishService getDishService(){ return new DishService(); }
+    public static IClientService getClientService() { return new ClientService(); }
 }

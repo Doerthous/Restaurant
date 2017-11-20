@@ -8,5 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="sqljdbc42" level="project" />
+    <orderEntry type="library" name="filters-2.0.235-1" level="project" />
   </component>
 </module>

@@ -14,8 +14,8 @@ import java.net.DatagramSocket;
 import java.util.*;
 
 public class AutoPeer implements IPeer, ICommandObserver {
-    private static final String BROADCAST_ADDR = "255.255.255.255";
     private static final int BROADCAST_PORT = 1445;
+    private Map<Integer, List<ICommandObserver>> observers;
     private IPeer p;
     private Set<String> others;
     private boolean hasIdentified;
@@ -24,6 +24,7 @@ public class AutoPeer implements IPeer, ICommandObserver {
         IpManager.init();
         hasIdentified = false;
         others = new HashSet<>();
+        observers = new HashMap<>();
         p = PeerFactory.newPeer(PeerFactory.T1);
         addCommandObserver(this, CMD_IDENTIFY_RESPONSE);
         addCommandObserver(this, CMD_ONLINE_PEER_CONFIRM_ACK);
@@ -111,6 +112,11 @@ public class AutoPeer implements IPeer, ICommandObserver {
                 sendCommand(data.getFromId(), CMD_ONLINE_PEER_CONFIRM_ACK);
             }
         }
+        List observers = this.observers.getOrDefault(data.getCommand(), new ArrayList<>());
+        for(int i = 0; i < observers.size(); ++i){
+            ICommandObserver observer = (ICommandObserver) observers.get(i);
+            observer.update(data);
+        }
     }
 
 
@@ -127,11 +133,18 @@ public class AutoPeer implements IPeer, ICommandObserver {
     @Override
     public void addCommandObserver(ICommandObserver observer, Integer command) {
         p.addCommandObserver(observer, command);
+        List l = observers.getOrDefault(command, new ArrayList<>());
+        l.add(observer);
+        observers.putIfAbsent(command, l);
     }
 
     @Override
     public void removeCommandObserver(ICommandObserver observer, Integer command) {
         p.removeCommandObserver(observer, command);
+        List l = observers.getOrDefault(command, new ArrayList<>());
+        if(l.size() > 0){
+            l.remove(observer);
+        }
     }
 
     @Override

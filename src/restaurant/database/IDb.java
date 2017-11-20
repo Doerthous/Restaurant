@@ -6,7 +6,7 @@ import restaurant.database.po.Employee;
 import java.util.List;
 
 public interface IDb {
-    String serverIp = "10.253.174.33";
+    String serverIp = "192.168.155.1";
     void init(String url, String user, String password);
     /*
         员工表操作
