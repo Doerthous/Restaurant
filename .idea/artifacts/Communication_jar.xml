@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact name="Communication:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Communication_jar</output-path>
+    <root id="root">
+      <element id="archive" name="Communication.jar">
+        <element id="module-output" name="Communication" />
+      </element>
+    </root>
+  </artifact>
+</component>
