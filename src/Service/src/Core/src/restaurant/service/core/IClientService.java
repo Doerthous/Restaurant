@@ -102,4 +102,8 @@ public interface IClientService {
         清空当前餐桌的所有聊天记录
      */
     void endAllSesion();
+    /*
+
+     */
+    void requestService();
 }

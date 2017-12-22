@@ -41,8 +41,8 @@ public class ClientFrame extends BaseFrame {
     public void order(){
         show("Order");
     }
-    public void callService(){
-
+    public void requestService(){
+        service.requestService();
     }
     public void pay(){
         show("Pay");

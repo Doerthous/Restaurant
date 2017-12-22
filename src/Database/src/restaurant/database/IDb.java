@@ -30,4 +30,6 @@ public interface IDb {
     List<Dish> getDishByType(String type);
     List<Dish> getDishByPriceRange(Float inf, Float sup);
     List<Dish> getDishMenu();
+
+    
 }

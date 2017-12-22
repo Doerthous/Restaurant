@@ -39,6 +39,10 @@ public final class InterModuleCommunication {
             服务员请求管理端修改密码
          */
         public static final String WAITER_CHANGE_PASSWORD = CommandToManagement.class.getName()+"[WCP]";
+        /*
+            客户呼叫服务
+         */
+        public static final String CLIENT_REQUEST_SERVICE = CommandToManagement.class.getName()+"[CRS]";
     }
     public static final class CommandToWaiter {
         /*
@@ -75,13 +79,18 @@ public final class InterModuleCommunication {
         模块间传输的数据的格式
      */
     public static final class Data {
-        public static final class DishFinish implements Serializable {
+        /*
+            Management and Kitchen
+         */
+        public static final class MK implements Serializable {
             public String dishName;
             public String tableId;
 
-            public DishFinish(String dishName, String tableId) {
-                this.dishName = dishName;
-                this.tableId = tableId;
+            public static MK dishFinish(String dishName, String tableId) {
+                MK mk = new MK();
+                mk.dishName = dishName;
+                mk.tableId = tableId;
+                return mk;
             }
         }
         /*
@@ -93,7 +102,7 @@ public final class InterModuleCommunication {
             public Boolean isSuccess;
             public String failedReason;
             public String tableId;
-            public String type;
+            public String dishName;
             public String waiterId;
             public String issue;
             public String newPassword;
@@ -113,10 +122,16 @@ public final class InterModuleCommunication {
                 return m;
             }
 
-            public static MW notification(String tableId, String type){
+            public static MW customerCall(String tableId){
                 MW m = new MW();
                 m.tableId = tableId;
-                m.type = type;
+                return m;
+            }
+
+            public static MW dishDistribute(String dishName, String tableId) {
+                MW m = new MW();
+                m.dishName = dishName;
+                m.tableId = tableId;
                 return m;
             }
 

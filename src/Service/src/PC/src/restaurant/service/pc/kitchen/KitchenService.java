@@ -28,7 +28,7 @@ public class KitchenService implements IKitchenService, ICommandObserver {
     public void dishFinish(String dishName, String tableId) {
         peer.sendCommand(InterModuleCommunication.ModuleId.MANAGEMENT,
                 InterModuleCommunication.CommandToManagement.KITCHEN_DISH_FINISHED,
-                new InterModuleCommunication.Data.DishFinish(dishName, tableId));
+                InterModuleCommunication.Data.MK.dishFinish(dishName, tableId));
     }
 
     @Override

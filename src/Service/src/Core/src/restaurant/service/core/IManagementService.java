@@ -1,6 +1,9 @@
 package restaurant.service.core;
 
 public interface IManagementService {
+    int DISH_FINISH = 0;
+    int CUSTOMER_REQUEST = 1;
+
     /*
         通知服务员传菜
      */
@@ -16,8 +19,9 @@ public interface IManagementService {
     /*
         通知UI层
      */
-    interface IDishFinishObserver {
+    interface IObserver {
         void dishFinish(String dishName, String tableId);
+        void requestService(String tableId);
     }
-    void addDishFinishObserver(IDishFinishObserver observer);
+    void addObserver(IObserver observer);
 }

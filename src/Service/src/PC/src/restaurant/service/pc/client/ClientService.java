@@ -69,6 +69,12 @@ public class ClientService implements IClientService{
         chat.endAllSesion();
     }
 
+    @Override
+    public void requestService() {
+        peer.sendCommand(InterModuleCommunication.ModuleId.MANAGEMENT,
+                InterModuleCommunication.CommandToManagement.CLIENT_REQUEST_SERVICE,
+                null);
+    }
 
 
     /*

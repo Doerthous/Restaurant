@@ -2,13 +2,14 @@ package restaurant.service.core;
 
 public interface IWaiterService {
     Boolean login(String account, String password);
-    //String getLoginFailedReason();
+    String getLoginFailedReason();
 
     Boolean changePassword(String account, String oldPassword, String newPassword);
-   // String getChangePasswrodFailedReason();
+    String getChangePasswrodFailedReason();
 
     interface INotificationObserver {
-        void newNotification(String tableId, String type);
+        void dishFinish(String tableId, String type);
+        void customerCall(String tableId);
     }
     void addNotificationObserver(INotificationObserver observer);
 

@@ -25,7 +25,7 @@ public class MainUI extends BasePanel {
         p.setOpaque(false);
         p.add(createMainButton("点餐", e->{ cf.order(); }));
         p.add(createMainButton("聊天", e->{ cf.chat(); }));
-        p.add(createMainButton("呼叫服务", e->{ cf.callService(); }));
+        p.add(createMainButton("呼叫服务", e->{ cf.requestService(); }));
         p.add(createMainButton("结账", e->{ cf.pay(); }));
         getContent().add("Center", p);
     }
