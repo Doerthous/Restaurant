@@ -3,9 +3,14 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/src/Communication/Communication.iml" filepath="$PROJECT_DIR$/src/Communication/Communication.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/Communication/src/Core/Communication-Core.iml" filepath="$PROJECT_DIR$/src/Communication/src/Core/Communication-Core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/Communication/src/PC/Communication-PC.iml" filepath="$PROJECT_DIR$/src/Communication/src/PC/Communication-PC.iml" />
       <module fileurl="file://$PROJECT_DIR$/src/Database/Database.iml" filepath="$PROJECT_DIR$/src/Database/Database.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/Communication/src/Old/Old.iml" filepath="$PROJECT_DIR$/src/Communication/src/Old/Old.iml" />
       <module fileurl="file://$PROJECT_DIR$/Restaurant.iml" filepath="$PROJECT_DIR$/Restaurant.iml" />
       <module fileurl="file://$PROJECT_DIR$/src/Service/Service.iml" filepath="$PROJECT_DIR$/src/Service/Service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/Service/src/Core/Service-Core.iml" filepath="$PROJECT_DIR$/src/Service/src/Core/Service-Core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/Service/src/PC/Service-PC.iml" filepath="$PROJECT_DIR$/src/Service/src/PC/Service-PC.iml" />
       <module fileurl="file://$PROJECT_DIR$/src/Test/Test.iml" filepath="$PROJECT_DIR$/src/Test/Test.iml" />
       <module fileurl="file://$PROJECT_DIR$/src/UI/UI.iml" filepath="$PROJECT_DIR$/src/UI/UI.iml" />
     </modules>

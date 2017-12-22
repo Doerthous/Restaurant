@@ -1,6 +1,7 @@
 package restaurant.ui.client;
 
-import restaurant.service.IClientService;
+
+import restaurant.service.core.IClientService;
 import restaurant.ui.ColorConstants;
 import restaurant.ui.component.JLabelBuilder;
 import restaurant.ui.component.thirdpart.ScrollablePanel;
@@ -243,25 +244,27 @@ public class ChatUI extends BasePanel {
         }
         @Override
         public void online(String tableId) {
-            for(JButton id: tableIds) {
-                if(id.getText().equals(tableId)){
-                    return;
+            synchronized (tableIds) {
+                for (JButton id : tableIds) {
+                    if (id.getText().equals(tableId)) {
+                        return;
+                    }
                 }
-            }
-            JButton b = new JButton(tableId);
-            b.setBackground(ColorConstants.title);
-            b.setPreferredSize(new Dimension(0, 50));
-            b.setFocusPainted(false);
-            b.addActionListener(e -> {
-                targetTableId = b.getText();
+                JButton b = new JButton(tableId);
                 b.setBackground(ColorConstants.title);
-                loadSessionWithTargetTable();
-            });
-            add(b);
-            this.tableIds.add(b);
-            setVisible(false);
-            revalidate();
-            setVisible(true);
+                b.setPreferredSize(new Dimension(0, 50));
+                b.setFocusPainted(false);
+                b.addActionListener(e -> {
+                    targetTableId = b.getText();
+                    b.setBackground(ColorConstants.title);
+                    loadSessionWithTargetTable();
+                });
+                add(b);
+                this.tableIds.add(b);
+                setVisible(false);
+                revalidate();
+                setVisible(true);
+            }
         }
     }
 

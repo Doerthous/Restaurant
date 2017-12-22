@@ -17,7 +17,8 @@ public class MainUI extends BasePanel {
         hideFoot();
         hideSubTitle();
         this.cf = cf;
-        JLabel l = new JLabel("餐桌号：xx", JLabel.CENTER);
+
+        JLabel l = new JLabel("餐桌号："+cf.getService().getTableId(), JLabel.CENTER);
         l.setPreferredSize(new Dimension(Constants.ContentEastWidth,0));
         getContent().add("East", l);
         JPanel p = new JPanel();

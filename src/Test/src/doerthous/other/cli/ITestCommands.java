@@ -1,5 +1,6 @@
 package doerthous.other.cli;
 
+
 import restaurant.communication.v1.ICommands;
 
 public interface ITestCommands extends ICommands {

@@ -1,6 +1,7 @@
 package restaurant.ui.kitchen;
 
-import restaurant.service.ServiceFactory;
+
+import restaurant.service.pc.ServiceFactory;
 
 public class Main {
     /*

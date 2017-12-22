@@ -1,0 +1,11 @@
+2017/12/18
+    1.
+        IPeer
+            Pc一个实现
+            Android一个实现
+
+    2.
+        IPeer
+            Pc和Android同一个实现：Peer(id, ISocketWrapper, ILANIpv4)
+            ISocketWrapper，ILANIpv4不同实现
+        代码重用率高

@@ -1,7 +1,7 @@
 package restaurant.ui.client;
 
 
-import restaurant.service.ServiceFactory;
+import restaurant.service.pc.ServiceFactory;
 
 public class Main {
     /*

@@ -1,6 +1,7 @@
 package restaurant.ui.kitchen;
 
-import restaurant.service.IKitchenService;
+
+import restaurant.service.core.IKitchenService;
 import restaurant.ui.component.BaseFrame;
 
 public class KitchenFrame extends BaseFrame {

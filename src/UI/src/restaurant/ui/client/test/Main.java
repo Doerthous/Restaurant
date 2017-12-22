@@ -1,7 +1,8 @@
 package restaurant.ui.client.test;
 
-import restaurant.service.IClientService;
-import restaurant.service.ServiceFactory;
+
+import restaurant.service.core.IClientService;
+import restaurant.service.pc.ServiceFactory;
 import restaurant.ui.client.ClientFrame;
 
 import static java.lang.Thread.sleep;

@@ -1,9 +1,9 @@
 package restaurant.ui.client;
 
+import restaurant.service.core.IClientService;
 import restaurant.ui.component.JLabelBuilder;
 import restaurant.ui.component.thirdpart.ModifiedFlowLayout;
 import restaurant.ui.component.thirdpart.VFlowLayout;
-import restaurant.service.IClientService;
 import restaurant.ui.ColorConstants;
 import restaurant.ui.FontConstants;
 import restaurant.ui.component.BasePanel;

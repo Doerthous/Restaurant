@@ -1,6 +1,7 @@
 package restaurant.ui.client;
 
-import restaurant.service.IClientService;
+
+import restaurant.service.core.IClientService;
 import restaurant.ui.component.BaseFrame;
 
 public class ClientFrame extends BaseFrame {

@@ -9,5 +9,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="Communication" />
     <orderEntry type="module" module-name="Database" />
+    <orderEntry type="module" module-name="Communication-Core" />
+    <orderEntry type="module" module-name="Communication-PC" />
   </component>
 </module>

@@ -1,10 +1,10 @@
 package restaurant.ui.kitchen;
 
+import restaurant.service.core.IKitchenService;
 import test.ui.layout.custom.PageLayout;
 import restaurant.ui.ColorConstants;
 import restaurant.ui.component.JLabelBuilder;
 import restaurant.ui.component.thirdpart.VFlowLayout;
-import restaurant.service.IKitchenService;
 import restaurant.ui.FontConstants;
 import restaurant.ui.component.BasePanel;
 import restaurant.ui.component.JButtonBuilder;
@@ -165,6 +165,7 @@ public class MainUI extends BasePanel {
                         removeTable(ud.getTableId());
                         System.out.println(ud.getTableId()+" finished");
                     }
+                    kf.getService().dishFinish(dishName, ud.getTableId());
                     break;
                 }
             }
