@@ -1,5 +1,6 @@
 package restaurant.database.impl;
 
+
 import restaurant.database.IDb;
 import restaurant.database.po.Dish;
 import restaurant.database.po.Employee;
@@ -7,6 +8,7 @@ import restaurant.database.po.Employee;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.LongSummaryStatistics;
 
 public class SqlServerDb implements IDb {
     private final static String DRIVE_NAME = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
@@ -39,13 +41,15 @@ public class SqlServerDb implements IDb {
                 Employee em = new Employee();
                 em.setId(rs.getString("员工id"));
                 em.setName(rs.getString("姓名"));
-                em.setAge(rs.getInt("年龄"));
+                em.setBirthday(rs.getDate("出生日期"));
                 em.setSex(rs.getString("性别"));
                 em.setNativePlace(rs.getString("籍贯"));
+                em.setPosition(rs.getString("职位"));
                 em.setSalary(rs.getInt("薪资"));
                 em.setHiredate(rs.getDate("入职时间"));
                 em.setContactWay(rs.getString("联系方式"));
                 em.setAddress(rs.getString("住址"));
+                em.setCode(rs.getString("密码"));
                 ems.add(em);
             }
             rs.close();
@@ -59,21 +63,107 @@ public class SqlServerDb implements IDb {
 
     @Override
     public List<Employee> getEmployeeByName(String name, Boolean fuzzy) {
-        return null;
+        List<Employee> ems = new ArrayList<>();
+        Connection conn = null;
+        Statement sta = null;
+        ResultSet rs = null;
+        try{
+            conn = DriverManager.getConnection(url,user,password);
+            sta = conn.createStatement();
+            if(fuzzy) rs = sta.executeQuery("SELECT  * FROM EMPLOYEE WHERE 姓名 LIKE '" + name + "'");
+             else rs = sta.executeQuery("SELECT * FROM EMPLOYEE WHERE 姓名 =  "+name);
+            while(rs.next()){
+                Employee em = new Employee();
+                em.setId(rs.getString("员工id"));
+                em.setName(rs.getString("姓名"));
+                em.setBirthday(rs.getDate("出生日期"));
+                em.setSex(rs.getString("性别"));
+                em.setNativePlace(rs.getString("籍贯"));
+                em.setPosition(rs.getString("职位"));
+                em.setSalary(rs.getInt("薪资"));
+                em.setHiredate(rs.getDate("入职时间"));
+                em.setContactWay(rs.getString("联系方式"));
+                em.setAddress(rs.getString("住址"));
+                em.setCode(rs.getString("密码"));
+                ems.add(em);
+            }
+            rs.close();
+            sta.close();
+            conn.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return ems;
     }
 
     @Override
-    public List<Employee> getEmployeeByAgeRange(Integer inf, Integer sup) {
-        return null;
-    }
+    public List<Employee> getEmployeeByAgeRange(Integer inf, Integer sup) {return null;}
+
 
     @Override
     public List<Employee> getEmployeeBySex(Boolean isMale) {
-        return null;
+        List<Employee> ems = new ArrayList<>();
+        Connection conn = null;
+        Statement sta = null;
+        ResultSet rs = null;
+        try{
+            conn = DriverManager.getConnection(url,user,password);
+            sta = conn.createStatement();
+            if(isMale)  rs = sta.executeQuery("SELECT * FROM EMPLOYEE WHERE 性别 = '男'");
+            else rs= sta.executeQuery("SELECT * FROM EMPLOYEE WHERE 性别 = '女'");
+            while(rs.next())
+            {
+                Employee em = new Employee();
+                em.setId(rs.getString("员工id"));
+                em.setName(rs.getString("姓名"));
+                em.setBirthday(rs.getDate("出生日期"));
+                em.setSex(rs.getString("性别"));
+                em.setNativePlace(rs.getString("籍贯"));
+                em.setPosition(rs.getString("职位"));
+                em.setSalary(rs.getInt("薪资"));
+                em.setHiredate(rs.getDate("入职时间"));
+                em.setContactWay(rs.getString("联系方式"));
+                em.setAddress(rs.getString("住址"));
+                em.setCode(rs.getString("密码"));
+                ems.add(em);
+            }
+            rs.close();
+            sta.close();
+            conn.close();
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+        return ems;
     }
 
     @Override
     public List<Employee> getEmployeeByPosition(String position) {
+        List<Employee> ems = new ArrayList<>();
+        Connection conn = null;
+        Statement sta = null;
+        ResultSet rs = null;
+        try{
+            conn = DriverManager.getConnection(url,user,password);
+            sta = conn.createStatement();
+            rs = sta.executeQuery("SELECT * FROM EMPLOYEE WHERE 职位 =" + position);
+            while(rs.next()){
+                Employee em  =  new Employee();
+                em.setId(rs.getString("员工id"));
+                em.setName(rs.getString("姓名"));
+                em.setBirthday(rs.getDate("出生日期"));
+                em.setSex(rs.getString("性别"));
+                em.setPosition(rs.getString("职位"));
+                em.setSalary(rs.getInt("薪资"));
+                em.setHiredate(rs.getDate("入职时间"));
+                em.setNativePlace(rs.getString("籍贯"));
+                em.setAddress(rs.getString("住址"));
+                em.setCode(rs.getString("密码"));
+            }
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
         return null;
     }
 

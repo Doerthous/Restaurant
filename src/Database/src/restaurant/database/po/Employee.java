@@ -7,8 +7,8 @@ public class Employee {
     private String id;
     // 姓名
     private String name;
-    // 年龄
-    private Integer age;
+    // 出生日期
+    private Date birthday;
     // 性别
     private String sex;
     // 籍贯
@@ -23,12 +23,14 @@ public class Employee {
     private String contactWay;
     // 住址
     private String address;
+    //密码
+    private String code;
 
-    public Employee(String id, String name, Integer age, String sex, String nativePlace, String position,
-                    Integer salary, Date hiredate, String contactWay, String address) {
+    public Employee(String id, String name, Date birthday, String sex, String nativePlace, String position,
+                    Integer salary, Date hiredate, String contactWay, String address, String code) {
         this.id = id;
         this.name = name;
-        this.age = age;
+        this.birthday = birthday;
         this.sex = sex;
         this.nativePlace = nativePlace;
         this.position = position;
@@ -36,6 +38,8 @@ public class Employee {
         this.hiredate = hiredate;
         this.contactWay = contactWay;
         this.address = address;
+        this.code = code;
+
     }
 
     public Employee() {
@@ -57,13 +61,14 @@ public class Employee {
         this.name = name;
     }
 
-    public Integer getAge() {
-        return age;
+    public Date getBirthday() {
+        return birthday;
     }
 
-    public void setAge(Integer age) {
-        this.age = age;
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
     }
+
 
     public String getSex() {
         return sex;
@@ -121,12 +126,20 @@ public class Employee {
         this.address = address;
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
     @Override
     public String toString() {
         return "Employee{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
-                ", age=" + age +
+                ", birthday=" + birthday +
                 ", sex='" + sex + '\'' +
                 ", nativePlace='" + nativePlace + '\'' +
                 ", position='" + position + '\'' +
@@ -134,6 +147,7 @@ public class Employee {
                 ", hiredate=" + hiredate +
                 ", contactWay='" + contactWay + '\'' +
                 ", address='" + address + '\'' +
+                ", code='" + code + '\'' +
                 '}';
     }
 }
