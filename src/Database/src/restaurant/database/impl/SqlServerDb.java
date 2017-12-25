@@ -223,6 +223,7 @@ public class SqlServerDb implements IDb {
                 ds.setId(rs.getString("菜品id"));
                 ds.setName(rs.getString("菜名"));
                 ds.setPrice(rs.getFloat("单价"));
+                ds.setType(rs.getString("品类"));
                 ds.setSaled(rs.getBoolean("是否售卖"));
                 ds.setSaledCount1(rs.getInt("一月销售量"));
                 ds.setSaledCount2(rs.getInt("二月销售量"));
