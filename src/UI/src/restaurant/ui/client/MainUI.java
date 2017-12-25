@@ -13,7 +13,6 @@ public class MainUI extends BasePanel {
 
     public MainUI(ClientFrame cf) {
         super();
-        int size = 150;
         hideFoot();
         hideSubTitle();
         this.cf = cf;

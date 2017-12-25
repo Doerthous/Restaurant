@@ -14,6 +14,7 @@ public class JButtonBuilder {
     private Boolean focusPainted = null;
     private Boolean contentAreaFilled = null;
     private String actionCommand = null;
+    private Dimension preferredSize = null;
     private JButtonBuilder(){}
     public JButtonBuilder text(String text){
         this.text = text;
@@ -51,6 +52,10 @@ public class JButtonBuilder {
         this.actionCommand = actionCommand;
         return this;
     }
+    public JButtonBuilder preferredSize(Dimension preferredSize){
+        this.preferredSize = preferredSize;
+        return this;
+    }
     public JButton build(){
         JButton button = new JButton(text);
         if(listener != null){
@@ -76,6 +81,9 @@ public class JButtonBuilder {
         }
         if(actionCommand != null){
             button.setActionCommand(actionCommand);
+        }
+        if(preferredSize != null){
+            button.setPreferredSize(preferredSize);
         }
         return button;
     }
