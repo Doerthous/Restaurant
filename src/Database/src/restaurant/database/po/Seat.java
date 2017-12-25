@@ -3,7 +3,7 @@ package restaurant.database.po;
 /**
  * Created by Dromatack on 2017/12/23.
  */
-public class Seats {
+public class Seat {
     //餐桌id
     private String id;
     //类型
@@ -17,7 +17,7 @@ public class Seats {
     //当月使用次数
     private Integer usedtimes;
 
-    public Seats(String id,String type,Integer floor, Integer capacity, String status, Integer usedtimes){
+    public Seat(String id, String type, Integer floor, Integer capacity, String status, Integer usedtimes){
         this.id = id;
         this.type = type;
         this.floor = floor;
@@ -26,7 +26,7 @@ public class Seats {
         this.usedtimes = usedtimes;
     }
 
-    public Seats(){
+    public Seat(){
 
     }
 
@@ -80,7 +80,7 @@ public class Seats {
 
     @Override
     public String toString() {
-        return "Seats{" +
+        return "Seat{" +
                 "id='" + id + '\'' +
                 ", type='" + type + '\'' +
                 ", floor=" + floor +

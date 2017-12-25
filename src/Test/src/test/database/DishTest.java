@@ -1,3 +1,5 @@
+package test.database;
+
 import restaurant.database.DbFactory;
 import restaurant.database.IDb;
 import restaurant.database.po.Dish;
