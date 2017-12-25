@@ -70,8 +70,8 @@ public class SqlServerDb implements IDb {
         try{
             conn = DriverManager.getConnection(url,user,password);
             sta = conn.createStatement();
-            if(fuzzy) rs = sta.executeQuery("SELECT  * FROM EMPLOYEE WHERE 姓名 LIKE '" + name + "'");
-             else rs = sta.executeQuery("SELECT * FROM EMPLOYEE WHERE 姓名 =  "+name);
+            if(fuzzy) rs = sta.executeQuery("SELECT  * FROM EMPLOYEE WHERE PATINDEX('%" + name + "%',姓名) > 0");
+             else rs = sta.executeQuery("SELECT * FROM EMPLOYEE WHERE 姓名 = '"+ name +"'");
             while(rs.next()){
                 Employee em = new Employee();
                 em.setId(rs.getString("员工id"));
@@ -146,7 +146,7 @@ public class SqlServerDb implements IDb {
         try{
             conn = DriverManager.getConnection(url,user,password);
             sta = conn.createStatement();
-            rs = sta.executeQuery("SELECT * FROM EMPLOYEE WHERE 职位 =" + position);
+            rs = sta.executeQuery("SELECT * FROM EMPLOYEE WHERE 职位 ='" + position +"'");
             while(rs.next()){
                 Employee em  =  new Employee();
                 em.setId(rs.getString("员工id"));
@@ -157,14 +157,16 @@ public class SqlServerDb implements IDb {
                 em.setSalary(rs.getInt("薪资"));
                 em.setHiredate(rs.getDate("入职时间"));
                 em.setNativePlace(rs.getString("籍贯"));
+                em.setContactWay(rs.getString("联系方式"));
                 em.setAddress(rs.getString("住址"));
                 em.setCode(rs.getString("密码"));
+                ems.add(em);
             }
         }
         catch (SQLException e){
             e.printStackTrace();
         }
-        return null;
+        return ems;
     }
 
     @Override

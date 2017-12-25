@@ -21,15 +21,28 @@ public interface IDb {
     List<Employee> getEmployeeByHiredateRange(Integer inf, Integer sup);
     List<Employee> getEmployeeByNativePlace(String nativePlace, Boolean fuzzy); // 籍贯
 
+    //增删操作
+    //修改操作
+
 
     /*
         菜品表操作
      */
+    //查询操作
     List<Dish> getAllDish();
     List<Dish> getDishByName(String name);
     List<Dish> getDishByType(String type);
     List<Dish> getDishByPriceRange(Float inf, Float sup);
     List<Dish> getDishMenu();
 
+    //增删操作
+    //修改操作
+
+    /*
+        座位表操作
+    */
+    //查询操作
+    //增删操作
+    //修改操作
     
 }
