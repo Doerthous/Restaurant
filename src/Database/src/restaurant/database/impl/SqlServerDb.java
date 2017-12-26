@@ -259,6 +259,16 @@ public class SqlServerDb implements IDb {
      */
     @Override
     public List<Dish> getAllDish() {
+        List<Dish> dss = new ArrayList<>();
+        Connection conn = null;
+        Statement sta = null;
+        ResultSet rs = null;
+        try {
+            conn = DriverManager.getConnection(url,user,password);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
@@ -328,25 +338,14 @@ public class SqlServerDb implements IDb {
         ResultSet rs = null;
         try{
             conn = DriverManager.getConnection(url,user,password);
-            String sql = "INSERT INTO MENU VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,)";
+            String sql = "INSERT INTO MENU VALUES(?,?,?,?,?,?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1,dish.getId());
             stmt.setString(2,dish.getName());
             stmt.setFloat(3,dish.getPrice());
             stmt.setString(4,dish.getType());
             stmt.setBoolean(5,dish.getSaled());
-            stmt.setInt(7,dish.getSaledCount1());
-            stmt.setInt(8,dish.getSaledCount2());
-            stmt.setInt(9,dish.getSaledCount3());
-            stmt.setInt(10,dish.getSaledCount4());
-            stmt.setInt(11,dish.getSaledCount5());
-            stmt.setInt(12,dish.getSaledCount6());
-            stmt.setInt(13,dish.getSaledCount7());
-            stmt.setInt(14,dish.getSaledCount8());
-            stmt.setInt(15,dish.getSaledCount9());
-            stmt.setInt(16,dish.getSaledCount10());
-            stmt.setInt(17,dish.getSaledCount11());
-            stmt.setInt(18,dish.getSaledCount12());
+
             File file = dish.getPicture();
             FileInputStream input = new FileInputStream(dish.getPicture());
             stmt.setBinaryStream(6,input,(int)input.available());
@@ -413,11 +412,9 @@ public class SqlServerDb implements IDb {
     }
 
 
-    /*private FileInputStream transfrom(File file)
-    {
-
+    private FileInputStream filetoInputStream(File file) throws FileNotFoundException {
         return new FileInputStream(file);
-    }*/
+    }
 
     public File inputstreamtofile(InputStream ins) throws IOException {
         File file = File.createTempFile("temp","txt");
