@@ -269,7 +269,9 @@ public class SqlServerDb implements IDb {
             rs = sta.executeQuery("SELECT * FROM MENU");
             while (rs.next()){
                 Dish ds = new Dish();
-                //ds.setId(rs.get);
+                ds.setId(rs.getString("菜品id"));
+                ds.setName(rs.getString("菜名"));
+                //ds.set
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -343,7 +345,7 @@ public class SqlServerDb implements IDb {
         ResultSet rs = null;
         try{
             conn = DriverManager.getConnection(url,user,password);
-            String sql = "INSERT INTO MENU(菜品id,菜名,单价,类型,是否售卖,图片) VALUES(?,?,?,?,?,?)";
+            String sql = "INSERT INTO MENU(菜品id,菜名,单价,品类,是否售卖,图片) VALUES(?,?,?,?,?,?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1,dish.getId());
             stmt.setString(2,dish.getName());
