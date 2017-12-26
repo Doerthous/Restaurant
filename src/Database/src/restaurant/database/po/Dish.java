@@ -1,5 +1,8 @@
 package restaurant.database.po;
 
+import java.io.File;
+import java.nio.channels.FileLockInterruptionException;
+
 public class Dish {
     // 菜品id
     private String id;
@@ -11,6 +14,8 @@ public class Dish {
     private String type;
     // 是否售卖
     private Boolean isSaled;
+    //图片
+    private File picture;
     // 一月销售量
     private Integer saledCount1;
     // 二月销售量
@@ -36,7 +41,7 @@ public class Dish {
     // 十二月销售量
     private Integer saledCount12;
 
-    public Dish(String id, String name, Float price, String type, Boolean isSaled,
+    public Dish(String id, String name, Float price, String type, Boolean isSaled, File picture,
                 Integer saledCount1, Integer saledCount2, Integer saledCount3,
                 Integer saledCount4, Integer saledCount5, Integer saledCount6,
                 Integer saledCount7, Integer saledCount8, Integer saledCount9,
@@ -46,6 +51,7 @@ public class Dish {
         this.price = price;
         this.type = type;
         this.isSaled = isSaled;
+        this.picture = picture;
         this.saledCount1 = saledCount1;
         this.saledCount2 = saledCount2;
         this.saledCount3 = saledCount3;
@@ -58,6 +64,15 @@ public class Dish {
         this.saledCount10 = saledCount10;
         this.saledCount11 = saledCount11;
         this.saledCount12 = saledCount12;
+    }
+
+    public Dish(String id, String name, Float price, String type, Boolean isSaled, File picture) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.type = type;
+        this.isSaled = isSaled;
+        this.picture = picture;
     }
 
     public Dish() {
@@ -199,6 +214,14 @@ public class Dish {
         this.saledCount12 = saledCount12;
     }
 
+    public File getPicture() {
+        return picture;
+    }
+
+    public void setPicture(File picture) {
+        this.picture = picture;
+    }
+
     @Override
     public String toString() {
         return "Dish{" +
@@ -207,6 +230,7 @@ public class Dish {
                 ", price=" + price +
                 ", type='" + type + '\'' +
                 ", isSaled=" + isSaled +
+                ", picture=" + picture +
                 ", saledCount1=" + saledCount1 +
                 ", saledCount2=" + saledCount2 +
                 ", saledCount3=" + saledCount3 +

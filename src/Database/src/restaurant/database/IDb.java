@@ -3,6 +3,7 @@ package restaurant.database;
 import restaurant.database.po.Dish;
 import restaurant.database.po.Employee;
 
+import java.io.File;
 import java.util.List;
 
 public interface IDb {
@@ -38,8 +39,9 @@ public interface IDb {
     List<Dish> getDishMenu();
 
     //增删操作
+    Boolean insertDish(Dish dish);
     //修改操作
-
+    Boolean updateDish(Dish dish);
     /*
         座位表操作
     */

@@ -1,10 +1,13 @@
 package restaurant.database.impl;
 
 
+import javafx.scene.Parent;
+import jdk.nashorn.internal.objects.NativeUint8Array;
 import restaurant.database.IDb;
 import restaurant.database.po.Dish;
 import restaurant.database.po.Employee;
 
+import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -291,6 +294,7 @@ public class SqlServerDb implements IDb {
                 ds.setPrice(rs.getFloat("单价"));
                 ds.setType(rs.getString("品类"));
                 ds.setSaled(rs.getBoolean("是否售卖"));
+                ds.setPicture(inputstreamtofile(rs.getBinaryStream("图片")));
                 ds.setSaledCount1(rs.getInt("一月销售量"));
                 ds.setSaledCount2(rs.getInt("二月销售量"));
                 ds.setSaledCount3(rs.getInt("三月销售量"));
@@ -310,7 +314,122 @@ public class SqlServerDb implements IDb {
             conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return dss;
     }
+
+    @Override
+    public Boolean insertDish(Dish dish) {
+        Boolean result = false;
+        Connection conn = null;
+        Statement sta = null;
+        ResultSet rs = null;
+        try{
+            conn = DriverManager.getConnection(url,user,password);
+            String sql = "INSERT INTO MENU VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,)";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1,dish.getId());
+            stmt.setString(2,dish.getName());
+            stmt.setFloat(3,dish.getPrice());
+            stmt.setString(4,dish.getType());
+            stmt.setBoolean(5,dish.getSaled());
+            stmt.setInt(7,dish.getSaledCount1());
+            stmt.setInt(8,dish.getSaledCount2());
+            stmt.setInt(9,dish.getSaledCount3());
+            stmt.setInt(10,dish.getSaledCount4());
+            stmt.setInt(11,dish.getSaledCount5());
+            stmt.setInt(12,dish.getSaledCount6());
+            stmt.setInt(13,dish.getSaledCount7());
+            stmt.setInt(14,dish.getSaledCount8());
+            stmt.setInt(15,dish.getSaledCount9());
+            stmt.setInt(16,dish.getSaledCount10());
+            stmt.setInt(17,dish.getSaledCount11());
+            stmt.setInt(18,dish.getSaledCount12());
+            File file = dish.getPicture();
+            FileInputStream input = new FileInputStream(dish.getPicture());
+            stmt.setBinaryStream(6,input,(int)input.available());
+            int flag = stmt.executeUpdate();
+            if (flag ==1) result = true;
+            stmt.close();
+            conn.close();
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    @Override
+    public Boolean updateDish(Dish dish) {
+        Boolean result = false;
+        Connection conn = null;
+        Statement sta = null;
+        ResultSet rs = null;
+        try{
+            conn = DriverManager.getConnection(url,user,password);
+            String sql = "UPDATE MENU"+
+                    "SET 菜名=?,单价=?,品类=?, 是否售卖=?,图片=?,一月销售量=?,二月销售量=?,"+
+                    "三月销售量=?,四月销售量=?,五月销售量=?,六月销售量=?,七月销售量=?,八月销售量=?,"+
+                    "九月销售量=?,十月销售量=?,十一月销售量=?,十二月销售量=?,"+"WHERE 菜品id=?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1,dish.getName());
+            stmt.setFloat(2,dish.getPrice());
+            stmt.setString(3,dish.getType());
+            stmt.setBoolean(4,dish.getSaled());
+            stmt.setInt(6,dish.getSaledCount1());
+            stmt.setInt(7,dish.getSaledCount2());
+            stmt.setInt(8,dish.getSaledCount3());
+            stmt.setInt(9,dish.getSaledCount4());
+            stmt.setInt(10,dish.getSaledCount5());
+            stmt.setInt(11,dish.getSaledCount6());
+            stmt.setInt(12,dish.getSaledCount7());
+            stmt.setInt(13,dish.getSaledCount8());
+            stmt.setInt(14,dish.getSaledCount9());
+            stmt.setInt(15,dish.getSaledCount10());
+            stmt.setInt(16,dish.getSaledCount11());
+            stmt.setInt(17,dish.getSaledCount12());
+            stmt.setString(18,dish.getId());
+            FileInputStream input = new FileInputStream(dish.getPicture());
+            stmt.setBinaryStream(5,input,(int)input.available());
+            int flag = stmt.executeUpdate();
+            if (flag == 1)  result = true;
+            stmt.close();
+            conn.close();
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+
+    /*private FileInputStream transfrom(File file)
+    {
+
+        return new FileInputStream(file);
+    }*/
+
+    public File inputstreamtofile(InputStream ins) throws IOException {
+        File file = File.createTempFile("temp","txt");
+        OutputStream os = new FileOutputStream(file);
+        int bytesRead = 0;
+        byte[] buffer = new byte[8192];
+        while ((bytesRead = ins.read(buffer, 0, 8192)) != -1) {
+            os.write(buffer, 0, bytesRead);
+        }
+        os.close();
+        ins.close();
+        return  file;
+    }
+
 }
