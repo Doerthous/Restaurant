@@ -1,44 +1,41 @@
 package restaurant.ui.component;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
 
 public class JLabelBuilder {
-    private String text = null;
-    private Integer horizontalAlignment = null;
-    private Font font = null;
-    private Color foreground = null;
-    private JLabelBuilder(){}
+    private JLabel label;
+    private JLabelBuilder(){
+        label = new JLabel();
+    }
     public JLabelBuilder text(String text){
-        this.text = text;
+        label.setText(text);
         return this;
     }
     public JLabelBuilder horizontalAlignment(int horizontalAlignment){
-        this.horizontalAlignment = horizontalAlignment;
+        label.setHorizontalAlignment(horizontalAlignment);
         return this;
     }
     public JLabelBuilder font(Font font){
-        this.font = font;
+        label.setFont(font);
         return this;
     }
     public JLabelBuilder foreground(Color foreground){
-        this.foreground = foreground;
+        label.setForeground(foreground);
+        return this;
+    }
+    public JLabelBuilder mouseListener(MouseListener mouseListener){
+        label.addMouseListener(mouseListener);
+        return this;
+    }
+    public JLabelBuilder border(Border border){
+        label.setBorder(border);
         return this;
     }
     public JLabel build(){
-        JLabel label = new JLabel();
-        if(text != null){
-            label.setText(text);
-        }
-        if(horizontalAlignment != null){
-            label.setHorizontalAlignment(horizontalAlignment);
-        }
-        if(font != null){
-            label.setFont(font);
-        }
-        if(foreground != null){
-            label.setForeground(foreground);
-        }
         return label;
     }
     public static JLabelBuilder getInstance(){

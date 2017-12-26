@@ -1,6 +1,6 @@
 package restaurant.ui.client;
 
-public interface Constants {
+public interface Constants extends restaurant.ui.Constants{
     int ContentEastWidth = 200;
     int MainButtonSize = 150;
     int OrderTotalInfoHeight = 100;

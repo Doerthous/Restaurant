@@ -1,21 +1,20 @@
 package restaurant.ui.kitchen;
 
 import restaurant.service.core.IKitchenService;
-import test.ui.layout.custom.PageLayout;
-import restaurant.ui.ColorConstants;
-import restaurant.ui.component.JLabelBuilder;
-import restaurant.ui.component.thirdpart.VFlowLayout;
-import restaurant.ui.FontConstants;
-import restaurant.ui.component.BasePanel;
-import restaurant.ui.component.JButtonBuilder;
+import restaurant.ui.Constants;
+import restaurant.ui.component.*;
+import restaurant.ui.component.border.AdvLineBorder;
+import restaurant.ui.component.layout.PageLayout;
 import restaurant.ui.utils.Utility;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Map;
+
+import static java.lang.Thread.sleep;
 
 public class MainUI extends BasePanel {
     private KitchenFrame kf;
@@ -38,74 +37,78 @@ public class MainUI extends BasePanel {
     /*
         UI组件
      */
+    private PageLayout dishPL;
+    private PageButton dishPB;
     private JPanel remainDish;
     private JPanel table;
     private PageLayout tablePL;
     private PageButton tablePB;
+    private PageLayout orderPL;
+    private PageButton orderPB;
     private JPanel orderDetail;
     private void initUIComponent(){
         // subtitle
         getSubtitle().setLayout(new GridLayout(1,3));
         getSubtitle().add(JLabelBuilder.getInstance().text("需上菜品").horizontalAlignment(JLabel.CENTER)
-                .foreground(Color.white).font(FontConstants.font1).build());
+                .foreground(Color.white).font(Constants.Font.font1).build());
         getSubtitle().add(JLabelBuilder.getInstance().text("订餐餐桌").horizontalAlignment(JLabel.CENTER)
-                .foreground(Color.white).font(FontConstants.font1).build());
+                .foreground(Color.white).font(Constants.Font.font1)
+                .border(new AdvLineBorder().setLeft(1).setLeftColor(Constants.Color.background)
+                .setRight(1).setRightColor(Constants.Color.background)).build());
         getSubtitle().add(JLabelBuilder.getInstance().text("订餐详情").horizontalAlignment(JLabel.CENTER)
-                .foreground(Color.white).font(FontConstants.font1).build());
+                .foreground(Color.white).font(Constants.Font.font1).build());
 
         // content
         getContent().setLayout(new GridLayout(1,3));
-        remainDish = new JPanel(new VFlowLayout());
+        dishPL = new PageLayout().setHgap(2).setSingleCol(true)
+                .setPadding(new Insets(5,10,0,10));
+        remainDish = new JPanel(dishPL);
+        new LineBorder(Constants.Color.subtitle);
         remainDish.setOpaque(false);
         getContent().add(remainDish);
-        tablePL = new PageLayout();
+        tablePL = new PageLayout().setHgap(5).setSingleCol(true)
+                .setPadding(new Insets(5,10,0,10));
         table = new JPanel(tablePL);
         table.setOpaque(false);
+        table.setBorder(new AdvLineBorder().setLeft(1).setLeftColor(Constants.Color.subtitle)
+                .setRight(1).setRightColor(Constants.Color.subtitle));
         getContent().add(table);
-        orderDetail = new JPanel(new VFlowLayout());
+        orderPL = new PageLayout().setHgap(2).setSingleCol(true)
+                .setPadding(new Insets(5,10,0,10));
+        orderDetail = new JPanel(orderPL);
         orderDetail.setOpaque(false);
         getContent().add(orderDetail);
 
         // font
         getFoot().setLayout(new GridLayout(1,3));
-        getFoot().add(new PageButton(null,null,null,null));
-        tablePB = new PageButton(
-                e->tablePL.first(table),
-                e->tablePL.prior(table),
-                e->tablePL.next(table),
-                e->tablePL.last(table));
+        dishPB = new PageButton(dishPL, remainDish);
+        getFoot().add(dishPB);
+        tablePB = new PageButton(tablePL, table);
         getFoot().add(tablePB);
-        getFoot().add(new PageButton(null,null,null,null));
+        orderPB = new PageButton(orderPL, orderDetail);
+        getFoot().add(orderPB);
     }
+
 
     /*
         UI组件类
      */
-    class RemainDishCard extends JPanel {
+    class RemainDishCard extends RectangleCard {
         private JLabel count;
         private String dishName;
         public RemainDishCard(String dishName, Integer count, ActionListener listener) {
             this.dishName = dishName;
-            setLayout(new BorderLayout());
-            setBackground(ColorConstants.title);
-            add("East", JButtonBuilder.getInstance().text("-").listener(e->{
+            add("East", JButtonBuilder.getInstance().text("--").listener(e->{
                 listener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
-            }).actionCommand(dishName).build());
+            }).actionCommand(dishName).background(Constants.Color.title)
+                    .foreground(Constants.Color.subtitle).build());
             JPanel panel = new JPanel(new BorderLayout());
             panel.setOpaque(false);
             this.count = new JLabel(count.toString());
+            this.count.setBorder(BorderFactory.createEmptyBorder(0,0,0,20));
             panel.add("East", this.count);
             panel.add("Center",new JLabel(dishName));
             add("Center", panel);
-        }
-        public void incCount(){
-            count.setText(String.valueOf(Integer.valueOf(count.getText())+1));
-        }
-        public void decCount(){
-            Integer c = Integer.valueOf(count.getText());
-            if(c > 0){
-                count.setText(String.valueOf(c-1));
-            }
         }
         public void setCount(String count){
             this.count.setText(count);
@@ -114,34 +117,60 @@ public class MainUI extends BasePanel {
             return dishName;
         }
     }
-    class PageButton extends JPanel {
-        private JLabel pageInfo;
-        public PageButton(ActionListener first, ActionListener prior, ActionListener next, ActionListener last) {
-            setLayout(new BorderLayout());
-            setOpaque(false);
-            JPanel center = new JPanel(new BorderLayout());
-            center.setOpaque(false);
-            add("Center", center);
-
-            JButton fb = JButtonBuilder.getInstance().text("<<").listener(first)
-                    .opaque(false).contentAreaFilled(false).build();
-            JButton pb = JButtonBuilder.getInstance().text("<").listener(prior)
-                    .opaque(false).contentAreaFilled(false).build();
-            JButton nb = JButtonBuilder.getInstance().text(">").listener(next)
-                    .opaque(false).contentAreaFilled(false).build();
-            JButton lb = JButtonBuilder.getInstance().text(">>").listener(last)
-                    .opaque(false).contentAreaFilled(false).build();
-            pageInfo = JLabelBuilder.getInstance().text("").horizontalAlignment(JLabel.CENTER).build();
-
-            add("West", fb);
-            center.add("West", pb);
-            center.add("Center", pageInfo);
-            center.add("East", nb);
-            add("East", lb);
+    class WaitTableCard extends RectangleCard {
+        private JLabel waitTime;
+        private String tableId;
+        public WaitTableCard(String tableId, ActionListener listener) {
+            this.tableId = tableId;
+            MouseToAction mta = new MouseToAction(listener);
+            add("West", JLabelBuilder.getInstance().mouseListener(mta)
+                    .text(tableId).horizontalAlignment(JLabel.CENTER).build());
+            waitTime = JLabelBuilder.getInstance().mouseListener(mta)
+                    .text("0min").horizontalAlignment(JLabel.CENTER).build();
+            add("East", waitTime);
+            addMouseListener(mta);
         }
-
-        public void setPageInfo(String text){
-            pageInfo.setText(text);
+        public WaitTableCard(String tableId, String waitTime, ActionListener listener) {
+            this.tableId = tableId;
+            MouseToAction mta = new MouseToAction(listener);
+            add("West", JLabelBuilder.getInstance().mouseListener(mta)
+                    .text(tableId).horizontalAlignment(JLabel.CENTER).build());
+            add("East", JLabelBuilder.getInstance().mouseListener(mta)
+                    .text(waitTime).horizontalAlignment(JLabel.CENTER).build());
+            addMouseListener(mta);
+        }
+        public void setWaitTime(String time){
+            waitTime.setText(time);
+        }
+        public String getText() {
+            return tableId;
+        }
+        class MouseToAction extends MouseAdapter {
+            private ActionListener listener;
+            public MouseToAction(ActionListener listener) {
+                this.listener = listener;
+            }
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                if(listener != null) {
+                    listener.actionPerformed(new ActionEvent(this, 1, ""));
+                }
+            }
+        }
+    }
+    class DishDetailCard extends WaitTableCard {
+        public DishDetailCard(String dishName, String info) {
+            super(dishName, info,null);
+        }
+    }
+    class PictureButton extends JButton{
+        public PictureButton(int width, int height, ImageIcon icon) {
+            Image temp = icon.getImage().getScaledInstance(width,height,icon.getImage().SCALE_DEFAULT);
+            icon = new ImageIcon(temp);
+            setIcon(icon);
+            setPreferredSize(new Dimension(width, height));
+            setContentAreaFilled(false);
         }
     }
 
@@ -178,8 +207,7 @@ public class MainUI extends BasePanel {
                 this.orderData.add(new UIData(tableId, dishName, o.get(dishName), 0));
                 updateDishCount(dishName, getDishRemainCount(dishName));
             }
-            table.add(JButtonBuilder.getInstance().text(tableId).listener(e->loadTableOrderDetail(tableId)).build());
-            tablePB.setPageInfo(tablePL.getCurrentPage(table)+"/"+tablePL.getPageCount(table));
+            table.add(new WaitTableCard(tableId, e->loadTableOrderDetail(tableId)));
             Utility.revalidate(table);
         }
         private Integer getDishRemainCount(String dishName){
@@ -223,10 +251,19 @@ public class MainUI extends BasePanel {
         }
         private void removeTable(String tableId){
             for(Component comp : table.getComponents()){
-                if(comp instanceof JButton){
-                    if(((JButton) comp).getText().equals(tableId)){
+                if(comp instanceof WaitTableCard){
+                    if(((WaitTableCard) comp).getText().equals(tableId)){
                         table.remove(comp);
                         Utility.revalidate(table);
+                        orderDetail.removeAll();
+                        Utility.revalidate(orderDetail);
+                        java.util.List<UIData> od = orderData;
+                        orderData = new ArrayList<>();
+                        for(UIData data : od){
+                            if(!data.getTableId().equals(tableId)){
+                                orderData.add(data);
+                            }
+                        }
                     }
                 }
             }
@@ -235,8 +272,8 @@ public class MainUI extends BasePanel {
             orderDetail.removeAll();
             for(UIData ud: this.orderData){
                 if(ud.getTableId().equals(tableId)){
-                    orderDetail.add(new JLabel(ud.getDishName() +
-                            " " + ud.getCount()+"/"+ud.getFinishedCount()));
+                    orderDetail.add(new DishDetailCard(ud.getDishName(),
+                            ud.getCount()+"/"+ud.getFinishedCount()));
                 }
             }
             Utility.revalidate(orderDetail);

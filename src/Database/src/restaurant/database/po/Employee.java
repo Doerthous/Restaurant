@@ -24,10 +24,10 @@ public class Employee {
     // 住址
     private String address;
     //密码
-    private String code;
+    private String password;
 
     public Employee(String id, String name, Date birthday, String sex, String nativePlace, String position,
-                    Integer salary, Date hiredate, String contactWay, String address, String code) {
+                    Integer salary, Date hiredate, String contactWay, String address, String password) {
         this.id = id;
         this.name = name;
         this.birthday = birthday;
@@ -38,7 +38,7 @@ public class Employee {
         this.hiredate = hiredate;
         this.contactWay = contactWay;
         this.address = address;
-        this.code = code;
+        this.password = password;
 
     }
 
@@ -126,12 +126,12 @@ public class Employee {
         this.address = address;
     }
 
-    public String getCode() {
-        return code;
+    public String getPassword() {
+        return password;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override
@@ -147,7 +147,7 @@ public class Employee {
                 ", hiredate=" + hiredate +
                 ", contactWay='" + contactWay + '\'' +
                 ", address='" + address + '\'' +
-                ", code='" + code + '\'' +
+                ", password='" + password + '\'' +
                 '}';
     }
 }

@@ -18,6 +18,11 @@ public class MysqlDb implements IDb {
     }
 
     @Override
+    public Employee getEmployeeById(String id) {
+        return null;
+    }
+
+    @Override
     public List<Employee> getEmployeeByName(String name, Boolean fuzzy) {
         return null;
     }
@@ -49,6 +54,11 @@ public class MysqlDb implements IDb {
 
     @Override
     public List<Employee> getEmployeeByNativePlace(String nativePlace, Boolean fuzzy) {
+        return null;
+    }
+
+    @Override
+    public Boolean updateEmployee(Employee employee) {
         return null;
     }
 

@@ -1,13 +1,11 @@
 package restaurant.ui.client;
 
 import restaurant.service.core.IClientService;
-import restaurant.ui.component.JLabelBuilder;
-import restaurant.ui.component.thirdpart.ModifiedFlowLayout;
+import restaurant.ui.component.*;
+import restaurant.ui.component.border.AdvLineBorder;
+import restaurant.ui.component.layout.PageLayout;
+import restaurant.ui.component.thirdpart.ShadowBorder;
 import restaurant.ui.component.thirdpart.VFlowLayout;
-import restaurant.ui.ColorConstants;
-import restaurant.ui.FontConstants;
-import restaurant.ui.component.BasePanel;
-import restaurant.ui.component.JButtonBuilder;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,7 +15,7 @@ import java.util.Map;
 
 public class OrderUI extends BasePanel {
     private ClientFrame cf;
-    private JPanel menuPanel;
+
 
     public OrderUI(ClientFrame cf) {
         this.cf = cf;
@@ -48,6 +46,7 @@ public class OrderUI extends BasePanel {
     private TotalDishCost totalCost;
     private java.util.List<OrderDetailDishCard> orderDishs;
     private JPanel orderDetail;
+    private JPanel menuPanel;
     private void initUIComponent() {
         orderDishs = new ArrayList<>();
         initMenu();
@@ -58,7 +57,7 @@ public class OrderUI extends BasePanel {
         p.setPreferredSize(new Dimension(Constants.ContentEastWidth, 0));
         p.setOpaque(false);
         JButton confirm = new JButton("确认");
-        confirm.setBackground(ColorConstants.title);
+        confirm.setBackground(Constants.Color.title);
         confirm.setPreferredSize(new Dimension(Constants.ContentEastWidth/2, 0));
         confirm.addActionListener(e -> {
             udc.sendOrder();
@@ -66,7 +65,7 @@ public class OrderUI extends BasePanel {
         p.add("West", confirm);
         JButton ret = new JButton("返回");
         ret.setPreferredSize(new Dimension(Constants.ContentEastWidth/2, 0));
-        ret.setBackground(ColorConstants.title);
+        ret.setBackground(Constants.Color.title);
         ret.addActionListener(e -> {
             cf.main();
         });
@@ -75,10 +74,10 @@ public class OrderUI extends BasePanel {
     }
     private void initMenu() {
         // subtitle
-        JPanel center = new C1(3, ColorConstants.subtitle);
+        JPanel center = new C1(3, Constants.Color.subtitle);
         for(String type: cf.getService().getDishType()){
             JButton button = JButtonBuilder.getInstance().text(type).listener(e->udc.loadMenuByType(type))
-                    .foreground(Color.white).background(ColorConstants.subtitle).font(FontConstants.font1)
+                    .foreground(Color.white).background(Constants.Color.subtitle).font(Constants.Font.font1)
                     .build();
             center.add(button);
         }
@@ -86,21 +85,21 @@ public class OrderUI extends BasePanel {
         getSubtitle().add("Center", center);
 
         // content
-        center = new JPanel();
-        center.setLayout(new BorderLayout(0, 0));
-        center = new JPanel(); // new ScrollablePanel();
-        center.setLayout(new ModifiedFlowLayout(FlowLayout.LEFT));
-        center.setBackground(ColorConstants.background);
-        menuPanel = center;
-        JScrollPane cCenterScrollPane = new JScrollPane(center);
-        getContent().add("Center", cCenterScrollPane);
+        PageLayout layout = new PageLayout();
+        menuPanel = new JPanel(layout); // new ScrollablePanel();
+        menuPanel.setBackground(Constants.Color.background);
+        menuPanel.setBorder(new AdvLineBorder().setRight(1).setRightColor(restaurant.ui.Constants.Color.subtitle));
+        PageButton pageButton = new PageButton(layout, menuPanel);
+        //JScrollPane cCenterScrollPane = new JScrollPane(center);
+        getContent().add("Center", menuPanel);
+        getFoot().add("Center", pageButton);
     }
     private void initOrderDetail() {
         // subtitle
         JPanel east = new JPanel(new BorderLayout());
         east.setPreferredSize(new Dimension(Constants.ContentEastWidth, 0));
         east.add("Center", JLabelBuilder.getInstance().text("订单详情").horizontalAlignment(JLabel.CENTER)
-                .foreground(Color.white).font(FontConstants.font1).build());
+                .foreground(Color.white).font(Constants.Font.font1).build());
         east.setOpaque(false);
         getSubtitle().add("East", east);
 
@@ -108,14 +107,15 @@ public class OrderUI extends BasePanel {
         east = new JPanel(new BorderLayout());
         east.setPreferredSize(new Dimension(Constants.ContentEastWidth, 0));
         east.setOpaque(false);
-        orderDetail = new JPanel(new VFlowLayout());
-        orderDetail.setBackground(ColorConstants.background);
-        JScrollPane jsp = new JScrollPane(orderDetail);
-        jsp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+
+        orderDetail = new JPanel();
+        orderDetail.setBackground(Constants.Color.background);
+        PagePanel pagePanel = new PagePanel(orderDetail);
+        pagePanel.setPageButtonBackground(restaurant.ui.Constants.Color.title);
         JPanel south = new JPanel(new VFlowLayout());
         south.setPreferredSize(new Dimension(0, Constants.OrderTotalInfoHeight));
         south.setOpaque(false);
-        south.setBorder(BorderFactory.createLineBorder(ColorConstants.subtitle));
         JPanel p1 = new JPanel(new BorderLayout());
         p1.setOpaque(false);
         p1.add("West",new JLabel("菜品数量："));
@@ -131,8 +131,8 @@ public class OrderUI extends BasePanel {
         p2.add("East", new JLabel("元"));
         south.add(p1);
         south.add(p2);
-        east.add("Center", jsp);
         east.add("South", south);
+        east.add("Center", pagePanel);
         getContent().add("East", east);
     }
     private void loadOrderDetail(){
@@ -153,13 +153,19 @@ public class OrderUI extends BasePanel {
         public OrderDishCard(int width, int height,
                              String dishName, String dishPrice, String dishPictrue, Integer count) {
             this.dishName = dishName;
-            int x = width;
-            int y = height;
-            SpringLayout layout = new SpringLayout();
-            setLayout(layout);
-            setBorder(BorderFactory.createLineBorder(Color.black));
+
+            // 设置样式
+            setPreferredSize(new Dimension(width, height));
+            setLayout(new BorderLayout());
+            setBorder(BorderFactory.createCompoundBorder(
+                    ShadowBorder.newBuilder().shadowSize(2).build(),
+                    BorderFactory.createEmptyBorder(20,20,20,20)
+            ));
+            setBackground(Constants.Color.title);
 
             // 创建组件
+            JPanel jPanel1  = new JPanel(new BorderLayout());
+            JPanel jPanel2  = new JPanel(new BorderLayout());
             JLabel name = new JLabel(dishName);
             JLabel price = new JLabel(dishPrice);
             JLabel pictrue = new JLabel(dishPictrue);
@@ -167,71 +173,27 @@ public class OrderUI extends BasePanel {
             this.count = new JLabel(count.toString(), JLabel.CENTER);
             JButton inc = new JButton("+");
 
+            // 设置组件样式
             pictrue.setBorder(BorderFactory.createLineBorder(Color.black));
+            this.count.setBorder(BorderFactory.createLineBorder(Color.black));
+            jPanel1.setOpaque(false);
+            jPanel2.setOpaque(false);
 
             // 添加组件到内容面板
-            add(name);
-            add(price);
-            add(pictrue);
-            add(dec);
-            add(this.count);
-            add(inc);
+            jPanel1.add("West", name);
+            jPanel1.add("East", price);
+            add("North",jPanel1);
+            add("Center", pictrue);
+            jPanel2.add("West", dec);
+            jPanel2.add("Center", this.count);
+            jPanel2.add("East", inc);
+            add("South", jPanel2);
 
-            //
-            SpringLayout.Constraints panelCons = layout.getConstraints(this);
-            panelCons.setConstraint(SpringLayout.EAST, Spring.constant(x));
-            panelCons.setConstraint(SpringLayout.SOUTH, Spring.constant(y));
-
-            SpringLayout.Constraints nameCons = layout.getConstraints(name);
-            nameCons.setX(Spring.constant(5));
-            nameCons.setY(Spring.constant(5));
-
-            SpringLayout.Constraints priceCons = layout.getConstraints(price);
-            priceCons.setY(Spring.constant(5));
-            priceCons.setConstraint(SpringLayout.EAST,
-                    Spring.sum(Spring.constant(x), Spring.minus(Spring.constant(5)))); // x-5
-
-            SpringLayout.Constraints decCons = layout.getConstraints(dec);
-            decCons.setX(Spring.constant(5));
-            decCons.setConstraint(SpringLayout.EAST,
-                    Spring.sum(Spring.constant(5), Spring.scale(Spring.constant(x), 0.25f))); // x/4+5
-            decCons.setConstraint(SpringLayout.SOUTH,
-                    Spring.sum(Spring.constant(y), Spring.minus(Spring.constant(5)))); // y-5
-
-            SpringLayout.Constraints incCons = layout.getConstraints(inc);
-            incCons.setConstraint(SpringLayout.EAST,
-                    Spring.sum(Spring.constant(x), Spring.minus(Spring.constant(5)))); // x-5
-            incCons.setConstraint(SpringLayout.WEST,
-                    Spring.sum(Spring.minus(Spring.constant(5)), Spring.scale(Spring.constant(x), 0.75f))); // x-5-(x/4)
-            incCons.setConstraint(SpringLayout.SOUTH,
-                    Spring.sum(Spring.constant(y), Spring.minus(Spring.constant(5)))); // y-5
-
-            SpringLayout.Constraints picCons = layout.getConstraints(pictrue);
-            picCons.setX(Spring.constant(5));
-            picCons.setY(nameCons.getConstraint(SpringLayout.SOUTH));
-            picCons.setConstraint(SpringLayout.EAST,
-                    Spring.sum(Spring.constant(x), Spring.minus(Spring.constant(5)))); // x-5
-            picCons.setConstraint(SpringLayout.SOUTH,
-                    Spring.sum(decCons.getConstraint(SpringLayout.NORTH),Spring.minus(Spring.constant(5))));
-
-            SpringLayout.Constraints countCons = layout.getConstraints(this.count);
-            countCons.setX(Spring.constant(5));
-            countCons.setConstraint(SpringLayout.NORTH,
-                    Spring.sum(picCons.getConstraint(SpringLayout.SOUTH), Spring.constant(5)));
-            countCons.setConstraint(SpringLayout.WEST, decCons.getConstraint(SpringLayout.EAST));
-            countCons.setConstraint(SpringLayout.EAST, incCons.getConstraint(SpringLayout.WEST));
-            countCons.setConstraint(SpringLayout.SOUTH,
-                    Spring.sum(Spring.constant(y), Spring.minus(Spring.constant(5)))); // y-5
-
-            //
+            // 设置组件事件
             inc.addActionListener(e->{ inc(); });
             inc.setFocusPainted(false);
             dec.addActionListener(e->{ dec(); });
             dec.setFocusPainted(false);
-            this.count.setBorder(BorderFactory.createLineBorder(Color.black));
-
-            setBackground(ColorConstants.title);
-            //setBorder(ShadowBorder.newBuilder().shadowSize(5).center().build());
         }
 
         private void inc(){
@@ -246,26 +208,14 @@ public class OrderUI extends BasePanel {
             }
         }
     }
-    class OrderDetailDishCard extends JPanel implements DishDataChange{
+    class OrderDetailDishCard extends RectangleCard implements DishDataChange{
         private String dishName;
         private JLabel count;
         public OrderDetailDishCard(String name, String count, int height){
-            this.dishName = name;
-            setLayout(new BorderLayout());
-            setBackground(ColorConstants.title);
-            setPreferredSize(new Dimension(0, height));
-            JPanel p = new JPanel(new BorderLayout());
-            p.setOpaque(false);
-            p.add("West", new JLabel(name));
-            this.count = new JLabel(count);
-            p.add("East", this.count);
-            add("Center", p);
-            JLabel l1 = new JLabel("");
-            l1.setPreferredSize(new Dimension(5,0));
-            JLabel l2 = new JLabel("");
-            l2.setPreferredSize(new Dimension(5,0));
-            add("West", l1);
-            add("East", l2);
+            dishName = name;
+            add("West", JLabelBuilder.getInstance().text(name).horizontalAlignment(JLabel.CENTER).build());
+            this.count = JLabelBuilder.getInstance().text(count).horizontalAlignment(JLabel.CENTER).build();
+            add("East", this.count);
         }
         public String getDishName(){
             return dishName;
@@ -389,7 +339,8 @@ public class OrderUI extends BasePanel {
                 if(udd.getName().equals(name)){
                     udd.setCount(udd.getCount()+1);
                     if(udd.getCount() == 1){
-                        OrderDetailDishCard oddc = new OrderDetailDishCard(name, "1", 50);
+                        OrderDetailDishCard oddc = new OrderDetailDishCard(name, "1",
+                                restaurant.ui.Constants.UISize.RecordHeight);
                         addDishDataChangeListener(oddc);
                         orderDishs.add(oddc);
                     }

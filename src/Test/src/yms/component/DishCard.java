@@ -1,6 +1,6 @@
 package yms.component;
 
-import restaurant.ui.ColorConstants;
+import yms.ColorConstants;
 import restaurant.ui.component.JButtonBuilder;
 
 import javax.swing.*;

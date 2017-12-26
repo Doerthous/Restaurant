@@ -2,6 +2,7 @@ package test.ui.layout.custom;
 
 import doerthous.ui.AFrameForJPanelTest;
 import restaurant.ui.component.JButtonBuilder;
+import restaurant.ui.component.layout.PageLayout;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +15,7 @@ public class PageLayoutTest {
     public static void main(String[] args) {
         AFrameForJPanelTest f = new AFrameForJPanelTest();
         JPanel panel = new JPanel(new BorderLayout());
-        PageLayout ml = new PageLayout();
+        PageLayout ml = new PageLayout().setSingleRow(true);
         JPanel layout = new JPanel(ml);
         layout.add(new JButton("f"));
         layout.add(new JButton("f2"));

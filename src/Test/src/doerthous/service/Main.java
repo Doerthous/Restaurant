@@ -1,6 +1,8 @@
 package doerthous.service;
 
 
+import restaurant.communication.pc.PeerFactory;
+import restaurant.communication.core.IPeer;
 import restaurant.service.core.IManagementService;
 import restaurant.service.pc.ServiceFactory;
 
@@ -26,5 +28,12 @@ public class Main {
                 ms.customerCall(tableId, scanner.nextLine());
             }
         });
+    }
+}
+class Waiter {
+    public static void main(String[] args) {
+        IPeer peer = PeerFactory.getPeer();
+        peer.init();
+        peer.start("1");
     }
 }

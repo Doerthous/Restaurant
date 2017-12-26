@@ -1,7 +1,6 @@
 package restaurant.ui.client;
 
 import restaurant.ui.component.thirdpart.ShadowBorder;
-import restaurant.ui.ColorConstants;
 import restaurant.ui.component.BasePanel;
 
 import javax.swing.*;
@@ -34,7 +33,7 @@ public class MainUI extends BasePanel {
         b.setPreferredSize(new Dimension(Constants.MainButtonSize,Constants.MainButtonSize));
         b.addActionListener(listener);
         b.setBorder(ShadowBorder.newBuilder().shadowSize(5).build());
-        b.setBackground(ColorConstants.title);
+        b.setBackground(Constants.Color.title);
         return b;
     }
 }

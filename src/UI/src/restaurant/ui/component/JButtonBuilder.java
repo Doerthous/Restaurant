@@ -1,93 +1,97 @@
 package restaurant.ui.component;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 public class JButtonBuilder {
-    private String text = "";
-    private ActionListener listener = null;
-    private Color background = null;
-    private Color foreground = null;
-    private Font font = null;
-    private Boolean opaque = null;
-    private Boolean focusPainted = null;
-    private Boolean contentAreaFilled = null;
-    private String actionCommand = null;
-    private Dimension preferredSize = null;
-    private JButtonBuilder(){}
+    private JButton button;
+    private JButtonBuilder(){
+        button = new JButton();
+    }
     public JButtonBuilder text(String text){
-        this.text = text;
+        button.setText(text);
         return this;
     }
     public JButtonBuilder listener(ActionListener listener){
-        this.listener = listener;
+        button.addActionListener(listener);
         return this;
     }
     public JButtonBuilder background(Color background){
-        this.background = background;
+        button.setBackground(background);
         return this;
     }
     public JButtonBuilder foreground(Color foreground){
-        this.foreground = foreground;
+        button.setForeground(foreground);
         return this;
     }
     public JButtonBuilder font(Font font){
-        this.font = font;
+        button.setFont(font);
         return this;
     }
     public JButtonBuilder opaque(Boolean opaque){
-        this.opaque = opaque;
+        button.setOpaque(opaque);
         return this;
     }
     public JButtonBuilder focusPainted(Boolean focusPainted){
-        this.focusPainted = focusPainted;
+        button.setFocusPainted(focusPainted);
+        return this;
+    }
+    public JButtonBuilder borderPainted(Boolean borderPainted){
+        button.setBorderPainted(borderPainted);
         return this;
     }
     public JButtonBuilder contentAreaFilled(Boolean contentAreaFilled){
-        this.contentAreaFilled = contentAreaFilled;
+        button.setContentAreaFilled(contentAreaFilled);
         return this;
     }
     public JButtonBuilder actionCommand(String actionCommand){
-        this.actionCommand = actionCommand;
+        button.setActionCommand(actionCommand);
         return this;
     }
-    public JButtonBuilder preferredSize(Dimension preferredSize){
-        this.preferredSize = preferredSize;
+    public JButtonBuilder preferredSize(Dimension dimension){
+        button.setPreferredSize(dimension);
+        return this;
+    }
+    public JButtonBuilder mouseListener(MouseListener listener){
+        button.addMouseListener(listener);
+        return this;
+    }
+    public JButtonBuilder enteredColor(Color background){
+        mouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                super.mouseEntered(e);
+                button.setBackground(background);
+            }
+        });
+        return this;
+    }
+    public JButtonBuilder exitedColor(Color background){
+        mouseListener(new MouseAdapter() {
+            @Override
+            public void mouseExited(MouseEvent e) {
+                super.mouseExited(e);
+                button.setBackground(background);
+            }
+        });
+        return this;
+    }
+    public JButtonBuilder border(Border border){
+        button.setBorder(border);
+        return this;
+    }
+    public JButtonBuilder icon(Icon icon){
+        button.setIcon(icon);
         return this;
     }
     public JButton build(){
-        JButton button = new JButton(text);
-        if(listener != null){
-            button.addActionListener(listener);
-        }
-        if(foreground != null){
-            button.setForeground(foreground);
-        }
-        if(background != null){
-            button.setBackground(background);
-        }
-        if(font != null){
-            button.setFont(font);
-        }
-        if(opaque != null){
-            button.setOpaque(opaque);
-        }
-        if(focusPainted != null){
-            button.setFocusPainted(focusPainted);
-        }
-        if(contentAreaFilled != null){
-            button.setContentAreaFilled(contentAreaFilled);
-        }
-        if(actionCommand != null){
-            button.setActionCommand(actionCommand);
-        }
-        if(preferredSize != null){
-            button.setPreferredSize(preferredSize);
-        }
         return button;
     }
-
 
     public static JButtonBuilder getInstance(){
         return new JButtonBuilder();

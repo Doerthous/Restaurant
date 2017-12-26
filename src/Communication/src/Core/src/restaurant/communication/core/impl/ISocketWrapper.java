@@ -24,4 +24,6 @@ public interface ISocketWrapper {
     String listenByTcp(IAddress address, IAction action);
     String listenByUdp(IAddress address, IAction action);
     void killListener(String listenId);
+
+
 }

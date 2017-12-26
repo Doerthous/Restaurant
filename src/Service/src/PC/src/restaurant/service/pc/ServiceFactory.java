@@ -2,6 +2,8 @@ package restaurant.service.pc;
 
 
 import restaurant.communication.pc.PeerFactory;
+import restaurant.database.DbFactory;
+import restaurant.database.IDb;
 import restaurant.service.core.*;
 import restaurant.service.core.impl.InterModuleCommunication;
 import restaurant.service.pc.client.ClientService;
@@ -15,6 +17,9 @@ import java.util.Date;
     业务模块创建工厂，所有业务模块的实例创建都通过此类
  */
 public class ServiceFactory {
+    static String url = "jdbc:sqlserver://192.168.155.1:1433;DatabaseName=OrderDish";
+    static String user = "ODuser";
+    static String password = "1234567890";
     public static IEmployeeService getEmployeeService(){
         return new EmployeeService();
     }
@@ -24,15 +29,17 @@ public class ServiceFactory {
      */
     public static IClientService getClientService() {
         String id = new SimpleDateFormat("HHmmssSS").format(new Date());
-        return new ClientService(id, PeerFactory.getPeer(id, PeerFactory.WIN10_JDK8));
+        IDb db = DbFactory.getDb(DbFactory.DbType.SqlServer);
+        db.init(url, user, password);
+        return new ClientService(id, PeerFactory.getPeer(), db);
     }
     public static IKitchenService getKitchenService() {
-        return new KitchenService(PeerFactory.getPeer(InterModuleCommunication.ModuleId.KITCHEN,
-                PeerFactory.WIN10_JDK8));
+        return new KitchenService(PeerFactory.getPeer());
     }
     public static IManagementService getManagementService(){
-        return new ManagementService(PeerFactory.getPeer(InterModuleCommunication.ModuleId.MANAGEMENT,
-                PeerFactory.WIN10_JDK8));
+        IDb db = DbFactory.getDb(DbFactory.DbType.SqlServer);
+        db.init(url, user, password);
+        return new ManagementService(PeerFactory.getPeer(), db);
     }
 
 }

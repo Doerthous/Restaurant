@@ -13,6 +13,7 @@ public interface IDb {
      */
     // 查询操作
     List<Employee> getAllEmployee();
+    Employee getEmployeeById(String id);
     List<Employee> getEmployeeByName(String name, Boolean fuzzy);
     List<Employee> getEmployeeByAgeRange(Integer inf, Integer sup);
     List<Employee> getEmployeeBySex(Boolean isMale);
@@ -20,6 +21,7 @@ public interface IDb {
     List<Employee> getEmployeeBySalaryRange(Integer inf, Integer sup);
     List<Employee> getEmployeeByHiredateRange(Integer inf, Integer sup);
     List<Employee> getEmployeeByNativePlace(String nativePlace, Boolean fuzzy); // 籍贯
+    Boolean updateEmployee(Employee employee);
 
     //增删操作
     //修改操作

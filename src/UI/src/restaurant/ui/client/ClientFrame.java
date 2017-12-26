@@ -2,6 +2,7 @@ package restaurant.ui.client;
 
 
 import restaurant.service.core.IClientService;
+import restaurant.service.pc.ServiceFactory;
 import restaurant.ui.component.BaseFrame;
 
 public class ClientFrame extends BaseFrame {
@@ -52,4 +53,10 @@ public class ClientFrame extends BaseFrame {
     }
 
 
+    /*
+        程序入口
+     */
+    public static void main(String[] args) {
+        new ClientFrame(ServiceFactory.getClientService()).open();
+    }
 }

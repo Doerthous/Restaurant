@@ -2,6 +2,7 @@ package restaurant.ui.kitchen;
 
 
 import restaurant.service.core.IKitchenService;
+import restaurant.service.pc.ServiceFactory;
 import restaurant.ui.component.BaseFrame;
 
 public class KitchenFrame extends BaseFrame {
@@ -27,4 +28,11 @@ public class KitchenFrame extends BaseFrame {
         add("Main", mainUI);
     }
 
+
+    /*
+       程序入口
+    */
+    public static void main(String[] args) {
+        new KitchenFrame(ServiceFactory.getKitchenService()).open();
+    }
 }

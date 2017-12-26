@@ -142,9 +142,9 @@ public final class InterModuleCommunication {
                 return m;
             }
 
-            public static MW changePassword(String waiterId, String password, String newPassword){
+            public static MW changePassword(String account, String password, String newPassword){
                 MW m = new MW();
-                m.waiterId = waiterId;
+                m.account = account;
                 m.password = password;
                 m.newPassword = newPassword;
                 return m;

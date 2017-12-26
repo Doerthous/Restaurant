@@ -1,6 +1,5 @@
 package restaurant.ui.client;
 
-import restaurant.ui.ColorConstants;
 import restaurant.ui.component.thirdpart.VFlowLayout;
 import restaurant.ui.component.BasePanel;
 
@@ -19,11 +18,11 @@ public class PayUI extends BasePanel {
 
         // content
         getContent().setLayout(new VFlowLayout());
-        JPanel sm = new TitlePanel("扫码支付", ColorConstants.subtitle);
+        JPanel sm = new TitlePanel("扫码支付", Constants.Color.subtitle);
         sm.add(new PictureLabel(Constants.QRSize,Constants.QRSize, "res/qrtest.jpg"));
         sm.add(new PictureLabel(Constants.QRSize,Constants.QRSize, "res/qrtest.jpg"));
         getContent().add(sm);
-        JPanel xj = new TitlePanel("现金支付", ColorConstants.subtitle);
+        JPanel xj = new TitlePanel("现金支付", Constants.Color.subtitle);
         xj.add(new JLabel("呼叫服务员收款或到前台付款"));
         getContent().add(xj);
 
@@ -32,13 +31,13 @@ public class PayUI extends BasePanel {
         p.setPreferredSize(new Dimension(Constants.ContentEastWidth, 0));
         p.setOpaque(false);
         JButton confirm = new JButton("呼叫服务");
-        confirm.setBackground(ColorConstants.title);
+        confirm.setBackground(Constants.Color.title);
         confirm.setPreferredSize(new Dimension(Constants.ContentEastWidth/2, 0));
         confirm.addActionListener(e -> { });
         p.add("West", confirm);
         JButton ret = new JButton("返回");
         ret.setPreferredSize(new Dimension(Constants.ContentEastWidth/2, 0));
-        ret.setBackground(ColorConstants.title);
+        ret.setBackground(Constants.Color.title);
         ret.addActionListener(e -> {
             cf.main();
         });

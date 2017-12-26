@@ -1,8 +1,6 @@
 package yms;
 
-import restaurant.ui.FontConstants;
 import restaurant.ui.component.BasePanel;
-import restaurant.ui.ColorConstants;
 import restaurant.ui.component.thirdpart.ShadowBorder;
 
 import javax.swing.*;

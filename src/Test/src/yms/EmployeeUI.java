@@ -1,17 +1,10 @@
 package yms;
 
-import restaurant.ui.ColorConstants;
-import restaurant.ui.FontConstants;
-import restaurant.ui.client.OrderUI;
 import restaurant.ui.component.BasePanel;
-import restaurant.ui.component.JButtonBuilder;
-import restaurant.ui.component.thirdpart.ShadowBorder;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 /**
  * Created by YMS on 2017/12/23.

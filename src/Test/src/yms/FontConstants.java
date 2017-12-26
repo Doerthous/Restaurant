@@ -1,4 +1,4 @@
-package restaurant.ui;
+package yms;
 
 import java.awt.*;
 

@@ -1,6 +1,8 @@
 package restaurant.service.core;
 
 public interface IWaiterService {
+    String getAccount();
+
     Boolean login(String account, String password);
     String getLoginFailedReason();
 
@@ -12,6 +14,10 @@ public interface IWaiterService {
         void customerCall(String tableId);
     }
     void addNotificationObserver(INotificationObserver observer);
+    interface IAccountObserver {
+        void forceGoDown();
+    }
+    void addAccountObserver(IAccountObserver observer);
 
     void reportIssue(String waiterId, String issue);
 }

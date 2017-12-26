@@ -8,7 +8,6 @@ import restaurant.database.po.Employee;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.LongSummaryStatistics;
 
 public class SqlServerDb implements IDb {
     private final static String DRIVE_NAME = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
@@ -49,7 +48,7 @@ public class SqlServerDb implements IDb {
                 em.setHiredate(rs.getDate("入职时间"));
                 em.setContactWay(rs.getString("联系方式"));
                 em.setAddress(rs.getString("住址"));
-                em.setCode(rs.getString("密码"));
+                em.setPassword(rs.getString("密码"));
                 ems.add(em);
             }
             rs.close();
@@ -59,6 +58,39 @@ public class SqlServerDb implements IDb {
             e.printStackTrace();
         }
         return ems;
+    }
+
+    @Override
+    public Employee getEmployeeById(String id) {
+        Employee em = null;
+        Connection conn = null;
+        Statement sta = null;
+        ResultSet rs = null;
+        try{
+            conn = DriverManager.getConnection(url,user,password);
+            sta = conn.createStatement();
+            rs = sta.executeQuery("SELECT * FROM EMPLOYEE WHERE 员工id = '"+ id +"'");
+            while(rs.next()){
+                em = new Employee();
+                em.setId(rs.getString("员工id"));
+                em.setName(rs.getString("姓名"));
+                em.setBirthday(rs.getDate("出生日期"));
+                em.setSex(rs.getString("性别"));
+                em.setNativePlace(rs.getString("籍贯"));
+                em.setPosition(rs.getString("职位"));
+                em.setSalary(rs.getInt("薪资"));
+                em.setHiredate(rs.getDate("入职时间"));
+                em.setContactWay(rs.getString("联系方式"));
+                em.setAddress(rs.getString("住址"));
+                em.setPassword(rs.getString("密码"));
+            }
+            rs.close();
+            sta.close();
+            conn.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return em;
     }
 
     @Override
@@ -84,7 +116,7 @@ public class SqlServerDb implements IDb {
                 em.setHiredate(rs.getDate("入职时间"));
                 em.setContactWay(rs.getString("联系方式"));
                 em.setAddress(rs.getString("住址"));
-                em.setCode(rs.getString("密码"));
+                em.setPassword(rs.getString("密码"));
                 ems.add(em);
             }
             rs.close();
@@ -98,7 +130,6 @@ public class SqlServerDb implements IDb {
 
     @Override
     public List<Employee> getEmployeeByAgeRange(Integer inf, Integer sup) {return null;}
-
 
     @Override
     public List<Employee> getEmployeeBySex(Boolean isMale) {
@@ -124,7 +155,7 @@ public class SqlServerDb implements IDb {
                 em.setHiredate(rs.getDate("入职时间"));
                 em.setContactWay(rs.getString("联系方式"));
                 em.setAddress(rs.getString("住址"));
-                em.setCode(rs.getString("密码"));
+                em.setPassword(rs.getString("密码"));
                 ems.add(em);
             }
             rs.close();
@@ -159,7 +190,7 @@ public class SqlServerDb implements IDb {
                 em.setNativePlace(rs.getString("籍贯"));
                 em.setContactWay(rs.getString("联系方式"));
                 em.setAddress(rs.getString("住址"));
-                em.setCode(rs.getString("密码"));
+                em.setPassword(rs.getString("密码"));
                 ems.add(em);
             }
         }
@@ -182,6 +213,41 @@ public class SqlServerDb implements IDb {
     @Override
     public List<Employee> getEmployeeByNativePlace(String nativePlace, Boolean fuzzy) {
         return null;
+    }
+
+    @Override
+    public Boolean updateEmployee(Employee employee) {
+        Boolean result = false;
+        Connection conn = null;
+        Statement sta = null;
+        ResultSet rs = null;
+        try {
+            conn = DriverManager.getConnection(url, user, password);
+            String sql = "UPDATE EMPLOYEE " +
+                    "SET 姓名=?,出生日期=?,性别=?,籍贯=?,职位=?,薪资=?,入职时间=?,联系方式=?,住址=?,密码=? " +
+                    "WHERE 员工id=?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, employee.getName());
+            stmt.setDate(2, new java.sql.Date(employee.getBirthday().getTime()));
+            stmt.setString(3, employee.getSex());
+            stmt.setString(4, employee.getNativePlace());
+            stmt.setString(5, employee.getPosition());
+            stmt.setInt(6, employee.getSalary());
+            stmt.setDate(7, new java.sql.Date(employee.getHiredate().getTime()));
+            stmt.setString(8, employee.getContactWay());
+            stmt.setString(9, employee.getAddress());
+            stmt.setString(10, employee.getPassword());
+            stmt.setString(11, employee.getId());
+            int flag = stmt.executeUpdate();                //执行修改操作，返回影响的行数
+            if (flag == 1) {
+                result = true;
+            }
+            stmt.close();
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
 

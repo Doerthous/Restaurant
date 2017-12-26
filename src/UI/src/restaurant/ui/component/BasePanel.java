@@ -1,6 +1,6 @@
 package restaurant.ui.component;
 
-import restaurant.ui.ColorConstants;
+import restaurant.ui.Constants;
 import restaurant.ui.component.thirdpart.ShadowBorder;
 
 import javax.swing.*;
@@ -17,37 +17,41 @@ public class BasePanel extends JPanel {
     public BasePanel() {
         setLayout(new BorderLayout());
         titles = new JPanel(new BorderLayout());
-        titles.setBackground(ColorConstants.subtitle);
+        titles.setBackground(Constants.Color.subtitle);
         title = new JPanel(new BorderLayout());
         title.setPreferredSize(new Dimension(0, 60));
         title.setBorder(ShadowBorder.newBuilder().shadowSize(5).buildSpecial(new Insets(0,0,10,0)));
-        title.setBackground(ColorConstants.title);
+        title.setBackground(Constants.Color.title);
         subtitleBackground = new JPanel(new BorderLayout());
         subtitle = new JPanel(new BorderLayout());
         subtitle.setPreferredSize(new Dimension(0,60));
-        subtitle.setBorder(ShadowBorder.newBuilder().shadowSize(5).buildSpecial(new Insets(0,0,10,0)));
-        subtitleBackground.setBackground(ColorConstants.background);
+        subtitle.setBorder(
+                BorderFactory.createCompoundBorder(
+                        ShadowBorder.newBuilder().shadowSize(5).buildSpecial(new Insets(0,0,10,0)),
+                        BorderFactory.createEmptyBorder(0,0,10,0)
+                ));
+        subtitleBackground.setBackground(Constants.Color.background);
         subtitleBackground.add(subtitle);
-        subtitle.setBackground(ColorConstants.subtitle);
+        subtitle.setBackground(Constants.Color.subtitle);
         titles.add("North",title);
         titles.add("South",subtitleBackground);
         content = new JPanel(new BorderLayout());
-        content.setBackground(ColorConstants.background);
+        content.setBackground(Constants.Color.background);
         foot = new JPanel(new BorderLayout());
-        foot.setBackground(ColorConstants.title);
+        foot.setBackground(Constants.Color.title);
         foot.setPreferredSize(new Dimension(0,40));
         foot.setBorder(ShadowBorder.newBuilder().shadowSize(5).buildSpecial(new Insets(5,0,0,0)));
         add("North", titles);
         add("Center", content);
         add("South", foot);
-        setBackground(ColorConstants.background);
+        setBackground(Constants.Color.background);
     }
 
     public void hideFoot(){
         foot.setVisible(false);
     }
     public void hideSubTitle(){
-        titles.setBackground(ColorConstants.background);
+        titles.setBackground(Constants.Color.background);
         subtitleBackground.setVisible(false);
     }
 

@@ -2,17 +2,22 @@ package restaurant.ui.client;
 
 
 import restaurant.service.core.IClientService;
-import restaurant.ui.ColorConstants;
+import restaurant.ui.component.RectangleCard;
+import restaurant.ui.component.border.AdvLineBorder;
 import restaurant.ui.component.JLabelBuilder;
+import restaurant.ui.component.PagePanel;
 import restaurant.ui.component.thirdpart.ScrollablePanel;
 import restaurant.ui.component.thirdpart.VFlowLayout;
-import restaurant.ui.FontConstants;
 import restaurant.ui.component.BasePanel;
 
 import javax.swing.*;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,9 +54,8 @@ public class ChatUI extends BasePanel {
         uiOnlineTablesPanel.removeAll();
         OnlineTablePanel p = new OnlineTablePanel();
         p.loadTableIds(cf.getService().getOnlineTableIds());
-        p.setOpaque(false);
         cf.getService().addChatObserver(p);
-        uiOnlineTablesPanel.add(p);
+        uiOnlineTablesPanel.add(new PagePanel(p).setPageButtonBackground(Constants.Color.title));
         uiOnlineTablesPanel.revalidate();
     }
     private void loadSessionWithTargetTable(){
@@ -74,29 +78,29 @@ public class ChatUI extends BasePanel {
         // content
         JPanel east = new JPanel();
         cCenter = new JPanel(new BorderLayout(20,20));
-        cCenter.setBackground(ColorConstants.background);
+        cCenter.setBackground(Constants.Color.background);
         cCenter.add("North", new JLabel());
         cCenter.add("South", new JLabel());
         cCenter.add("East", new JLabel());
         cCenter.add("West", new JLabel());
         initChatRecordBox(cCenter);
         east.setPreferredSize(new Dimension(Constants.ContentEastWidth, 0));
-        east.setBackground(ColorConstants.background);
+        east.setBackground(Constants.Color.background);
         east.setLayout(new BorderLayout(0,0));
-        east.setBorder(BorderFactory.createLineBorder(Color.black));
-        initOnlineTablesPanel(east);
+        east.setBorder(new AdvLineBorder().setLeft(1).setLeftColor(restaurant.ui.Constants.Color.subtitle));
+        uiOnlineTablesPanel = east;
         getContent().add("Center", cCenter);
         getContent().add("East", east);
 
         // subtitle
-        JPanel center = new JPanel();
+        JPanel center = new JPanel(new BorderLayout());
         center.add(JLabelBuilder.getInstance().text("聊天记录").horizontalAlignment(JLabel.CENTER)
-                .foreground(Color.white).font(FontConstants.font1).build());
+                .foreground(Color.white).font(Constants.Font.font1).build());
         center.setOpaque(false);
         east = new JPanel(new BorderLayout());
         east.setPreferredSize(new Dimension(Constants.ContentEastWidth, 0));
         east.add("Center", JLabelBuilder.getInstance().text("在线人").horizontalAlignment(JLabel.CENTER)
-                .foreground(Color.white).font(FontConstants.font1).build());
+                .foreground(Color.white).font(Constants.Font.font1).build());
         east.setOpaque(false);
         getSubtitle().add("Center",center);
         getSubtitle().add("East",east);
@@ -104,7 +108,7 @@ public class ChatUI extends BasePanel {
         // foot
         JButton ret = new JButton("返回");
         ret.setPreferredSize(new Dimension(Constants.ContentEastWidth, 0));
-        ret.setBackground(ColorConstants.title);
+        ret.setBackground(Constants.Color.title);
         ret.addActionListener(e->{
             cf.main();
         });
@@ -114,16 +118,6 @@ public class ChatUI extends BasePanel {
         uiChatboxPanel = new ChatBoxPanel("2T", "", new ArrayList<>());
         container.add("Center", uiChatboxPanel);
     }
-    public void initOnlineTablesPanel(JPanel container){
-        container.setLayout(new BorderLayout());
-        uiOnlineTablesPanel = new JPanel();
-        uiOnlineTablesPanel.setLayout(new VFlowLayout());
-        uiOnlineTablesPanel.setBackground(ColorConstants.background);
-        JScrollPane jsp = new JScrollPane(uiOnlineTablesPanel);
-        jsp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        container.add("Center", jsp);
-    }
-
 
     /*
         UI组件类
@@ -164,13 +158,13 @@ public class ChatUI extends BasePanel {
             JPanel cia = new JPanel(new BorderLayout());
             JPanel ciaBp = new JPanel(new BorderLayout());
             clear = new JButton("清空");
-            clear.setBackground(ColorConstants.title);
+            clear.setBackground(Constants.Color.title);
             clear.addActionListener(e->{
                 input.setText("");
             });
             ciaBp.add("North",clear);
             send = new JButton("发送");
-            send.setBackground(ColorConstants.title);
+            send.setBackground(Constants.Color.title);
             send.addActionListener(e->{
                 sendMessage(input.getText());
                 input.setText("");
@@ -196,32 +190,58 @@ public class ChatUI extends BasePanel {
             }
         }
     }
+    class OnlineTable extends RectangleCard {
+        private JLabel label;
+        public OnlineTable(String tableId){
+            label = JLabelBuilder.getInstance().text(tableId).horizontalAlignment(JLabel.CENTER).build();
+            label.setOpaque(false);
+            add(label);
+            setEnableMouseListenr(true);
+        }
+        public String getText(){
+            return label.getText();
+        }
+        public void setOnClickListener(ActionListener listener){
+            addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    listener.actionPerformed(new ActionEvent(this, 1,""));
+                }
+            });
+            label.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    listener.actionPerformed(new ActionEvent(this, 1,""));
+                }
+            });
+        }
+    }
     class OnlineTablePanel extends JPanel implements IClientService.IChatObserver {
-        private List<JButton> tableIds;
+        private List<OnlineTable> tableIds;
 
         public OnlineTablePanel() {
-            super(new VFlowLayout());
             this.tableIds = new ArrayList<>();
+            setOpaque(false);
         }
         public void loadTableIds(List<String> tableIds){
             for(String id: tableIds) {
-                JButton b = new JButton(id);
-                b.setBackground(ColorConstants.title);
-                b.setPreferredSize(new Dimension(0, 50));
-                b.setFocusPainted(false);
-                b.addActionListener(e -> {
-                    targetTableId = b.getText();
-                    b.setBackground(ColorConstants.title);
-                    loadSessionWithTargetTable();
-                });
-                add(b);
-                this.tableIds.add(b);
+                addOnlineTable(id);
             }
+        }
+        private void addOnlineTable(String id){
+            OnlineTable rc = new OnlineTable(id);
+            rc.setOnClickListener(e->{
+                targetTableId = rc.getText();
+                rc.setBackground(Constants.Color.title);
+                loadSessionWithTargetTable();
+            });
+            add(rc);
+            this.tableIds.add(rc);
         }
         @Override
         public void newMessage(String tableId) {
             if(!targetTableId.equals(tableId)){
-                for(JButton b : tableIds){
+                for(OnlineTable b : tableIds){
                     if(b.getText().equals(tableId)){
                         b.setBackground(Color.green);
                     }
@@ -232,7 +252,7 @@ public class ChatUI extends BasePanel {
         }
         @Override
         public void offline(String tableId) {
-            for(JButton id: tableIds) {
+            for(OnlineTable id: tableIds) {
                 if(id.getText().equals(tableId)){
                     remove(id);
                     setVisible(false);
@@ -245,22 +265,12 @@ public class ChatUI extends BasePanel {
         @Override
         public void online(String tableId) {
             synchronized (tableIds) {
-                for (JButton id : tableIds) {
+                for (OnlineTable id : tableIds) {
                     if (id.getText().equals(tableId)) {
                         return;
                     }
                 }
-                JButton b = new JButton(tableId);
-                b.setBackground(ColorConstants.title);
-                b.setPreferredSize(new Dimension(0, 50));
-                b.setFocusPainted(false);
-                b.addActionListener(e -> {
-                    targetTableId = b.getText();
-                    b.setBackground(ColorConstants.title);
-                    loadSessionWithTargetTable();
-                });
-                add(b);
-                this.tableIds.add(b);
+                addOnlineTable(tableId);
                 setVisible(false);
                 revalidate();
                 setVisible(true);

@@ -16,7 +16,8 @@ public class KitchenService implements IKitchenService, ICommandObserver {
 
     public KitchenService(IPeer peer){
         this.peer = peer;
-        peer.start();
+        peer.init();
+        peer.start(InterModuleCommunication.ModuleId.KITCHEN);
         peer.addCommandObserver(this, InterModuleCommunication.CommandToKitchen.CLIENT_NEW_ORDER);
     }
     @Override
