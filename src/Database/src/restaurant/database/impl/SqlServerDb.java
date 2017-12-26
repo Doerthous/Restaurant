@@ -271,8 +271,27 @@ public class SqlServerDb implements IDb {
                 Dish ds = new Dish();
                 ds.setId(rs.getString("菜品id"));
                 ds.setName(rs.getString("菜名"));
-                //ds.set
+                ds.setPrice(rs.getFloat("单价"));
+                ds.setType(rs.getString("品类"));
+                ds.setSaled(rs.getBoolean("是否售卖"));
+                ds.setPicture(rs.getBinaryStream("图片"));
+                ds.setSaledCount1(rs.getInt("一月销售量"));
+                ds.setSaledCount2(rs.getInt("二月销售量"));
+                ds.setSaledCount3(rs.getInt("三月销售量"));
+                ds.setSaledCount4(rs.getInt("四月销售量"));
+                ds.setSaledCount5(rs.getInt("五月销售量"));
+                ds.setSaledCount6(rs.getInt("六月销售量"));
+                ds.setSaledCount7(rs.getInt("七月销售量"));
+                ds.setSaledCount8(rs.getInt("八月销售量"));
+                ds.setSaledCount9(rs.getInt("九月销售量"));
+                ds.setSaledCount10(rs.getInt("十月销售量"));
+                ds.setSaledCount11(rs.getInt("十一月销售量"));
+                ds.setSaledCount12(rs.getInt("十二月销售量"));
+                dss.add(ds);
             }
+            rs.close();
+            sta.close();
+            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -311,7 +330,7 @@ public class SqlServerDb implements IDb {
                 ds.setPrice(rs.getFloat("单价"));
                 ds.setType(rs.getString("品类"));
                 ds.setSaled(rs.getBoolean("是否售卖"));
-                ds.setPicture(inputstreamtofile(rs.getBinaryStream("图片")));
+                ds.setPicture(rs.getBinaryStream("图片"));
                 ds.setSaledCount1(rs.getInt("一月销售量"));
                 ds.setSaledCount2(rs.getInt("二月销售量"));
                 ds.setSaledCount3(rs.getInt("三月销售量"));
@@ -330,8 +349,6 @@ public class SqlServerDb implements IDb {
             sta.close();
             conn.close();
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
             e.printStackTrace();
         }
         return dss;
@@ -353,8 +370,7 @@ public class SqlServerDb implements IDb {
             stmt.setString(4,dish.getType());
             stmt.setBoolean(5,dish.getSaled());
 
-            File file = dish.getPicture();
-            FileInputStream input = new FileInputStream(dish.getPicture());
+            InputStream input = dish.getPicture();
             stmt.setBinaryStream(6,input,(int)input.available());
             int flag = stmt.executeUpdate();
             if (flag ==1) result = true;
@@ -401,7 +417,7 @@ public class SqlServerDb implements IDb {
             stmt.setInt(16,dish.getSaledCount11());
             stmt.setInt(17,dish.getSaledCount12());
             stmt.setString(18,dish.getId());
-            FileInputStream input = new FileInputStream(dish.getPicture());
+            InputStream input = dish.getPicture();
             stmt.setBinaryStream(5,input,(int)input.available());
             int flag = stmt.executeUpdate();
             if (flag == 1)  result = true;

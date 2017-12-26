@@ -1,6 +1,7 @@
 package restaurant.database.po;
 
 import java.io.File;
+import java.io.InputStream;
 import java.nio.channels.FileLockInterruptionException;
 
 public class Dish {
@@ -15,7 +16,7 @@ public class Dish {
     // 是否售卖
     private Boolean isSaled;
     //图片
-    private File picture;
+    private InputStream picture;
     // 一月销售量
     private Integer saledCount1;
     // 二月销售量
@@ -41,7 +42,7 @@ public class Dish {
     // 十二月销售量
     private Integer saledCount12;
 
-    public Dish(String id, String name, Float price, String type, Boolean isSaled, File picture,
+    public Dish(String id, String name, Float price, String type, Boolean isSaled, InputStream picture,
                 Integer saledCount1, Integer saledCount2, Integer saledCount3,
                 Integer saledCount4, Integer saledCount5, Integer saledCount6,
                 Integer saledCount7, Integer saledCount8, Integer saledCount9,
@@ -66,7 +67,7 @@ public class Dish {
         this.saledCount12 = saledCount12;
     }
 
-    public Dish(String id, String name, Float price, String type, Boolean isSaled, File picture) {
+    public Dish(String id, String name, Float price, String type, Boolean isSaled, InputStream picture) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -214,11 +215,11 @@ public class Dish {
         this.saledCount12 = saledCount12;
     }
 
-    public File getPicture() {
+    public InputStream getPicture() {
         return picture;
     }
 
-    public void setPicture(File picture) {
+    public void setPicture(InputStream picture) {
         this.picture = picture;
     }
 
