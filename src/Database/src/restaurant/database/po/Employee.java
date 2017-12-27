@@ -1,5 +1,6 @@
 package restaurant.database.po;
 
+import java.io.InputStream;
 import java.util.Date;
 
 public class Employee {
@@ -25,9 +26,11 @@ public class Employee {
     private String address;
     //密码
     private String password;
+    //照片
+    private InputStream photo;
 
     public Employee(String id, String name, Date birthday, String sex, String nativePlace, String position,
-                    Integer salary, Date hiredate, String contactWay, String address, String password) {
+                    Integer salary, Date hiredate, String contactWay, String address, String password, InputStream photo) {
         this.id = id;
         this.name = name;
         this.birthday = birthday;
@@ -39,7 +42,7 @@ public class Employee {
         this.contactWay = contactWay;
         this.address = address;
         this.password = password;
-
+        this.photo = photo;
     }
 
     public Employee() {
@@ -134,6 +137,14 @@ public class Employee {
         this.password = password;
     }
 
+    public InputStream getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(InputStream photo) {
+        this.photo = photo;
+    }
+
     @Override
     public String toString() {
         return "Employee{" +
@@ -148,6 +159,7 @@ public class Employee {
                 ", contactWay='" + contactWay + '\'' +
                 ", address='" + address + '\'' +
                 ", password='" + password + '\'' +
+                ", photo=" + photo +
                 '}';
     }
 }

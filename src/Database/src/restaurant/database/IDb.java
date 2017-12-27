@@ -2,6 +2,7 @@ package restaurant.database;
 
 import restaurant.database.po.Dish;
 import restaurant.database.po.Employee;
+import restaurant.database.po.Seat;
 
 import java.io.File;
 import java.util.List;
@@ -25,6 +26,8 @@ public interface IDb {
     Boolean updateEmployee(Employee employee);
 
     //增删操作
+    Boolean insertEmployee(Employee employee);
+    Boolean deleteEmployee(Employee employee);
     //修改操作
 
 
@@ -35,18 +38,27 @@ public interface IDb {
     List<Dish> getAllDish();
     List<Dish> getDishByName(String name);
     List<Dish> getDishByType(String type);
-    List<Dish> getDishByPriceRange(Float inf, Float sup);
+    List<Dish> getDishByPrice(Boolean bool);
     List<Dish> getDishMenu();
+    List<Dish> getDishBySales(Boolean bool);
 
     //增删操作
     Boolean insertDish(Dish dish);
+    Boolean deleteDish(Dish dish);
     //修改操作
     Boolean updateDish(Dish dish);
     /*
         座位表操作
     */
     //查询操作
+    List<Seat> getAllSeat();
+    Seat getSeatById(String id);
+    List<Seat> getSeatByType(String type);
+    List<Seat> getSeatByCapacity(int capacity);
     //增删操作
+    Boolean insertSeat(Seat seat);
+    Boolean deleteSeat(Seat seat);
     //修改操作
+    Boolean updateSeat(Seat seat);
     
 }
