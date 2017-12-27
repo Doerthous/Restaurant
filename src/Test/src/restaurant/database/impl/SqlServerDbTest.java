@@ -7,17 +7,21 @@ import restaurant.database.DbFactory;
 import restaurant.database.IDb;
 import restaurant.database.po.Dish;
 import restaurant.database.po.Employee;
+import restaurant.database.po.Seat;
 
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static junit.framework.TestCase.assertNull;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-/** 
+/**
 * SqlServerDb Tester. 
 * 
 * @author <Authors name> 
-* @since <pre>ʮ���� 26, 2017</pre> 
+* @since <pre>十二月 27, 2017</pre>
 * @version 1.0 
 */ 
 public class SqlServerDbTest { 
@@ -81,7 +85,14 @@ public void testGetEmployeeById() throws Exception {
 */ 
 @Test
 public void testGetEmployeeByName() throws Exception { 
-//TODO: Test goes here... 
+//TODO: Test goes here...
+    IDb db = DbFactory.getDb(DbFactory.DbType.SqlServer);
+    db.init("jdbc:sqlserver://192.168.155.1:1433;DatabaseName=OrderDish", "ODuser","1234567890");
+    List<Employee> ems = db.getEmployeeByName("大伟",true);
+    assertNotNull(ems);
+    for(Employee em : ems){
+        System.out.println(em.toString());
+    }
 } 
 
 /** 
@@ -164,10 +175,10 @@ public void testUpdateEmployee() throws Exception {
     IDb db = DbFactory.getDb(DbFactory.DbType.SqlServer);
     db.init("jdbc:sqlserver://192.168.155.1:1433;DatabaseName=OrderDish", "ODuser","1234567890");
     Boolean result = db.updateEmployee(new Employee("c01", "名字", new Date(), "男", "籍贯", "职位",
-            1000, new Date(), "联系方式", "住址", "000"));
+            1000, new Date(), "联系方式", "住址", "000",null));
     assertTrue(result);
     result = db.updateEmployee(new Employee("01", "名字", new Date(), "男", "籍贯", "职位",
-            1000, new Date(), "联系方式", "住址", "密码"));
+            1000, new Date(), "联系方式", "住址", "密码",null));
     assertFalse(result);
 } 
 
@@ -198,18 +209,30 @@ public void testGetDishByName() throws Exception {
 */ 
 @Test
 public void testGetDishByType() throws Exception { 
-//TODO: Test goes here... 
+//TODO: Test goes here...
+    IDb db = DbFactory.getDb(DbFactory.DbType.SqlServer);
+    db.init("jdbc:sqlserver://192.168.155.1:1433;DatabaseName=OrderDish", "ODuser","1234567890");
+    List<Dish> dss = db.getDishByType("小吃");
+    for(Dish ds : dss){
+        System.out.println(ds.toString());
+    }
 } 
 
 /** 
 * 
-* Method: getDishByPriceRange(Float inf, Float sup) 
+* Method: getDishByPrice(Boolean bool)
 * 
 */ 
 @Test
-public void testGetDishByPriceRange() throws Exception { 
-//TODO: Test goes here... 
-} 
+public void testGetDishByPrice() throws Exception {
+//TODO: Test goes here...
+    IDb db = DbFactory.getDb(DbFactory.DbType.SqlServer);
+    db.init("jdbc:sqlserver://192.168.155.1:1433;DatabaseName=OrderDish", "ODuser","1234567890");
+    List<Dish> dss = db.getDishByPrice(true);
+    for(Dish ds : dss){
+        System.out.println(ds.toString());
+    }
+}
 
 /** 
 * 
@@ -225,7 +248,55 @@ public void testGetDishMenu() throws Exception {
     for(Dish ds : dss){
         System.out.println(ds.toString());
     }
-} 
+}
+
+/**
+*
+* Method: getDishBySales(Boolean bool)
+*
+*/
 
 
-} 
+    @Test
+    public void testGetDishBySales() throws Exception {
+        IDb db = DbFactory.getDb(DbFactory.DbType.SqlServer);
+        db.init("jdbc:sqlserver://192.168.155.1:1433;DatabaseName=OrderDish", "ODuser","1234567890");
+        List<Dish> dss = db.getDishBySales(false);
+        for(Dish ds : dss){
+            System.out.println(ds.toString());
+        }
+    }
+
+/**
+*
+* Method: deleteDish(Dish dish)
+*
+*/
+@Test
+public void testDeleteDish() throws Exception {
+//TODO: Test goes here...
+    IDb db = DbFactory.getDb(DbFactory.DbType.SqlServer);
+    db.init("jdbc:sqlserver://192.168.155.1:1433;DatabaseName=OrderDish", "ODuser","1234567890");
+    Boolean result = db.deleteDish(new Dish("m065","鸡蛋",(float)15.0,"小吃",true,null));
+    assertFalse(result);
+}
+
+/**
+*
+* Method: updateDish(Dish dish)
+*
+*/
+@Test
+public void testUpdateDish() throws Exception {
+//TODO: Test goes here...
+}
+
+    @Test
+    public void testGetSeatById() throws Exception {
+        IDb db = DbFactory.getDb(DbFactory.DbType.SqlServer);
+        db.init("jdbc:sqlserver://192.168.155.1:1433;DatabaseName=OrderDish", "ODuser","1234567890");
+        Seat st = db.getSeatById("bushi");
+        assertNull(st);
+        //System.out.println(st.toString());
+    }
+}
