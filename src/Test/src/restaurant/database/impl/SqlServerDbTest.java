@@ -5,9 +5,7 @@ import org.junit.Before;
 import org.junit.After;
 import restaurant.database.DbFactory;
 import restaurant.database.IDb;
-import restaurant.database.po.Dish;
-import restaurant.database.po.Employee;
-import restaurant.database.po.Seat;
+import restaurant.database.po.*;
 
 import java.util.Date;
 import java.util.List;
@@ -298,5 +296,21 @@ public void testUpdateDish() throws Exception {
         Seat st = db.getSeatById("bushi");
         assertNull(st);
         //System.out.println(st.toString());
+    }
+
+    @Test
+    public void testInsertOrder() throws Exception {
+        IDb db = DbFactory.getDb(DbFactory.DbType.SqlServer);
+        db.init("jdbc:sqlserver://192.168.155.1:1433;DatabaseName=OrderDish", "ODuser","1234567890");
+        Boolean result = db.insertOrder(new Order("20171227001001",new Date(),"001",(float)250));
+        assertTrue(result);
+    }
+
+    @Test
+    public void testInsertDetail() throws Exception {
+        IDb db = DbFactory.getDb(DbFactory.DbType.SqlServer);
+        db.init("jdbc:sqlserver://192.168.155.1:1433;DatabaseName=OrderDish", "ODuser","1234567890");
+        Boolean result = db.insertDetial(new Detail("20171227001001","m040",2));
+        assertTrue(result);
     }
 }

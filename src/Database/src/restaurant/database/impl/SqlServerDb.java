@@ -5,9 +5,7 @@ import com.sun.org.apache.regexp.internal.RE;
 import javafx.scene.Parent;
 import jdk.nashorn.internal.objects.NativeUint8Array;
 import restaurant.database.IDb;
-import restaurant.database.po.Dish;
-import restaurant.database.po.Employee;
-import restaurant.database.po.Seat;
+import restaurant.database.po.*;
 
 import java.io.*;
 import java.sql.*;
@@ -92,14 +90,13 @@ public class SqlServerDb implements IDb {
     public Boolean updateEmployee(Employee employee) {
         Boolean result = false;
         Connection conn = null;
-        Statement sta = null;
-        ResultSet rs = null;
+        PreparedStatement stmt = null;
         try {
             conn = DriverManager.getConnection(url, user, password);
             String sql = "UPDATE EMPLOYEE " +
                     "SET 姓名=?,出生日期=?,性别=?,籍贯=?,职位=?,薪资=?,入职时间=?,联系方式=?,住址=?,密码=?,照片=? " +
                     "WHERE 员工id=?";
-            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt = conn.prepareStatement(sql);
             stmt.setString(1, employee.getName());
             stmt.setDate(2, new java.sql.Date(employee.getBirthday().getTime()));
             stmt.setString(3, employee.getSex());
@@ -116,12 +113,20 @@ public class SqlServerDb implements IDb {
             if (flag == 1) {
                 result = true;
             }
-            stmt.close();
-            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if(stmt != null && conn != null)
+                {
+                    stmt.close();
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return result;
     }
@@ -130,10 +135,11 @@ public class SqlServerDb implements IDb {
     public Boolean insertEmployee(Employee employee) {
         Boolean result = false;
         Connection conn = null;
+        PreparedStatement stmt = null;
         try {
             conn = DriverManager.getConnection(url,user,password);
             String sql = "INSERT INTO EMPLOYEE VALUE(?,?,?,?,?,?,?,?,?,?,?,?)";
-            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt = conn.prepareStatement(sql);
             stmt.setString(1,employee.getId());
             stmt.setString(2,employee.getName());
             stmt.setString(3,employee.getSex());
@@ -148,12 +154,20 @@ public class SqlServerDb implements IDb {
             stmt.setBinaryStream(12,employee.getPhoto(),(int)employee.getPhoto().available());
             int flag = stmt.executeUpdate();
             if (flag == 1)result = true;
-            stmt.close();
-            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if(stmt != null && conn != null)
+                {
+                    stmt.close();
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return result;
     }
@@ -162,16 +176,25 @@ public class SqlServerDb implements IDb {
     public Boolean deleteEmployee(Employee employee) {
         Boolean result = false;
         Connection conn = null;
+        PreparedStatement stmt = null;
         try {
             conn = DriverManager.getConnection(url,user,password);
             String sql = "DELETE FROM MENU WHERE 员工id='"+ employee.getId()+"'";
-            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt = conn.prepareStatement(sql);
             int flag = stmt.executeUpdate();
             if (flag == 1)result = true;
-            stmt.close();
-            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if(stmt != null && conn != null)
+                {
+                    stmt.close();
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return result;
     }
@@ -249,12 +272,11 @@ public class SqlServerDb implements IDb {
     public Boolean insertDish(Dish dish) {
         Boolean result = false;
         Connection conn = null;
-        Statement sta = null;
-        ResultSet rs = null;
+        PreparedStatement stmt = null;
         try{
             conn = DriverManager.getConnection(url,user,password);
             String sql = "INSERT INTO MENU(菜品id,菜名,单价,品类,是否售卖,图片) VALUES(?,?,?,?,?,?)";
-            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt = conn.prepareStatement(sql);
             stmt.setString(1,dish.getId());
             stmt.setString(2,dish.getName());
             stmt.setFloat(3,dish.getPrice());
@@ -265,8 +287,6 @@ public class SqlServerDb implements IDb {
             stmt.setBinaryStream(6,input,(int)input.available());
             int flag = stmt.executeUpdate();
             if (flag ==1) result = true;
-            stmt.close();
-            conn.close();
         }
         catch (SQLException e){
             e.printStackTrace();
@@ -274,6 +294,16 @@ public class SqlServerDb implements IDb {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if(stmt != null && conn != null)
+                {
+                    stmt.close();
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return result;
     }
@@ -282,16 +312,25 @@ public class SqlServerDb implements IDb {
     public Boolean deleteDish(Dish dish) {
         Boolean result = false;
         Connection conn = null;
+        PreparedStatement stmt = null;
         try {
             conn = DriverManager.getConnection(url,user,password);
             String sql = "DELETE FROM MENU WHERE 菜品id='"+ dish.getId()+"'";
-            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt = conn.prepareStatement(sql);
             int falg = stmt.executeUpdate();
             if (falg == 1) result = true;
-            stmt.close();
-            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if(stmt != null && conn != null)
+                {
+                    stmt.close();
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return result;
     }
@@ -300,15 +339,14 @@ public class SqlServerDb implements IDb {
     public Boolean updateDish(Dish dish) {
         Boolean result = false;
         Connection conn = null;
-        Statement sta = null;
-        ResultSet rs = null;
+        PreparedStatement stmt = null;
         try{
             conn = DriverManager.getConnection(url,user,password);
             String sql = "UPDATE MENU"+
                     "SET 菜名=?,单价=?,品类=?, 是否售卖=?,图片=?,一月销售量=?,二月销售量=?,"+
                     "三月销售量=?,四月销售量=?,五月销售量=?,六月销售量=?,七月销售量=?,八月销售量=?,"+
                     "九月销售量=?,十月销售量=?,十一月销售量=?,十二月销售量=? "+"WHERE 菜品id=?";
-            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt = conn.prepareStatement(sql);
             stmt.setString(1,dish.getName());
             stmt.setFloat(2,dish.getPrice());
             stmt.setString(3,dish.getType());
@@ -330,8 +368,6 @@ public class SqlServerDb implements IDb {
             stmt.setBinaryStream(5,input,(int)input.available());
             int flag = stmt.executeUpdate();
             if (flag == 1)  result = true;
-            stmt.close();
-            conn.close();
         }
         catch (SQLException e){
             e.printStackTrace();
@@ -339,6 +375,16 @@ public class SqlServerDb implements IDb {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if(stmt != null && conn != null)
+                {
+                    stmt.close();
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return result;
     }
@@ -374,10 +420,11 @@ public class SqlServerDb implements IDb {
     public Boolean insertSeat(Seat seat) {
         Boolean result = false;
         Connection conn = null;
+        PreparedStatement stmt = null;
         try {
             conn = DriverManager.getConnection(url,user,password);
             String sql = "INSERT INTO SEATS VALUES(?,?,?,?,?,?)";
-            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt = conn.prepareStatement(sql);
             stmt.setString(1,seat.getId());
             stmt.setString(2,seat.getType());
             stmt.setInt(3,seat.getFloor());
@@ -386,10 +433,18 @@ public class SqlServerDb implements IDb {
             stmt.setInt(6,seat.getUsedtimes());
             int flag = stmt.executeUpdate();
             if (flag == 1)result = true;
-            stmt.close();
-            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if(stmt != null && conn != null)
+                {
+                    stmt.close();
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return result;
     }
@@ -398,16 +453,25 @@ public class SqlServerDb implements IDb {
     public Boolean deleteSeat(Seat seat) {
         Boolean result = false;
         Connection conn = null;
+        PreparedStatement stmt = null;
         try {
             conn = DriverManager.getConnection(url,user,password);
             String sql = "DELETE FROM SEATS WHERE 餐桌id = '"+ seat.getId() +"'";
-            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt = conn.prepareStatement(sql);
             int flag = stmt.executeUpdate();
             if (flag == 1)result = true;
-            stmt.close();
-            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if(stmt != null && conn != null)
+                {
+                    stmt.close();
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return result;
     }
@@ -416,11 +480,12 @@ public class SqlServerDb implements IDb {
     public Boolean updateSeat(Seat seat) {
         Boolean result = false;
         Connection conn = null;
+        PreparedStatement stmt = null;
         try {
             conn = DriverManager.getConnection(url,user,password);
             String sql = "UPDATE SEATS SET 类型=?, 楼层=?, 容量=?, 状态=?, 当月使用次数=? "+
                     "WHERE  餐桌id=?";
-            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt = conn.prepareStatement(sql);
             stmt.setString(1,seat.getType());
             stmt.setInt(2,seat.getFloor());
             stmt.setInt(3,seat.getCapacity());
@@ -429,10 +494,80 @@ public class SqlServerDb implements IDb {
             stmt.setString(6,seat.getId());
             int flag = stmt.executeUpdate();
             if (flag == 1)result = true;
-            stmt.close();
-            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if(stmt != null && conn != null)
+                {
+                    stmt.close();
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public Boolean insertOrder(Order order) {
+        Boolean result = false;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = DriverManager.getConnection(url,user,password);
+            String sql = "INSERT INTO ORDERS VALUES(?,?,?,?)";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1,order.getId());
+            stmt.setDate(2,new java.sql.Date(order.getDate().getTime()));
+            stmt.setString(3,order.getSeatId());
+            stmt.setFloat(4,order.getExpend());
+            int count = stmt.executeUpdate();
+            if (count == 1)result = true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if(stmt != null && conn != null)
+                {
+                    stmt.close();
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public Boolean insertDetial(Detail detail) {
+        Boolean result = false;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = DriverManager.getConnection(url,user,password);
+            String sql ="INSERT INTO DETAILS VALUES (?,?,?) ";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1,detail.getOrderId());
+            stmt.setString(2,detail.getDishId());
+            stmt.setInt(3,detail.getAmount());
+            int flag = stmt.executeUpdate();
+            if (flag == 1)result =true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if(stmt != null && conn != null)
+                {
+                    stmt.close();
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return result;
     }
@@ -456,11 +591,19 @@ public class SqlServerDb implements IDb {
                 st.setUsedtimes(rs.getInt("当月使用次数"));
                 sts.add(st);
             }
-            rs.close();
-            sta.close();
-            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if(conn != null && sta != null && rs != null)
+                {
+                    rs.close();
+                    sta.close();
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return sts;
     }
@@ -496,11 +639,19 @@ public class SqlServerDb implements IDb {
                 ds.setSaledCount12(rs.getInt("十二月销售量"));
                 dss.add(ds);
             }
-            rs.close();
-            sta.close();
-            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if(conn != null && sta != null && rs != null)
+                {
+                    rs.close();
+                    sta.close();
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return dss;
     }
@@ -530,13 +681,28 @@ public class SqlServerDb implements IDb {
                 em.setPhoto(rs.getBinaryStream("照片"));
                 ems.add(em);
             }
-            rs.close();
-            sta.close();
-            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if(conn != null && sta != null && rs != null)
+                {
+                    rs.close();
+                    sta.close();
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return ems;
+    }
+
+
+
+    public Boolean insertSpecificOrder(List list){
+        Boolean result = false;
+        return result;
     }
     /*private FileInputStream filetoInputStream(File file) throws FileNotFoundException {
         return new FileInputStream(file);

@@ -1,8 +1,6 @@
 package restaurant.database;
 
-import restaurant.database.po.Dish;
-import restaurant.database.po.Employee;
-import restaurant.database.po.Seat;
+import restaurant.database.po.*;
 
 import java.io.File;
 import java.util.List;
@@ -60,5 +58,23 @@ public interface IDb {
     Boolean deleteSeat(Seat seat);
     //修改操作
     Boolean updateSeat(Seat seat);
-    
+
+    /*
+        订单表操作
+    */
+    //查询操作
+    //增删操作
+    Boolean insertOrder(Order order);
+    //修改操作
+
+
+
+
+    /*
+        订单详情表操作
+    */
+    //查询操作
+    //增删操作
+    Boolean insertDetial(Detail detail);
+    //修改操作
 }
