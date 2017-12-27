@@ -2,8 +2,13 @@ package yms;
 
 import restaurant.ui.component.BasePanel;
 import restaurant.ui.component.JButtonBuilder;
+import restaurant.ui.component.thirdpart.ShadowBorder;
+import yms.component.MinSetMeatCard;
+import yms.component.SetDishCard;
+import yms.component.SetMeatCard;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -18,7 +23,7 @@ public class DishManageUI extends BasePanel {
         this.parent = parent;
         initUIFoot();
         initUISubTitle();
-        //initUIContent();
+        initUIContent();
     }
     public void initUIFoot()
     {
@@ -58,7 +63,50 @@ public class DishManageUI extends BasePanel {
         getSubtitle().add("Center", sw);
         getSubtitle().add("East", se);
     }
+    public  void initUIContent(){
+        /*
+        east
+         */
+        JPanel east = new JPanel(new BorderLayout());
+        east.setOpaque(false);
+        east.setPreferredSize(new Dimension(Constants.ContentEastWidth,0));
+        Border border = BorderFactory.createLineBorder(Color.black);
+        east.setBorder(border);
+        //ecenter
+        JPanel ecenter = new JPanel();
+        ecenter.setOpaque(false);
+        int i=0;
+        while(i<8) {
+            ecenter.add(new MinSetMeatCard(Constants.ContentEastWidth, 50, "骚鸡", "20", e -> {}));
+            i++;
+        }
+        east.add("Center",ecenter);
+        //esouth
+        JPanel esouth = new JPanel(new GridLayout(2,2));
+        esouth.setPreferredSize(new Dimension(Constants.ContentEastWidth,80));
+        esouth.setOpaque(false);
+        JLabel dishcategory = new JLabel("类别：",JLabel.CENTER);
+        JLabel dishtotal = new JLabel("总数：",JLabel.CENTER);
+        JLabel category = new JLabel("荤菜",JLabel.CENTER);
+        JLabel total = new JLabel("10",JLabel.CENTER);
+        esouth.add(dishcategory);
+        esouth.add(category);
+        esouth.add(dishtotal);
+        esouth.add(total);
+        east.add("South",esouth);
+        getContent().add("East",east);
+        /*center
 
+         */
+        JPanel center = new JPanel();
+        center.setOpaque(false);
+        int j=0;
+        while(i<50) {
+            center.add(new SetDishCard(200, 200, "骚鸡", "20", "url"));
+            i++;
+        }
+        getContent().add("Center",center);
+    }
     private JButton createMainButton(String name, ActionListener listener){
 
         JButton button = JButtonBuilder.getInstance().text(name).listener(listener)

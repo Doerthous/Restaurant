@@ -98,12 +98,9 @@ public class DishUI extends BasePanel{
         jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         getContent().add("Center",jsp);
 
-        int i =0;
-        while(i<50) {
-            center.add(new DishCard(200, 200, "骚鸡", "20", "", e -> {
-            }, e -> {
-            }));
-            i++;
+        for(ManagementSerivce.DishInfo di : ManagementSerivce.getDishInfo()){
+            center.add(new DishCard(200, 200, di.name, di.price.toString(), di.url,
+                    e -> {}, e -> {}));
         }
     }
     private JButton createMainButton(String name, ActionListener listener){

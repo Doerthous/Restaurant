@@ -1,6 +1,9 @@
 package yms;
 
 import restaurant.ui.component.BasePanel;
+import restaurant.ui.component.JButtonBuilder;
+import restaurant.ui.component.thirdpart.ShadowBorder;
+import yms.component.EmployeeCard;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -73,6 +76,18 @@ public class EmployeeUI extends BasePanel{
         cen.add(categorybx);
         ce.add("North",cen);
         getContent().add("East",ce);
+        JPanel ccenter = new JPanel();
+        ccenter.setOpaque(false);
+        String s[] ={"1","2","3","4","5","6","7"};
+        int i=0;
+        while(i<8) {
+            ccenter.add(new EmployeeCard(500, 200, "df", s,
+                    e -> {
+                        System.out.println("改");
+                    }, new Listener()));
+            i++;
+        }
+        getContent().add("Center",ccenter);
     }
 
 }

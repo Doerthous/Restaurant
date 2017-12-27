@@ -61,7 +61,7 @@ public class EmployeeCard extends JPanel {
         //checkBox.setBorder(border);
         //checkBox.setPreferredSize(new Dimension(width/9,height/4));
         cneast.add(checkBox);
-        cnorth.add("East",cneast);
+        cnorth.add("Center",cneast);
         center.add("North",cnorth);
         /*
         center-center

@@ -4,6 +4,7 @@ import doerthous.ui.AFrameForJPanelTest;
 import restaurant.ui.component.JButtonBuilder;
 import yms.component.DishCard;
 import yms.component.EmployeeCard;
+import yms.component.MinSetMeatCard;
 import yms.component.SetMeatCard;
 
 import javax.swing.*;
@@ -26,7 +27,7 @@ public class T {
                     System.out.println("改");
                 }, new Listener()));
                 */
-        f.add(new SetMeatCard(400,400,"酱爆肉","20","url"));
+        f.add(new MinSetMeatCard(400,50,"酱爆肉","20",e -> {}));
         f.open();
     }
 }

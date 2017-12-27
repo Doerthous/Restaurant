@@ -2,8 +2,12 @@ package yms;
 
 import restaurant.ui.component.BasePanel;
 import restaurant.ui.component.JButtonBuilder;
+import restaurant.ui.component.thirdpart.ShadowBorder;
+import yms.component.MinSetMeatCard;
+import yms.component.SetMeatCard;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -18,6 +22,7 @@ public class SetMeatUI extends BasePanel {
         this.parent = parent;
         initUIFoot();
         initUISubTitle();
+        initUIContent();
     }
 
     public void initUIFoot() {
@@ -60,6 +65,63 @@ public class SetMeatUI extends BasePanel {
         }
         getSubtitle().add("Center", sw);
         getSubtitle().add("East", se);
+    }
+    public  void initUIContent(){
+        /*
+        east
+         */
+        JPanel east = new JPanel(new BorderLayout());
+        east.setOpaque(false);
+        east.setPreferredSize(new Dimension(Constants.ContentEastWidth,0));
+        Border border = BorderFactory.createLineBorder(Color.black);
+        east.setBorder(border);
+        //enorth
+        JPanel enorth = new JPanel(new BorderLayout());
+        enorth.setOpaque(false);
+        enorth.setPreferredSize(new Dimension(Constants.ContentEastWidth,50));
+        JComboBox seatname = new JComboBox(new String[]{"套餐1","套餐2"});
+        seatname.setBackground(ColorConstants.background);
+        JButton delete = new JButton("删除");
+        delete.setBackground(ColorConstants.background);
+        delete.setPreferredSize(new Dimension(Constants.ContentEastWidth/3,0));
+        enorth.add("Center",seatname);
+        enorth.add("East",delete);
+        east.add("North",enorth);
+        //esouth
+        JPanel esouth = new JPanel(new GridLayout(2,2));
+        esouth.setPreferredSize(new Dimension(Constants.ContentEastWidth,80));
+        esouth.setOpaque(false);
+        JLabel dishTotal = new JLabel("菜品数：",JLabel.CENTER);
+        JLabel priceTotal = new JLabel("总价：",JLabel.CENTER);
+        JLabel total = new JLabel("3",JLabel.CENTER);
+        JLabel price = new JLabel("100",JLabel.CENTER);
+        esouth.add(dishTotal);
+        esouth.add(total);
+        esouth.add(priceTotal);
+        esouth.add(price);
+        east.add("South",esouth);
+        //ecenter
+        JPanel ecenter = new JPanel();
+        ecenter.setOpaque(false);
+
+        east.add("Center",ecenter);
+        int i=0;
+        while(i<8) {
+            ecenter.add(new MinSetMeatCard(Constants.ContentEastWidth, 50, "骚鸡", "20", e -> {}));
+            i++;
+        }
+        getContent().add("East",east);
+        /*center
+
+         */
+        JPanel center = new JPanel();
+        center.setOpaque(false);
+        int j=0;
+        while(i<50) {
+            center.add(new SetMeatCard(200, 200, "骚鸡", "20", "url"));
+            i++;
+        }
+        getContent().add("Center",center);
     }
 
     private JButton createMainButton(String name, ActionListener listener) {
