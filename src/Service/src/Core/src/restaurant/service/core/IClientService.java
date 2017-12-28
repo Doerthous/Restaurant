@@ -1,5 +1,9 @@
 package restaurant.service.core;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
+import java.io.File;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -59,17 +63,29 @@ public interface IClientService {
         /*
             菜品图片
          */
-        String getPictrue();
+        byte[] getPicture();
         /*
             菜品类型
          */
         String getType();
+    }
+    /*
+
+     */
+    interface ITableObserver {
+        void openTable();
+        void closeTable();
     }
 
     /*
         获取餐桌号
      */
     String getTableId();
+    /*
+        登陆
+     */
+    Boolean login(String tableId);
+    String getLoginFailedReason();
     /*
         获取菜单
      */
@@ -93,17 +109,23 @@ public interface IClientService {
     /*
         发送订单
      */
-    void sendOrder(Map<String, Integer> order);
+    void sendOrder(Map<String, Integer> order, Float totalCost);
     /*
-        聊天事件监听注册函数
+        聊天事件监听注册/移除函数
      */
     void addChatObserver(IChatObserver observer);
+    void removeChatObserver(IChatObserver observer);
     /*
         清空当前餐桌的所有聊天记录
      */
     void endAllSesion();
     /*
-
+        呼叫服务
      */
     void requestService();
+    /*
+
+     */
+    void addTableObserver(ITableObserver observer);
+    void removeTableObserver(ITableObserver observer);
 }

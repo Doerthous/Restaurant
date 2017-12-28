@@ -37,15 +37,13 @@ public class MainUI extends BasePanel {
     /*
         UI组件
      */
-    private PageLayout dishPL;
-    private PageButton dishPB;
+
     private JPanel remainDish;
+    private PageButton dishPB;
     private JPanel table;
-    private PageLayout tablePL;
     private PageButton tablePB;
-    private PageLayout orderPL;
-    private PageButton orderPB;
     private JPanel orderDetail;
+    private PageButton orderPB;
     private void initUIComponent(){
         // subtitle
         getSubtitle().setLayout(new GridLayout(1,3));
@@ -60,32 +58,35 @@ public class MainUI extends BasePanel {
 
         // content
         getContent().setLayout(new GridLayout(1,3));
-        dishPL = new PageLayout().setHgap(2).setSingleCol(true)
+        PageLayout pageLayout = new PageLayout().setHgap(2).setSingleCol(true)
                 .setPadding(new Insets(5,10,0,10));
-        remainDish = new JPanel(dishPL);
-        new LineBorder(Constants.Color.subtitle);
+        remainDish = new JPanel(pageLayout);
+        dishPB = new PageButton(pageLayout, remainDish);
         remainDish.setOpaque(false);
-        getContent().add(remainDish);
-        tablePL = new PageLayout().setHgap(5).setSingleCol(true)
+        //
+        pageLayout = new PageLayout().setHgap(5).setSingleCol(true)
                 .setPadding(new Insets(5,10,0,10));
-        table = new JPanel(tablePL);
+        table = new JPanel(pageLayout);
+        tablePB = new PageButton(pageLayout, table);
         table.setOpaque(false);
         table.setBorder(new AdvLineBorder().setLeft(1).setLeftColor(Constants.Color.subtitle)
                 .setRight(1).setRightColor(Constants.Color.subtitle));
-        getContent().add(table);
-        orderPL = new PageLayout().setHgap(2).setSingleCol(true)
+        //
+        pageLayout = new PageLayout().setHgap(2).setSingleCol(true)
                 .setPadding(new Insets(5,10,0,10));
-        orderDetail = new JPanel(orderPL);
+        orderDetail = new JPanel(pageLayout);
+        orderPB = new PageButton(pageLayout, orderDetail);
         orderDetail.setOpaque(false);
+        //
+        getContent().add(remainDish);
+        getContent().add(table);
         getContent().add(orderDetail);
+
 
         // font
         getFoot().setLayout(new GridLayout(1,3));
-        dishPB = new PageButton(dishPL, remainDish);
         getFoot().add(dishPB);
-        tablePB = new PageButton(tablePL, table);
         getFoot().add(tablePB);
-        orderPB = new PageButton(orderPL, orderDetail);
         getFoot().add(orderPB);
     }
 
@@ -100,7 +101,8 @@ public class MainUI extends BasePanel {
             this.dishName = dishName;
             add("East", JButtonBuilder.getInstance().text("--").listener(e->{
                 listener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
-            }).actionCommand(dishName).background(Constants.Color.title)
+            }).actionCommand(dishName)
+                    .background(Constants.Color.title)
                     .foreground(Constants.Color.subtitle).build());
             JPanel panel = new JPanel(new BorderLayout());
             panel.setOpaque(false);
@@ -162,15 +164,6 @@ public class MainUI extends BasePanel {
     class DishDetailCard extends WaitTableCard {
         public DishDetailCard(String dishName, String info) {
             super(dishName, info,null);
-        }
-    }
-    class PictureButton extends JButton{
-        public PictureButton(int width, int height, ImageIcon icon) {
-            Image temp = icon.getImage().getScaledInstance(width,height,icon.getImage().SCALE_DEFAULT);
-            icon = new ImageIcon(temp);
-            setIcon(icon);
-            setPreferredSize(new Dimension(width, height));
-            setContentAreaFilled(false);
         }
     }
 

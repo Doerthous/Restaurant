@@ -1,4 +1,4 @@
-package test.ui.layout;
+package tutorial.layout;
 
 import javax.swing.*;
 import java.awt.*;

@@ -2,13 +2,12 @@ package restaurant.ui.client;
 
 
 import restaurant.service.core.IClientService;
-import restaurant.ui.component.RectangleCard;
+import restaurant.ui.component.*;
 import restaurant.ui.component.border.AdvLineBorder;
-import restaurant.ui.component.JLabelBuilder;
-import restaurant.ui.component.PagePanel;
 import restaurant.ui.component.thirdpart.ScrollablePanel;
+import restaurant.ui.component.thirdpart.ShadowBorder;
 import restaurant.ui.component.thirdpart.VFlowLayout;
-import restaurant.ui.component.BasePanel;
+import restaurant.ui.utils.Utility;
 
 import javax.swing.*;
 import javax.swing.text.SimpleAttributeSet;
@@ -21,14 +20,13 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChatUI extends BasePanel {
+public class ChatUI extends BasePanel2 {
 
 
     public ChatUI(ClientFrame cf) {
         this.cf = cf;
         initServiceComponent();
         initUIComponent();
-        loadData();
     }
 
     /*
@@ -47,23 +45,11 @@ public class ChatUI extends BasePanel {
     /*
         数据加载
      */
-    private void loadData(){
-        loadOnlineTables();
-    }
-    void loadOnlineTables(){
-        uiOnlineTablesPanel.removeAll();
-        OnlineTablePanel p = new OnlineTablePanel();
-        p.loadTableIds(cf.getService().getOnlineTableIds());
-        cf.getService().addChatObserver(p);
-        uiOnlineTablesPanel.add(new PagePanel(p).setPageButtonBackground(Constants.Color.title));
-        uiOnlineTablesPanel.revalidate();
-    }
     private void loadSessionWithTargetTable(){
-        cCenter.remove(uiChatboxPanel);
-        uiChatboxPanel = new ChatBoxPanel(cf.getService().getTableId(),
-                targetTableId, cf.getService().getSessionWith(targetTableId));
-        cCenter.add("Center", uiChatboxPanel);
-        cCenter.revalidate();
+        getContentLeft().removeAll();
+        getContentLeft().add(new ChatBoxPanel(cf.getService().getTableId(),
+                targetTableId, cf.getService().getSessionWith(targetTableId)));
+        getContentLeft().revalidate();
     }
 
 
@@ -71,52 +57,32 @@ public class ChatUI extends BasePanel {
         UI组件
      */
     private ClientFrame cf;
-    private JPanel cCenter;
-    private JPanel uiOnlineTablesPanel;
-    private JPanel uiChatboxPanel;
     public void initUIComponent(){
         // content
-        JPanel east = new JPanel();
-        cCenter = new JPanel(new BorderLayout(20,20));
-        cCenter.setBackground(Constants.Color.background);
-        cCenter.add("North", new JLabel());
-        cCenter.add("South", new JLabel());
-        cCenter.add("East", new JLabel());
-        cCenter.add("West", new JLabel());
-        initChatRecordBox(cCenter);
-        east.setPreferredSize(new Dimension(Constants.ContentEastWidth, 0));
-        east.setBackground(Constants.Color.background);
-        east.setLayout(new BorderLayout(0,0));
-        east.setBorder(new AdvLineBorder().setLeft(1).setLeftColor(restaurant.ui.Constants.Color.subtitle));
-        uiOnlineTablesPanel = east;
-        getContent().add("Center", cCenter);
-        getContent().add("East", east);
+        getContentLeft().setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
+        getContentLeft().add(new ChatBoxPanel(cf.getService().getTableId(), "", new ArrayList<>()));
+        getContentRight().setBorder(new AdvLineBorder().setLeft(1)
+                .setLeftColor(restaurant.ui.Constants.Color.subtitle));
+        OnlineTablePanel p = new OnlineTablePanel(cf.getService().getOnlineTableIds());
+        cf.getService().addChatObserver(p);
+        getContentRight().add(new PagePanel(p).setPageButtonBackground(Constants.Color.title));
 
         // subtitle
-        JPanel center = new JPanel(new BorderLayout());
-        center.add(JLabelBuilder.getInstance().text("聊天记录").horizontalAlignment(JLabel.CENTER)
-                .foreground(Color.white).font(Constants.Font.font1).build());
-        center.setOpaque(false);
-        east = new JPanel(new BorderLayout());
-        east.setPreferredSize(new Dimension(Constants.ContentEastWidth, 0));
-        east.add("Center", JLabelBuilder.getInstance().text("在线人").horizontalAlignment(JLabel.CENTER)
-                .foreground(Color.white).font(Constants.Font.font1).build());
-        east.setOpaque(false);
-        getSubtitle().add("Center",center);
-        getSubtitle().add("East",east);
+        getSubtitleLeft().add(
+                JLabelBuilder.getInstance().text("聊天记录").horizontalAlignment(JLabel.CENTER)
+                        .foreground(Color.white).font(Constants.Font.font1).build()
+        );
+
+        getSubtitleRight().add(
+                JLabelBuilder.getInstance().text("在线人").horizontalAlignment(JLabel.CENTER)
+                        .foreground(Color.white).font(Constants.Font.font1).build()
+        );
 
         // foot
-        JButton ret = new JButton("返回");
-        ret.setPreferredSize(new Dimension(Constants.ContentEastWidth, 0));
-        ret.setBackground(Constants.Color.title);
-        ret.addActionListener(e->{
-            cf.main();
-        });
-        getFoot().add("East", ret);
-    }
-    public void initChatRecordBox(JPanel container){
-        uiChatboxPanel = new ChatBoxPanel("2T", "", new ArrayList<>());
-        container.add("Center", uiChatboxPanel);
+        addFootRight(
+                JButtonBuilder.getInstance().text("返回").background(Constants.Color.title)
+                        .listener(e -> cf.main()).build()
+        );
     }
 
     /*
@@ -190,61 +156,32 @@ public class ChatUI extends BasePanel {
             }
         }
     }
-    class OnlineTable extends RectangleCard {
-        private JLabel label;
-        public OnlineTable(String tableId){
-            label = JLabelBuilder.getInstance().text(tableId).horizontalAlignment(JLabel.CENTER).build();
-            label.setOpaque(false);
-            add(label);
-            setEnableMouseListenr(true);
-        }
-        public String getText(){
-            return label.getText();
-        }
-        public void setOnClickListener(ActionListener listener){
-            addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    listener.actionPerformed(new ActionEvent(this, 1,""));
-                }
-            });
-            label.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    listener.actionPerformed(new ActionEvent(this, 1,""));
-                }
-            });
-        }
-    }
     class OnlineTablePanel extends JPanel implements IClientService.IChatObserver {
-        private List<OnlineTable> tableIds;
-
-        public OnlineTablePanel() {
-            this.tableIds = new ArrayList<>();
+        public OnlineTablePanel(List<String> tableIds) {
             setOpaque(false);
-        }
-        public void loadTableIds(List<String> tableIds){
             for(String id: tableIds) {
                 addOnlineTable(id);
             }
         }
         private void addOnlineTable(String id){
-            OnlineTable rc = new OnlineTable(id);
-            rc.setOnClickListener(e->{
-                targetTableId = rc.getText();
-                rc.setBackground(Constants.Color.title);
-                loadSessionWithTargetTable();
-            });
-            add(rc);
-            this.tableIds.add(rc);
+            add(JButtonBuilder.getInstance().text(id).background(Constants.Color.title)
+                    .listener(e->{
+                        targetTableId = id;
+                        loadSessionWithTargetTable();
+                        if(e.getSource() instanceof JButton){
+                            ((JButton)e.getSource()).setBackground(Constants.Color.title);
+                        }
+                    })
+                    .border(ShadowBorder.newBuilder().buildSpecial(new Insets(0,0,5,0)))
+                    .preferredSize(new Dimension(0, Constants.UISize.RecordHeight)).build()
+            );
         }
         @Override
         public void newMessage(String tableId) {
             if(!targetTableId.equals(tableId)){
-                for(OnlineTable b : tableIds){
-                    if(b.getText().equals(tableId)){
-                        b.setBackground(Color.green);
-                    }
+                JButton table = findTable(tableId);
+                if(table != null){
+                    table.setBackground(Color.green);
                 }
             } else {
                 loadSessionWithTargetTable();
@@ -252,31 +189,42 @@ public class ChatUI extends BasePanel {
         }
         @Override
         public void offline(String tableId) {
-            for(OnlineTable id: tableIds) {
-                if(id.getText().equals(tableId)){
-                    remove(id);
-                    setVisible(false);
-                    revalidate();
-                    setVisible(true);
-                    break;
-                }
+            JButton table = findTable(tableId);
+            if(table != null){
+                remove(table);
+                Utility.revalidate(this);
             }
         }
         @Override
         public void online(String tableId) {
-            synchronized (tableIds) {
-                for (OnlineTable id : tableIds) {
-                    if (id.getText().equals(tableId)) {
-                        return;
+            synchronized (this) {
+                if(findTable(tableId) == null) {
+                    addOnlineTable(tableId);
+                    Utility.revalidate(this);
+                }
+            }
+        }
+        private JButton findTable(String tableId){
+            Component[] components = getComponents();
+            for (Component id : components) {
+                if (id instanceof JButton){
+                    JButton b = (JButton)id;
+                    if(b.getText().equals(tableId)) {
+                        return b;
                     }
                 }
-                addOnlineTable(tableId);
-                setVisible(false);
-                revalidate();
-                setVisible(true);
             }
+            return null;
         }
     }
 
 
+    public void start(){
+        cf.getService().endAllSesion();
+        targetTableId = "";
+        loadSessionWithTargetTable();
+    }
+    public void stop(){
+
+    }
 }

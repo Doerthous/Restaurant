@@ -1,4 +1,4 @@
-package test.ui.layout.custom;
+package doerthous.ui;
 
 import doerthous.ui.AFrameForJPanelTest;
 import restaurant.ui.component.JButtonBuilder;

@@ -1,4 +1,4 @@
-package test.ui.border;
+package tutorial.border;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;

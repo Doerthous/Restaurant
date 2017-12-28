@@ -1,7 +1,6 @@
 package restaurant.database.po;
 
-import java.io.File;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.channels.FileLockInterruptionException;
 
 public class Dish {
@@ -16,7 +15,7 @@ public class Dish {
     // 是否售卖
     private Boolean isSaled;
     //图片
-    private InputStream picture;
+    private byte[] picture;
     // 一月销售量
     private Integer saledCount1;
     // 二月销售量
@@ -52,7 +51,7 @@ public class Dish {
         this.price = price;
         this.type = type;
         this.isSaled = isSaled;
-        this.picture = picture;
+        setPicture(picture);
         this.saledCount1 = saledCount1;
         this.saledCount2 = saledCount2;
         this.saledCount3 = saledCount3;
@@ -73,7 +72,11 @@ public class Dish {
         this.price = price;
         this.type = type;
         this.isSaled = isSaled;
-        this.picture = picture;
+        setPicture(picture);
+    }
+
+    public Dish(String name){
+        this.name = name;
     }
 
     public Dish() {
@@ -216,11 +219,28 @@ public class Dish {
     }
 
     public InputStream getPicture() {
-        return picture;
+        if(picture != null) {
+            return new ByteArrayInputStream(picture);
+        }
+        return null;
     }
 
     public void setPicture(InputStream picture) {
-        this.picture = picture;
+        if(picture != null) {
+            try {
+                this.picture = new byte[1024];
+                int len = picture.available();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                while(len != 0) {
+                    picture.read(this.picture);
+                    baos.write(this.picture);
+                    len = picture.available();
+                }
+                this.picture = baos.toByteArray();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

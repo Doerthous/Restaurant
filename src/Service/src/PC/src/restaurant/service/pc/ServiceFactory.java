@@ -20,18 +20,13 @@ public class ServiceFactory {
     static String url = "jdbc:sqlserver://192.168.155.1:1433;DatabaseName=OrderDish";
     static String user = "ODuser";
     static String password = "1234567890";
-    public static IEmployeeService getEmployeeService(){
-        return new EmployeeService();
-    }
-    public static IDishService getDishService(){ return new DishService(); }
     /*
         餐桌id这里暂且这样设置，具体方案再定
      */
     public static IClientService getClientService() {
-        String id = new SimpleDateFormat("HHmmssSS").format(new Date());
         IDb db = DbFactory.getDb(DbFactory.DbType.SqlServer);
         db.init(url, user, password);
-        return new ClientService(id, PeerFactory.getPeer(), db);
+        return new ClientService(PeerFactory.getPeer(), db);
     }
     public static IKitchenService getKitchenService() {
         return new KitchenService(PeerFactory.getPeer());

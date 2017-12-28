@@ -1,39 +1,49 @@
 package restaurant.ui.client;
 
+import restaurant.service.core.IClientService;
+import restaurant.ui.component.*;
+import restaurant.ui.component.border.AdvLineBorder;
 import restaurant.ui.component.thirdpart.ShadowBorder;
-import restaurant.ui.component.BasePanel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-public class MainUI extends BasePanel {
-    private ClientFrame cf;
+public class MainUI extends BasePanel2 {
 
     public MainUI(ClientFrame cf) {
-        super();
         hideFoot();
         hideSubTitle();
-        this.cf = cf;
 
-        JLabel l = new JLabel("餐桌号："+cf.getService().getTableId(), JLabel.CENTER);
-        l.setPreferredSize(new Dimension(Constants.ContentEastWidth,0));
-        getContent().add("East", l);
-        JPanel p = new JPanel();
-        p.setOpaque(false);
-        p.add(createMainButton("点餐", e->{ cf.order(); }));
-        p.add(createMainButton("聊天", e->{ cf.chat(); }));
-        p.add(createMainButton("呼叫服务", e->{ cf.requestService(); }));
-        p.add(createMainButton("结账", e->{ cf.pay(); }));
-        getContent().add("Center", p);
+        getContentLeft().setLayout(new FlowLayout());
+        getContentLeft().add(JButtonBuilder.getInstance().text("点餐").listener(e -> cf.order())
+                        .background(Constants.Color.title).border(ShadowBorder.newBuilder().shadowSize(5).build())
+                        .preferredSize(new Dimension(Constants.MainButtonSize,Constants.MainButtonSize))
+                        .build());
+        getContentLeft().add(JButtonBuilder.getInstance().text("聊天").listener(e -> cf.chat())
+                        .background(Constants.Color.title).border(ShadowBorder.newBuilder().shadowSize(5).build())
+                        .preferredSize(new Dimension(Constants.MainButtonSize,Constants.MainButtonSize))
+                        .build());
+        getContentLeft().add(JButtonBuilder.getInstance().text("呼叫服务").listener(e -> cf.requestService())
+                        .background(Constants.Color.title).border(ShadowBorder.newBuilder().shadowSize(5).build())
+                        .preferredSize(new Dimension(Constants.MainButtonSize,Constants.MainButtonSize))
+                        .build());
+        getContentLeft().add(JButtonBuilder.getInstance().text("结账").listener(e -> cf.pay())
+                        .background(Constants.Color.title).border(ShadowBorder.newBuilder().shadowSize(5).build())
+                        .preferredSize(new Dimension(Constants.MainButtonSize,Constants.MainButtonSize))
+                        .build());
+
+        getContentRight().add(JLabelBuilder.getInstance().horizontalAlignment(JLabel.CENTER)
+                .text("餐桌号："+cf.getService().getTableId()).build());
+
+        stop();
     }
 
-    private JButton createMainButton(String name, ActionListener listener){
-        JButton b = new JButton(name);
-        b.setPreferredSize(new Dimension(Constants.MainButtonSize,Constants.MainButtonSize));
-        b.addActionListener(listener);
-        b.setBorder(ShadowBorder.newBuilder().shadowSize(5).build());
-        b.setBackground(Constants.Color.title);
-        return b;
+    public void start(){
+        getContentLeft().setVisible(true);
     }
+    public void stop(){
+        getContentLeft().setVisible(false);
+    }
+
 }

@@ -35,6 +35,14 @@ public class JLabelBuilder {
         label.setBorder(border);
         return this;
     }
+    public JLabelBuilder preferredSize(Dimension preferredSize){
+        label.setPreferredSize(preferredSize);
+        return this;
+    }
+    public JLabelBuilder opaque(boolean opaque){
+        label.setOpaque(opaque);
+        return this;
+    }
     public JLabel build(){
         return label;
     }

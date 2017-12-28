@@ -13,6 +13,7 @@ public class BaseFrame {
         frame = new JFrame();
         frame.setSize(new Dimension(800,600));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
         initComponent();
     }
 
@@ -23,7 +24,6 @@ public class BaseFrame {
         frame.setUndecorated(true);
         frame.setBounds(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
     }
     private void initComponent(){
@@ -56,7 +56,10 @@ public class BaseFrame {
         return contentPane;
     }
 
-    public void add(String name, JPanel ui){
+    public void add(Component component){
+        getContentPane().add(component);
+    }
+    public void add(String name, Component ui){
         getContentPane().add(name, ui);
     }
     public void show(String name){

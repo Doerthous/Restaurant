@@ -5,9 +5,12 @@ import restaurant.service.core.IClientService;
 import restaurant.service.pc.ServiceFactory;
 import restaurant.ui.component.BaseFrame;
 
-public class ClientFrame extends BaseFrame {
+import javax.swing.*;
+
+public class ClientFrame extends BaseFrame implements IClientService.ITableObserver {
     public ClientFrame(IClientService service){
         this.service = service;
+        service.addTableObserver(this);
         initUICompoent();
     }
 
@@ -27,6 +30,18 @@ public class ClientFrame extends BaseFrame {
     private ChatUI chatUI;
     private PayUI payUI;
     public void initUICompoent(){
+        LoginFrame lf = new LoginFrame(e -> {
+            if(e.getSource() instanceof LoginFrame) {
+                LoginFrame lp = (LoginFrame)e.getSource();
+                System.out.println(lp.getText());
+                if(service.login(lp.getText())){
+                    lp.dispose();
+                } else {
+                    lp.setText("桌号不存在");
+                }
+            }
+        });
+        lf.setVisible(true);
         mainUI = new MainUI(this);
         orderUI = new OrderUI(this);
         chatUI = new ChatUI(this);
@@ -53,10 +68,28 @@ public class ClientFrame extends BaseFrame {
     }
 
 
+
     /*
         程序入口
      */
     public static void main(String[] args) {
         new ClientFrame(ServiceFactory.getClientService()).open();
+    }
+
+    @Override
+    public void openTable() {
+        mainUI.start();
+        orderUI.start();
+        payUI.start();
+        chatUI.start();
+    }
+
+    @Override
+    public void closeTable() {
+        mainUI.stop();
+        orderUI.stop();
+        payUI.stop();
+        chatUI.stop();
+        main();
     }
 }

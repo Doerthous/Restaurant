@@ -15,7 +15,8 @@ import static java.lang.Thread.sleep;
 public class Peer implements IPeer, ISocketWrapper.IAction {
     private static final String WHERE_IS_ID = Peer.class.getName()+"[WII]";
     private static final String WHERE_IS_ID_ACK = Peer.class.getName()+"[WIIA]";
-    private static final String ID_CHANGE = Peer.class.getName()+"[IC]";
+    private static final String ID_ONLINE = Peer.class.getName()+"[ION]";
+    private static final String ID_OFFLINE = Peer.class.getName()+"[IOFF]";
     private static String BROADCAST_ADDR = "255.255.255.255";
     private static int BROADCAST_PORT = 14444;
     private ISocketWrapper socketWrapper;
@@ -65,7 +66,7 @@ public class Peer implements IPeer, ISocketWrapper.IAction {
     public void start(String id) {
         if(id != null && !id.equals(this.id)) {
             continueMessageHandle();
-            sendCommand(BROADCAST_ID, ID_CHANGE, 
+            sendCommand(BROADCAST_ID, ID_ONLINE, 
                     new Bundle()
                     .putString("old id", this.id)
                     .putString("new id", id)
@@ -149,7 +150,7 @@ public class Peer implements IPeer, ISocketWrapper.IAction {
                     whereIsIdAckMessage(idata);
                     return;
                 }
-                if (ID_CHANGE.equals(cmd)) {
+                if (ID_ONLINE.equals(cmd)) {
                     idChangeMessage(idata);
                     return;
                 }
@@ -157,7 +158,7 @@ public class Peer implements IPeer, ISocketWrapper.IAction {
                 updateObservers(idata);
                 // 判断对方持有的己方id是否过期
                 if(!idata.getToId().equals(id)){
-                    sendCommand(idata.getFromId(), ID_CHANGE, new Bundle()
+                    sendCommand(idata.getFromId(), ID_ONLINE, new Bundle()
                             .putString("old id", idata.getToId())
                             .putString("new id", id)
                             .putString("ip", ip)
@@ -227,7 +228,7 @@ public class Peer implements IPeer, ISocketWrapper.IAction {
         } else {
             // 通知同id者
             if (id2ip.keySet().contains(newId)) {
-                sendCommand(newId, ID_CHANGE, data.getData());
+                sendCommand(newId, ID_ONLINE, data.getData());
             }
             // 更新信息
             if (id2ip.keySet().contains(oldId)) {

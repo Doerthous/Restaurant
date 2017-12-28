@@ -1,6 +1,7 @@
 package restaurant.service.core.impl;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /*
     业务层（service）模块间的通讯
@@ -43,6 +44,14 @@ public final class InterModuleCommunication {
             客户呼叫服务
          */
         public static final String CLIENT_REQUEST_SERVICE = CommandToManagement.class.getName()+"[CRS]";
+        /*
+            客户端上线通知
+         */
+        public static final String CLIENT_TABLE_ONLINE = CommandToManagement.class.getName()+"[COL]";
+        /*
+            新订单
+         */
+        public static final String CLIENT_NEW_ORDER = CommandToManagement.class.getName()+"[CNO]";
     }
     public static final class CommandToWaiter {
         /*
@@ -50,7 +59,7 @@ public final class InterModuleCommunication {
          */
         public static final String MANAGEMENT_LOGIN_ACK = CommandToWaiter.class.getName()+"[MLA]";
         /*
-            登陆验证回复
+            改密验证回复
          */
         public static final String MANAGEMENT_CHANGE_PASSWORD_ACK = CommandToWaiter.class.getName()+"[MCPA]";
         /*
@@ -69,7 +78,18 @@ public final class InterModuleCommunication {
         public static final String CLIENT_NEW_ORDER = CommandToKitchen.class.getName()+"[CNO]";
     }
     public static final class CommandToClient {
-
+        /*
+            管理端通知客户端开台
+         */
+        public static final String MANAGEMENT_OPEN_TABLE = CommandToManagement.class.getName()+"[MOT]";
+        /*
+            管理端通知客户端开台
+         */
+        public static final String MANAGEMENT_CLOSE_TABLE = CommandToManagement.class.getName()+"[MCT]";
+        /*
+            登陆验证回复
+         */
+        public static final String MANAGEMENT_TABLE_ONLINE_ACK = CommandToManagement.class.getName()+"[MTOA]";
     }
     public static final class CommandToAll {
 
@@ -155,6 +175,52 @@ public final class InterModuleCommunication {
                 m.isSuccess = isSuccess;
                 m.failedReason = failedReason;
                 return m;
+            }
+        }
+        /*
+            Management and Client
+         */
+        public static final class MC implements Serializable {
+            public String tableId;
+            public Boolean isLogined;
+            public String failedReason;
+            public Order order;
+            public static class Order implements Serializable {
+                public Map<String, Integer> orderDetail;
+                public Float totalCost;
+            }
+            public static MC login(String tableId){
+                MC mc = new MC();
+                mc.tableId = tableId;
+                return mc;
+            }
+
+            public static MC loginAck(String tableId, Boolean isLogined, String failedReason){
+                MC mc = new MC();
+                mc.tableId = tableId;
+                mc.isLogined = isLogined;
+                mc.failedReason = failedReason;
+                return mc;
+            }
+
+            public static MC sendOrder(Map<String, Integer> orderDetail, Float totalCost){
+                MC mc = new MC();
+                mc.order = new Order();
+                mc.order.orderDetail = orderDetail;
+                mc.order.totalCost = totalCost;
+                return mc;
+            }
+        }
+        /*
+            Kitchen and Client
+         */
+        public static final class KC implements Serializable {
+            public Map<String, Integer> order;
+
+            public static KC sendOrder(Map<String, Integer> order){
+                KC kc = new KC();
+                kc.order = order;
+                return kc;
             }
         }
     }

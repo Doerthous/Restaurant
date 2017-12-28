@@ -35,12 +35,14 @@ public class KitchenService implements IKitchenService, ICommandObserver {
     @Override
     public void update(IData data) {
         if(data.getCommand().equals(InterModuleCommunication.CommandToKitchen.CLIENT_NEW_ORDER)){
-            Map<String, Integer> order = (Map<String, Integer>) data.getData();
-            OrderData od = new OrderData(data.getFromId());
-            for(String name : order.keySet()){
-                od.add(name, order.get(name));
+            InterModuleCommunication.Data.KC kc = (InterModuleCommunication.Data.KC) data.getData();
+            if(kc.order.size() > 0) {
+                OrderData od = new OrderData(data.getFromId());
+                for (String name : kc.order.keySet()) {
+                    od.add(name, kc.order.get(name));
+                }
+                orderDataObserver.newOrder(od);
             }
-            orderDataObserver.newOrder(od);
         }
     }
 

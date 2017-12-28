@@ -12,6 +12,7 @@ public interface Constants {
     }
     interface UISize {
         int RecordHeight = 50;
+        int ContentEastWidth = 200;
     }
 
 }

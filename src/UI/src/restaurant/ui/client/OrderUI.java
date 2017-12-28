@@ -6,14 +6,17 @@ import restaurant.ui.component.border.AdvLineBorder;
 import restaurant.ui.component.layout.PageLayout;
 import restaurant.ui.component.thirdpart.ShadowBorder;
 import restaurant.ui.component.thirdpart.VFlowLayout;
+import restaurant.ui.utils.Utility;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class OrderUI extends BasePanel {
+public class OrderUI extends BasePanel3 {
     private ClientFrame cf;
 
 
@@ -21,7 +24,7 @@ public class OrderUI extends BasePanel {
         this.cf = cf;
         initServiceComponent();
         initUIComponent();
-        loadData();
+        udc.loadMenu();
     }
 
     /*
@@ -32,12 +35,6 @@ public class OrderUI extends BasePanel {
         udc = new UIDataController();
     }
 
-    /*
-        数据加载
-     */
-    private void loadData(){
-        udc.loadMenu();
-    }
 
     /*
         UI组件
@@ -46,31 +43,16 @@ public class OrderUI extends BasePanel {
     private TotalDishCost totalCost;
     private java.util.List<OrderDetailDishCard> orderDishs;
     private JPanel orderDetail;
-    private JPanel menuPanel;
     private void initUIComponent() {
         orderDishs = new ArrayList<>();
         initMenu();
         initOrderDetail();
 
         // foot
-        JPanel p = new JPanel(new BorderLayout());
-        p.setPreferredSize(new Dimension(Constants.ContentEastWidth, 0));
-        p.setOpaque(false);
-        JButton confirm = new JButton("确认");
-        confirm.setBackground(Constants.Color.title);
-        confirm.setPreferredSize(new Dimension(Constants.ContentEastWidth/2, 0));
-        confirm.addActionListener(e -> {
-            udc.sendOrder();
-        });
-        p.add("West", confirm);
-        JButton ret = new JButton("返回");
-        ret.setPreferredSize(new Dimension(Constants.ContentEastWidth/2, 0));
-        ret.setBackground(Constants.Color.title);
-        ret.addActionListener(e -> {
-            cf.main();
-        });
-        p.add("East", ret);
-        getFoot().add("East", p);
+        addFootRight(JButtonBuilder.getInstance().text("确认").background(Constants.Color.title)
+                .listener(e->udc.sendOrder()).build());
+        addFootRight(JButtonBuilder.getInstance().text("返回").background(Constants.Color.title)
+                .listener(e->cf.main()).build());
     }
     private void initMenu() {
         // subtitle
@@ -81,67 +63,42 @@ public class OrderUI extends BasePanel {
                     .build();
             center.add(button);
         }
-        center.setPreferredSize(new Dimension(0, 80));
-        getSubtitle().add("Center", center);
+        getSubtitleLeft().add(center);
 
         // content
         PageLayout layout = new PageLayout();
-        menuPanel = new JPanel(layout); // new ScrollablePanel();
-        menuPanel.setBackground(Constants.Color.background);
-        menuPanel.setBorder(new AdvLineBorder().setRight(1).setRightColor(restaurant.ui.Constants.Color.subtitle));
-        PageButton pageButton = new PageButton(layout, menuPanel);
-        //JScrollPane cCenterScrollPane = new JScrollPane(center);
-        getContent().add("Center", menuPanel);
-        getFoot().add("Center", pageButton);
+        getContentLeft().setLayout(layout);
+        getContentLeft().setBorder(new AdvLineBorder().setRight(1).setRightColor(restaurant.ui.Constants.Color.subtitle));
+        PageButton pageButton = new PageButton(layout, getContentLeft());
+
+        // foot
+        getFootLeft().add(pageButton);
     }
     private void initOrderDetail() {
         // subtitle
-        JPanel east = new JPanel(new BorderLayout());
-        east.setPreferredSize(new Dimension(Constants.ContentEastWidth, 0));
-        east.add("Center", JLabelBuilder.getInstance().text("订单详情").horizontalAlignment(JLabel.CENTER)
-                .foreground(Color.white).font(Constants.Font.font1).build());
-        east.setOpaque(false);
-        getSubtitle().add("East", east);
+        getSubtitleRight().add(JLabelBuilder.getInstance().text("订单详情")
+                .horizontalAlignment(JLabel.CENTER).foreground(Color.white)
+                .font(Constants.Font.font1).build());
 
         // content
-        east = new JPanel(new BorderLayout());
-        east.setPreferredSize(new Dimension(Constants.ContentEastWidth, 0));
-        east.setOpaque(false);
-
-
         orderDetail = new JPanel();
         orderDetail.setBackground(Constants.Color.background);
         PagePanel pagePanel = new PagePanel(orderDetail);
-        pagePanel.setPageButtonBackground(restaurant.ui.Constants.Color.title);
-        JPanel south = new JPanel(new VFlowLayout());
-        south.setPreferredSize(new Dimension(0, Constants.OrderTotalInfoHeight));
-        south.setOpaque(false);
-        JPanel p1 = new JPanel(new BorderLayout());
-        p1.setOpaque(false);
-        p1.add("West",new JLabel("菜品数量："));
+        pagePanel.setPageButtonBackground(Constants.Color.title);
+        getContentRightTop().add(pagePanel);
+
         totalDishCount = new TotalDishCount();
-        udc.addDishCountChangeListener(totalDishCount);
-        p1.add("Center", totalDishCount);
-        JPanel p2 = new JPanel(new BorderLayout());
-        p2.setOpaque(false);
-        p2.add("West",new JLabel("总消费："));
         totalCost = new TotalDishCost();
-        udc.addDishCountChangeListener(totalCost);
-        p2.add("Center", totalCost);
-        p2.add("East", new JLabel("元"));
-        south.add(p1);
-        south.add(p2);
-        east.add("South", south);
-        east.add("Center", pagePanel);
-        getContent().add("East", east);
+        getContentRightBottom().add(totalDishCount, BorderLayout.NORTH);
+        getContentRightBottom().add(totalCost, BorderLayout.CENTER);
+        getContentRightBottom().setBorder(BorderFactory.createEmptyBorder(20,10,20,10));
     }
     private void loadOrderDetail(){
         orderDetail.removeAll();
         for(OrderDetailDishCard p: orderDishs){
             orderDetail.add(p);
         }
-        orderDetail.revalidate();
-        orderDetail.repaint();
+        Utility.revalidate(orderDetail);
     }
 
     /*
@@ -151,7 +108,7 @@ public class OrderUI extends BasePanel {
         private String dishName;
         private JLabel count;
         public OrderDishCard(int width, int height,
-                             String dishName, String dishPrice, String dishPictrue, Integer count) {
+                             String dishName, String dishPrice, ImageIcon dishPicture, Integer count) {
             this.dishName = dishName;
 
             // 设置样式
@@ -168,13 +125,13 @@ public class OrderUI extends BasePanel {
             JPanel jPanel2  = new JPanel(new BorderLayout());
             JLabel name = new JLabel(dishName);
             JLabel price = new JLabel(dishPrice);
-            JLabel pictrue = new JLabel(dishPictrue);
+            PictureLabel picture = new PictureLabel(dishPicture);
             JButton dec = new JButton("-");
             this.count = new JLabel(count.toString(), JLabel.CENTER);
             JButton inc = new JButton("+");
 
             // 设置组件样式
-            pictrue.setBorder(BorderFactory.createLineBorder(Color.black));
+            picture.setBorder(BorderFactory.createLineBorder(Color.black));
             this.count.setBorder(BorderFactory.createLineBorder(Color.black));
             jPanel1.setOpaque(false);
             jPanel2.setOpaque(false);
@@ -183,7 +140,7 @@ public class OrderUI extends BasePanel {
             jPanel1.add("West", name);
             jPanel1.add("East", price);
             add("North",jPanel1);
-            add("Center", pictrue);
+            add("Center", picture);
             jPanel2.add("West", dec);
             jPanel2.add("Center", this.count);
             jPanel2.add("East", inc);
@@ -228,23 +185,43 @@ public class OrderUI extends BasePanel {
         }
     }
     class TotalDishCount extends JLabel implements DishCountChange{
+        private Float count = 0f;
+        private String prefix = "菜品数量：";
         public TotalDishCount() {
-            setText("0");
+            setText(prefix+count);
         }
 
         @Override
         public void update(String name, Float delta, Float price) {
-            setText(String.valueOf(Float.valueOf(getText())+delta));
+            count += delta;
+            setText(prefix+count);
+        }
+
+        public void setCount(Float count){
+            this.count = count;
+            setText(prefix+count);
         }
     }
     class TotalDishCost extends JLabel implements DishCountChange{
+        private Float cost = 0f;
+        private String prefix = "总消费：";
+        private String suffix = "元";
         public TotalDishCost() {
-            setText("0");
+            setText(prefix+cost+suffix);
         }
 
         @Override
         public void update(String name, Float delta, Float price) {
-            setText(String.valueOf(Float.valueOf(getText())+delta*price));
+            cost += price*delta;
+            setText(prefix+cost+suffix);
+        }
+
+        public Float getCost() {
+            return cost;
+        }
+        public void setCost(Float cost){
+            this.cost = cost;
+            setText(prefix+cost+suffix);
         }
     }
     class C1 extends JPanel {
@@ -325,7 +302,7 @@ public class OrderUI extends BasePanel {
             dishes = new ArrayList<>();
             java.util.List<IClientService.IDishInfo> dis = cf.getService().getDishMenu();
             for(IClientService.IDishInfo di: dis){
-                dishes.add(new UIDishData(di.getDishName(), di.getPrice(), di.getType()));
+                dishes.add(new UIDishData(di.getDishName(), di.getPrice(), di.getType(), di.getPicture()));
             }
         }
         public void resetDishes(){
@@ -402,23 +379,22 @@ public class OrderUI extends BasePanel {
             for(UIDishData udd: dishes){
                 order.putIfAbsent(udd.getName(), udd.getCount());
             }
-            cf.getService().sendOrder(order);
+            cf.getService().sendOrder(order, totalCost.getCost());
         }
 
         public void loadMenu() {
             loadMenuByType("全部");
         }
         public void loadMenuByType(String type){
-            menuPanel.removeAll();
+            Container cl = getContentLeft();
+            cl.removeAll();
             for (UIDishData di : dishes) {
                 if(type.equals("全部") || di.getType().equals(type)) {
-                    menuPanel.add(new OrderDishCard(Constants.OrderDishCardSize, Constants.OrderDishCardSize,
-                            di.getName(), di.getPrice().toString(), di.getPictrue(), di.getCount()));
+                    cl.add(new OrderDishCard(Constants.OrderDishCardSize, Constants.OrderDishCardSize,
+                            di.getName(), di.getPrice().toString(), di.getPicture(), di.getCount()));
                 }
             }
-            menuPanel.setVisible(false);
-            menuPanel.revalidate();
-            menuPanel.setVisible(true);
+            Utility.revalidate(cl);
         }
     }
     class UIDishData {
@@ -426,13 +402,16 @@ public class OrderUI extends BasePanel {
         private Float price;
         private Integer count;
         private String type;
-        // other info
+        private ImageIcon picture;
 
-        private UIDishData(String name, Float price, String type) {
+        private UIDishData(String name, Float price, String type, byte[] picture) {
             this.name = name;
             this.price = price;
             this.count = 0;
             this.type = type;
+            if(picture != null) {
+                this.picture = new ImageIcon(picture);
+            }
         }
         public String getName() {
             return name;
@@ -443,12 +422,26 @@ public class OrderUI extends BasePanel {
         public Integer getCount() {
             return count;
         }
-        public String getPictrue() { return ""; }
+        public ImageIcon getPicture() { return picture; }
         public String getType() {
             return type;
         }
         public void setCount(Integer count) {
             this.count = count;
         }
+    }
+
+    public void start(){
+        udc = new UIDataController();
+        udc.loadMenu();
+        udc.addDishCountChangeListener(totalCost);
+        udc.addDishCountChangeListener(totalDishCount);
+        orderDishs = new ArrayList<>();
+        totalCost.setCost(0f);
+        totalDishCount.setCount(0f);
+        loadOrderDetail();
+    }
+    public void stop(){
+
     }
 }

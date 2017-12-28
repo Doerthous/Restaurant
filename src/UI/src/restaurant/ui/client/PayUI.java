@@ -71,4 +71,11 @@ public class PayUI extends BasePanel {
             g.drawImage(ii.getImage(), 0, 0, getWidth(), getHeight(), ii.getImageObserver());
         }
     }
+
+    public void start(){
+
+    }
+    public void stop(){
+
+    }
 }

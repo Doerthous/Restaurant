@@ -315,7 +315,7 @@ public class SqlServerDb implements IDb {
         PreparedStatement stmt = null;
         try {
             conn = DriverManager.getConnection(url,user,password);
-            String sql = "DELETE FROM MENU WHERE 菜品id='"+ dish.getId()+"'";
+            String sql = "DELETE FROM MENU WHERE 菜名='"+ dish.getName()+"'";
             stmt = conn.prepareStatement(sql);
             int falg = stmt.executeUpdate();
             if (falg == 1) result = true;

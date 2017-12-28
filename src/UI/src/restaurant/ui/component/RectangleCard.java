@@ -14,8 +14,10 @@ public class RectangleCard extends JPanel {
     private Border moveOut;
     MouseAdapter ma;
     public RectangleCard() {
-        setPreferredSize(new Dimension(0, restaurant.ui.Constants.UISize.RecordHeight));
-
+        this(new Dimension(Constants.UISize.ContentEastWidth, Constants.UISize.RecordHeight));
+    }
+    public RectangleCard(Dimension preferredSize){
+        setPreferredSize(preferredSize);
         setBackground(Constants.Color.title);
         setLayout(new BorderLayout());
         moveOut = BorderFactory.createCompoundBorder(
@@ -25,7 +27,6 @@ public class RectangleCard extends JPanel {
                 ShadowBorder.newBuilder().buildSpecial(new Insets(5,0,0,0)),
                 BorderFactory.createEmptyBorder(10, 20, 10, 20));
         setBorder(moveOut);
-
         ma = new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -37,12 +38,10 @@ public class RectangleCard extends JPanel {
                 setBorder(moveOut);
             }
         };
-
-
     }
 
     private boolean enableMouseListener = false;
-    public void setEnableMouseListenr(boolean enableMouseListener){
+    public void setEnableMouseListener(boolean enableMouseListener){
         if(!this.enableMouseListener && enableMouseListener){
             addMouseListener(ma);
             for(Component component: getComponents()){

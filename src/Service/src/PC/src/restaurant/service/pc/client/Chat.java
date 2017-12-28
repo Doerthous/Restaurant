@@ -6,6 +6,7 @@ import restaurant.communication.core.IData;
 import restaurant.communication.core.IPeer;
 import restaurant.communication.core.utils.Debug;
 import restaurant.service.core.IClientService;
+import restaurant.service.core.impl.utils.ThreadTools;
 
 import javax.swing.*;
 import java.util.*;
@@ -13,6 +14,9 @@ import java.util.List;
 
 import static java.lang.Thread.sleep;
 
+/*
+    ui 乱入
+ */
 public class Chat implements ICommandObserver {
     @Override
     public void update(IData data) {
@@ -98,19 +102,13 @@ public class Chat implements ICommandObserver {
         this.peer.addCommandObserver(this, CHAT);
         debug = new Debug(getClass());
         debug.on();
+    }
+    public void start(){
         // online table confirm
-        new Thread(()->{
-            int cnt = 5;
-            for(;cnt > 0; --cnt){
-                peer.sendCommand(IPeer.BROADCAST_ID, ONLINE_TABLE_CONFIRM, null);
-                debug("who is online?");
-                try {
-                    sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+        ThreadTools.loopThread(5, 1000, ()->{
+            peer.sendCommand(IPeer.BROADCAST_ID, ONLINE_TABLE_CONFIRM, null);
+            debug("who is online?");
+        });
     }
     public String getTableId(){
         return peer.getId();
@@ -135,6 +133,11 @@ public class Chat implements ICommandObserver {
     }
     public void addChatObserver(IClientService.IChatObserver observer){
         observers.add(observer);
+    }
+    public void removeChatObserver(IClientService.IChatObserver observer) {
+        if(observers.contains(observer)) {
+            observers.remove(observer);
+        }
     }
     public void endAllSesion(){
         for(String id : id2session.keySet()){

@@ -33,20 +33,6 @@ public class PageLayout implements LayoutManager {
     @Override
     public void layoutContainer(Container parent) {
         synchronized (parent.getTreeLock()) {
-            Component[] comps = parent.getComponents();
-            if(singleCol){
-                int w = (int) (parent.getSize().getWidth() - padding.left - padding.right - vgap);
-                for(Component comp : comps){
-                    int h = (int) comp.getPreferredSize().getHeight();
-                    comp.setPreferredSize(new Dimension(w, h));
-                }
-            } else if(singleRow) {
-                int h = (int) (parent.getSize().getHeight() - padding.left - padding.right - hgap);
-                for(Component comp : comps){
-                    int w = (int) comp.getPreferredSize().getWidth();
-                    comp.setPreferredSize(new Dimension(w, h));
-                }
-            }
             layout(parent);
             parent.revalidate();
         }
@@ -140,144 +126,14 @@ public class PageLayout implements LayoutManager {
     }
     public int getPageCount(Container parent){
         List<List<Integer>> l = getPageData(parent, -1);
-        return l.get(l.size()-1).get(0);
+        int pageCount = l.get(l.size()-1).get(0);
+        if(currPage > pageCount){
+            currPage = pageCount;
+        }
+        return pageCount;
     }
     public int getCurrentPage(Container parent){
         return currPage;
-    }
-
-
-    private void layout1(Container container){
-        Insets insets = padding;//parent.getInsets();
-        int realHeight = (int) (container.getSize().getHeight() - insets.top - insets.bottom);
-        int realWidth = (int) (container.getSize().getWidth() - insets.left - insets.right);
-
-            /*
-                hide all child components
-             */
-        Component[] comps = container.getComponents();
-        for(int i = 0; i < comps.length; ++i){
-            comps[i].setVisible(false);
-        }
-
-            /*
-                find the first visible child component
-             */
-        int currRowMaxHeight = 0;
-        int remainWidth = realWidth;
-        int remainHeight = realHeight;
-        int cp = currPage;
-        currPage = 1;
-        int currPageStartIdx = 0;
-        for(int i = 0; i < comps.length; ++i){
-            if(cp == 1){ // 已到达指定页
-                break;
-            }
-            int height = (int) comps[i].getPreferredSize().getHeight();
-            int width = (int) comps[i].getPreferredSize().getWidth();
-            if(height > realHeight || width > realWidth){ // 整页排不下的元素将被隐藏
-                continue; // 下一个
-            }
-            if(remainHeight > height) { // 当前页排得下
-                if(remainWidth > width) { // 当前行排得下
-                    if(height > currRowMaxHeight) { // 设置当前行最高高度
-                        currRowMaxHeight = height;
-                    }
-                    remainWidth -= width + vgap; // 排
-                } else { // 当前行排不下，换行
-                    remainWidth = realWidth;
-                    remainHeight -= currRowMaxHeight + hgap;
-                    currRowMaxHeight = 0;
-                    --i; // 回退重新排
-                }
-            } else { // 下一页
-                currPage++;
-                --cp;
-                --i;
-                remainWidth = realWidth;
-                remainHeight = realHeight;
-                currRowMaxHeight = 0;
-                currPageStartIdx = i+1;
-            }
-        }
-
-            /*
-                lay out child components
-             */
-        remainWidth = realWidth;
-        remainHeight = realHeight;
-        currRowMaxHeight = 0;
-        int x = insets.left;
-        int y = insets.top;
-        for(int i = currPageStartIdx; i < comps.length; ++i) {
-            int height = (int) comps[i].getPreferredSize().getHeight();
-            int width = (int) comps[i].getPreferredSize().getWidth();
-            if(height > realHeight || width > realWidth){ // 整页排不下的元素将被隐藏
-                continue; // 下一个
-            }
-            if(remainHeight > height) { // 当前页排得下
-                if(remainWidth > width) { // 当前行排得下
-                    if(height > currRowMaxHeight) { // 设置当前行最高高度
-                        currRowMaxHeight = height;
-                    }
-                    remainWidth -= width + vgap; // 排
-                    comps[i].setBounds(x, y, width, height);
-                    comps[i].setVisible(true);
-                    x += width+vgap;
-                    continue; // 下一个
-                } else { // 当前行排不下，换行
-                    remainWidth = realWidth;
-                    remainHeight -= currRowMaxHeight + hgap;
-                    x = insets.left;
-                    y += currRowMaxHeight + hgap;
-                    currRowMaxHeight = 0;
-                    --i; // 回退重新排
-                }
-            } else { // 下一页
-                break;
-            }
-        }
-    }
-    private int getPageCount1(Container container){
-        int count = 1;
-
-        Insets insets = padding;
-        int realHeight = (int) (container.getSize().getHeight() - insets.top - insets.bottom);
-        int realWidth = (int) (container.getSize().getWidth() - insets.left - insets.right);
-        /*
-            find the first visible child component
-         */
-        int currRowMaxHeight = 0;
-        int remainWidth = realWidth;
-        int remainHeight = realHeight;
-        Component[] comps = container.getComponents();
-        for(int i = 0; i < comps.length; ++i){
-            int height = (int) comps[i].getPreferredSize().getHeight();
-            int width = (int) comps[i].getPreferredSize().getWidth();
-            if(height > realHeight || width > realWidth){ // 整页排不下的元素将被隐藏
-                continue; // 下一个
-            }
-            if(remainHeight > height) { // 当前页拍得下
-                if(remainWidth > width) { // 当前行排得下
-                    if(height > currRowMaxHeight) { // 设置当前行最高高度
-                        currRowMaxHeight = height;
-                    }
-                    remainWidth -= width + vgap; // 排
-                } else { // 当前行排不下，换行
-                    remainWidth = realWidth;
-                    remainHeight -= currRowMaxHeight + hgap;
-                    currRowMaxHeight = 0;
-                    --i; // 回退重新排
-                }
-            } else { // 下一页
-                ++count;
-                --i;
-                remainWidth = realWidth;
-                remainHeight = realHeight;
-                currRowMaxHeight = 0;
-            }
-        }
-        return count;
     }
 
 
@@ -288,7 +144,8 @@ public class PageLayout implements LayoutManager {
         rh: remain hight
         vg: vgap
         hg: hgap
-        ret: bi, igns ..., w, mh, ei
+        ignsi: index of those components who will be ignored
+        ret: bi, ignsi ..., w, mh, ei
      */
     private List<Integer> layoutRow(Component[] cs, int bi, int hl, int wl, int rh, int vg, int hg){
         java.util.List<Integer> ret = new ArrayList<>();
@@ -326,12 +183,12 @@ public class PageLayout implements LayoutManager {
         vg: vgap
         hg: hgap
         ret:
-            bi, igns ..., w, mh, ei (row1)
-            bi, igns ..., w, mh, ei (row2)
+            bi, ignsi ..., w, mh, ei (row1)
+            bi, ignsi ..., w, mh, ei (row2)
             ...
+            pc
      */
-    private List<List<Integer>> layoutPage(Component[] cs,
-                                                               int bi, int hl, int wl, int vg, int hg) {
+    private List<List<Integer>> layoutPage(Component[] cs, int bi, int hl, int wl, int vg, int hg) {
         java.util.List<java.util.List<Integer>> ret = new ArrayList<>();
         int rh = hl;
         while(rh > 0) {
@@ -353,14 +210,25 @@ public class PageLayout implements LayoutManager {
     }
 
     /*
-        targePage: [1, ~)
+        targetPage: 
+            [1, pagecoun] for target page data
+            otherwise, the last page data
+        pc: page count
+        ret:
+            bi, ignsi ..., w, mh, ei (row1)
+            bi, ignsi ..., w, mh, ei (row2)
+            ...
+            pc
      */
     private List<List<Integer>> getPageData(Container container, int targetPage) {
         int pageCount = 1;
-        int hl = (int) container.getSize().getHeight() - padding.top - padding.bottom;
-        int wl = (int) container.getSize().getWidth() - padding.left - padding.right;
-        java.util.List<java.util.List<Integer>> page = new ArrayList<>();
+        int cw = (int) container.getSize().getWidth();
+        int ch = (int) container.getSize().getHeight();
+        int wl = cw - padding.left - padding.right;
+        int hl = ch - padding.top - padding.bottom;
         Component[] cs = container.getComponents();
+        setChildComponentForSingle(cs, cw, ch);
+        java.util.List<java.util.List<Integer>> page = new ArrayList<>();
         if(hl > 0 && wl > 0 && cs.length > 0) {
             int ei = 0;
             while (ei < cs.length && pageCount-1 != targetPage) {
@@ -374,6 +242,26 @@ public class PageLayout implements LayoutManager {
         }
         page.add(Arrays.asList(pageCount));
         return page;
+    }
+
+    /*
+        cw: container width
+        ch: container height
+     */
+    private void setChildComponentForSingle(Component[] comps, int cw, int ch){
+        if(singleCol){
+            int w = (int) (cw - padding.left - padding.right - vgap);
+            for(Component comp : comps){
+                int h = (int) comp.getPreferredSize().getHeight();
+                comp.setPreferredSize(new Dimension(w, h));
+            }
+        } else if(singleRow) {
+            int h = (int) (ch - padding.top - padding.bottom - hgap);
+            for(Component comp : comps){
+                int w = (int) comp.getPreferredSize().getWidth();
+                comp.setPreferredSize(new Dimension(w, h));
+            }
+        }
     }
 
     private void layout(Container container){
