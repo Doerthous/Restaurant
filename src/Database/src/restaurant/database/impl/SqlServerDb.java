@@ -211,7 +211,8 @@ public class SqlServerDb implements IDb {
 
     @Override
     public List<Dish> getDishByName(String name) {
-        return null;
+        String sql ="SELECT * FROM MENU WHERE 菜名 ='"+ name +"'";
+        return getDishByColumn(sql);
     }
 
     @Override
