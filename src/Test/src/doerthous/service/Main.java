@@ -2,25 +2,18 @@ package doerthous.service;
 
 
 import doerthous.ui.AFrameForJPanelTest;
-import restaurant.communication.pc.PeerFactory;
-import restaurant.communication.core.IPeer;
 import restaurant.service.core.IManagementService;
 import restaurant.service.pc.ServiceFactory;
 import restaurant.ui.Constants;
-import restaurant.ui.component.JButtonBuilder;
-import restaurant.ui.component.PictureLabel;
+import restaurant.ui.component.builder.JButtonBuilder;
+import restaurant.ui.component.PicturePanel;
 import restaurant.ui.utils.Utility;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
-import javax.swing.text.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
-import java.text.NumberFormat;
 import java.util.Scanner;
-import java.util.regex.Pattern;
 
 public class Main {
     static class WaiterNotificationTest {
@@ -126,7 +119,7 @@ public class Main {
                         File f = chooseFile.getSelectedFile();
                         String fname = f.getAbsolutePath();
                         picture.removeAll();
-                        picture.add(new PictureLabel(200,200,fname));
+                        picture.add(new PicturePanel(fname));
                         picture.revalidate();
                         data.dishPicUrl = fname;
                     }

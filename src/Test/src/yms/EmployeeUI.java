@@ -1,8 +1,6 @@
 package yms;
 
 import restaurant.ui.component.BasePanel;
-import restaurant.ui.component.JButtonBuilder;
-import restaurant.ui.component.thirdpart.ShadowBorder;
 import yms.component.EmployeeCard;
 
 import javax.swing.*;

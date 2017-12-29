@@ -2,6 +2,7 @@ package restaurant.service.core;
 
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import restaurant.service.core.vo.Dish;
+import restaurant.service.core.vo.Employee;
 
 import java.util.List;
 import java.util.Map;
@@ -10,26 +11,12 @@ public interface IManagementService {
 /*    int DISH_FINISH = 0;
     int CUSTOMER_REQUEST = 1;*/
 
-    /*
-        通知服务员传菜
-     */
-    void dishFinish(String dishName, String tableId, String waiterId);
-    /*
-        通知服务员接待
-     */
-    void customerCall(String tableId, String waiterId);
-    /*
-        开台
-     */
-    void openTable(String tableId, Integer customerCount);
-    /*
-        关台
-     */
-    void closeTable(String tableId);
+
     /*
         新增菜品
      */
     boolean createDish(String name, Float price, String type, Boolean isSaled, String pictureUrl);
+    boolean modifiDish(String name, Float price, String type, Boolean isSaled, String pictureUrl);
     /*
         删除菜品
      */
@@ -46,6 +33,30 @@ public interface IManagementService {
         获取菜品类型
      */
     List<String> getDishTypes();
+    Dish getDishByName(String name);
+    /*
+        员工管理部分
+     */
+    List<Employee> getAllEmployee();
+    List<Employee> getEmployeeByPosition(String position);
+    List<String> getAllEmployeePositions();
+    Employee getEmployeeByCode(String code);
+    /*
+       通知服务员传菜
+    */
+    void dishFinish(String dishName, String tableId, String waiterId);
+    /*
+        通知服务员接待
+     */
+    void customerCall(String tableId, String waiterId);
+    /*
+        开台
+     */
+    void openTable(String tableId, Integer customerCount);
+    /*
+        关台
+     */
+    void closeTable(String tableId);
     /*
         餐桌管理
      */

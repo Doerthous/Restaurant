@@ -13,4 +13,8 @@ public class Utility {
         Pattern pattern = Pattern.compile("[1-9][0-9]*");
         return pattern.matcher(str).matches();
     }
+    public static boolean isFloat(String str){
+        Pattern pattern = Pattern.compile("[1-9][0-9]*");
+        return pattern.matcher(str).matches();
+    }
 }

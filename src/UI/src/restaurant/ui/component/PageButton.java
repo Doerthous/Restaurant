@@ -1,5 +1,7 @@
 package restaurant.ui.component;
 
+import restaurant.ui.component.builder.JButtonBuilder;
+import restaurant.ui.component.builder.JLabelBuilder;
 import restaurant.ui.component.layout.PageLayout;
 
 import javax.swing.*;

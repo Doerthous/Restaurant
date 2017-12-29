@@ -1,9 +1,9 @@
 package restaurant.ui.client;
 
 import restaurant.ui.Constants;
-import restaurant.ui.component.JButtonBuilder;
-import restaurant.ui.component.JLabelBuilder;
-import restaurant.ui.component.JPanelBuilder;
+import restaurant.ui.component.builder.JButtonBuilder;
+import restaurant.ui.component.builder.JLabelBuilder;
+import restaurant.ui.component.builder.JPanelBuilder;
 
 import javax.swing.*;
 import java.awt.*;

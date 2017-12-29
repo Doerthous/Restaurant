@@ -1,9 +1,8 @@
-package restaurant.ui.component;
+package restaurant.ui.component.builder;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 
 public class JLabelBuilder {
@@ -17,6 +16,10 @@ public class JLabelBuilder {
     }
     public JLabelBuilder horizontalAlignment(int horizontalAlignment){
         label.setHorizontalAlignment(horizontalAlignment);
+        return this;
+    }
+    public JLabelBuilder verticalAlignment(int verticalAlignment){
+        label.setVerticalAlignment(verticalAlignment);
         return this;
     }
     public JLabelBuilder font(Font font){

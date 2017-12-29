@@ -343,10 +343,10 @@ public class SqlServerDb implements IDb {
         PreparedStatement stmt = null;
         try{
             conn = DriverManager.getConnection(url,user,password);
-            String sql = "UPDATE MENU"+
-                    "SET 菜名=?,单价=?,品类=?, 是否售卖=?,图片=?,一月销售量=?,二月销售量=?,"+
+            String sql = "UPDATE MENU "+
+                    " SET 菜名=?,单价=?,品类=?, 是否售卖=?,图片=?,一月销售量=?,二月销售量=?,"+
                     "三月销售量=?,四月销售量=?,五月销售量=?,六月销售量=?,七月销售量=?,八月销售量=?,"+
-                    "九月销售量=?,十月销售量=?,十一月销售量=?,十二月销售量=? "+"WHERE 菜品id=?";
+                    "九月销售量=?,十月销售量=?,十一月销售量=?,十二月销售量=? "+" WHERE 菜品id=?";
             stmt = conn.prepareStatement(sql);
             stmt.setString(1,dish.getName());
             stmt.setFloat(2,dish.getPrice());

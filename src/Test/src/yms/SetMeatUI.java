@@ -1,8 +1,7 @@
 package yms;
 
 import restaurant.ui.component.BasePanel;
-import restaurant.ui.component.JButtonBuilder;
-import restaurant.ui.component.thirdpart.ShadowBorder;
+import restaurant.ui.component.builder.JButtonBuilder;
 import yms.component.MinSetMeatCard;
 import yms.component.SetMeatCard;
 

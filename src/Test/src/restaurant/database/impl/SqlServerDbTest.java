@@ -172,11 +172,34 @@ public void testUpdateEmployee() throws Exception {
 //TODO: Test goes here...
     IDb db = DbFactory.getDb(DbFactory.DbType.SqlServer);
     db.init("jdbc:sqlserver://192.168.155.1:1433;DatabaseName=OrderDish", "ODuser","1234567890");
-    Boolean result = db.updateEmployee(new Employee("c01", "名字", new Date(), "男", "籍贯", "职位",
-            1000, new Date(), "联系方式", "住址", "000",null));
+    Employee employee = new Employee();
+    employee.setId("c01");
+    employee.setName("名字");
+    employee.setBirthday(null);
+    employee.setSex("男");
+    employee.setNativePlace("籍贯");
+    employee.setPosition("职位");
+    employee.setSalary(1000);
+    employee.setHiredate(null);
+    employee.setContactWay("联系方式");
+    employee.setAddress("住址");
+    employee.setPassword("000");
+    employee.setPhoto(null);
+    Boolean result = db.updateEmployee(employee);
     assertTrue(result);
-    result = db.updateEmployee(new Employee("01", "名字", new Date(), "男", "籍贯", "职位",
-            1000, new Date(), "联系方式", "住址", "密码",null));
+
+    employee.setId("01");
+    employee.setName("名字");
+    employee.setBirthday(null);
+    employee.setSex("男");
+    employee.setNativePlace("籍贯");
+    employee.setPosition("职位");
+    employee.setSalary(1000);
+    employee.setHiredate(null);
+    employee.setContactWay("联系方式");
+    employee.setAddress("住址");
+    employee.setPassword("000");
+    employee.setPhoto(null);
     assertFalse(result);
 } 
 
@@ -275,7 +298,14 @@ public void testDeleteDish() throws Exception {
 //TODO: Test goes here...
     IDb db = DbFactory.getDb(DbFactory.DbType.SqlServer);
     db.init("jdbc:sqlserver://192.168.155.1:1433;DatabaseName=OrderDish", "ODuser","1234567890");
-    Boolean result = db.deleteDish(new Dish("m065","鸡蛋",(float)15.0,"小吃",true,null));
+    Dish dish = new Dish();
+    dish.setId("m065");
+    dish.setName("鸡蛋");
+    dish.setPrice(15f);;
+    dish.setType("小吃");
+    dish.setSaled(true);
+    dish.setPicture(null);
+    Boolean result = db.deleteDish(dish);
     assertFalse(result);
 }
 

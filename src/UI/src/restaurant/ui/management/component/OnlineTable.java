@@ -1,6 +1,6 @@
 package restaurant.ui.management.component;
 
-import restaurant.ui.component.JButtonBuilder;
+import restaurant.ui.component.builder.JButtonBuilder;
 import restaurant.ui.component.RectangleCard;
 
 import java.awt.*;

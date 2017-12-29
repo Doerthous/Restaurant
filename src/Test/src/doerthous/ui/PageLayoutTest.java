@@ -1,7 +1,6 @@
 package doerthous.ui;
 
-import doerthous.ui.AFrameForJPanelTest;
-import restaurant.ui.component.JButtonBuilder;
+import restaurant.ui.component.builder.JButtonBuilder;
 import restaurant.ui.component.layout.PageLayout;
 
 import javax.swing.*;

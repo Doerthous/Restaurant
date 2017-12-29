@@ -3,7 +3,7 @@ package restaurant.ui.management;
 import restaurant.service.core.IManagementService;
 import restaurant.ui.Constants;
 import restaurant.ui.component.BasePanel3;
-import restaurant.ui.component.JButtonBuilder;
+import restaurant.ui.component.builder.JButtonBuilder;
 import restaurant.ui.component.PageButton;
 import restaurant.ui.component.layout.PageLayout;
 import restaurant.ui.component.thirdpart.ShadowBorder;
@@ -19,7 +19,7 @@ import java.awt.event.ActionListener;
 
 public class MainUI extends BasePanel3 implements IManagementService.ITableObserver, ActionListener {
     public static final String DISH_MANAGE = "菜品管理";
-    public static final String EMPLOYEE_MANAGE = "菜品管理";
+    public static final String EMPLOYEE_MANAGE = "员工管理";
     public static final String DATA_ANALYZE = "数据统计";
     public static final String SYSTEM_SETTING = "系统设置";
     private ManagementFrame mf;
@@ -84,6 +84,9 @@ public class MainUI extends BasePanel3 implements IManagementService.ITableObser
             switch (button.getText()){
                 case DISH_MANAGE:{
                     mf.dishManage();
+                } break;
+                case EMPLOYEE_MANAGE: {
+                    mf.employeeManage();
                 } break;
             }
         } else if(e.getSource() instanceof FreeTableInfo){

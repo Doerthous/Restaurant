@@ -1,4 +1,4 @@
-package restaurant.ui.component;
+package restaurant.ui.component.builder;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -46,6 +46,10 @@ public class JPanelBuilder {
     }
     public JPanelBuilder add(Component component, String name){
         panel.add(name, component);
+        return this;
+    }
+    public JPanelBuilder add(Component component, Object constraints){
+        panel.add(component, constraints);
         return this;
     }
     public JPanel build(){

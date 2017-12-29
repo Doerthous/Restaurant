@@ -1,7 +1,7 @@
 package restaurant.ui.management.component;
 
-import restaurant.ui.component.JButtonBuilder;
-import restaurant.ui.component.JLabelBuilder;
+import restaurant.ui.component.builder.JButtonBuilder;
+import restaurant.ui.component.builder.JLabelBuilder;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,23 +1,37 @@
 package restaurant.ui.management.component;
 
-import doerthous.service.Main;
 import restaurant.ui.Constants;
-import restaurant.ui.component.JButtonBuilder;
-import restaurant.ui.component.PictureLabel;
+import restaurant.ui.component.builder.JButtonBuilder;
+import restaurant.ui.component.builder.JLabelBuilder;
+import restaurant.ui.component.builder.JPanelBuilder;
+import restaurant.ui.utils.GBC;
+import restaurant.ui.utils.StringUtils;
 import restaurant.ui.utils.Utility;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
 import java.awt.*;
-import java.io.File;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class DishForm  extends JDialog {
-    public class Data {
+public class DishForm extends JDialog implements ActionListener {
+    public static class Data {
         public String dishName;
         public Float dishPrice;
         public String dishType;
         public Boolean dishIsSaled;
         public String dishPicUrl;
+        public ImageIcon dishPic;
+
+        public Data() {
+        }
+
+        public Data(String dishName, Float dishPrice, String dishType, Boolean dishIsSaled, ImageIcon dishPic) {
+            this.dishName = dishName;
+            this.dishPrice = dishPrice;
+            this.dishType = dishType;
+            this.dishIsSaled = dishIsSaled;
+            this.dishPic = dishPic;
+        }
 
         @Override
         public String toString() {
@@ -31,98 +45,113 @@ public class DishForm  extends JDialog {
         }
     }
 
+    private PicturePicker picturePicker;
+    private JTextField name;
+    private JTextField price;
+    private JComboBox type;
+    private JCheckBox isSaled;
     private Data data;
-    private JPanel picture;
+    public DishForm() {
+        this(new String[]{}); // test
+    }
 
-
-    public DishForm(String[] types) {
+    // for create
+    public DishForm(String[] types){
         data = new Data();
-        // 设置样式
+
         setModal(true);
-        setBounds(new Rectangle(0,0,600,300));
-        Container container=getContentPane();
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setSize(500,300);
+        setLayout(new BorderLayout());
+        getContentPane().setBackground(Constants.Color.subtitle);
 
-        // 创建组件
-        picture =  new JPanel(new BorderLayout());
-        JTextField name = new JTextField();
-        JTextField price = new JTextField();
-        JCheckBox isSaled = new JCheckBox();
-        JComboBox type = new JComboBox(types);
+        // 图片
+        picturePicker = new PicturePicker(new Dimension(200,160));
+        add(picturePicker, BorderLayout.WEST);
 
-        JPanel form = new JPanel();
-        form.setLayout(new GridLayout(6,2));
-        form.add(new JLabel("菜品名称"));
-        form.add(name); // 菜品名称
-        form.add(new JLabel("菜品价格"));
-        form.add(price); // 价格
-        form.add(new JLabel("菜品类型"));
-        form.add(type); // 类型
-        form.add(new JLabel("菜品图片"));
-        form.add(JButtonBuilder.getInstance().text("选择图片").listener(e->{
-            JFileChooser chooseFile = new JFileChooser();
-            chooseFile.addChoosableFileFilter(new FileCanChoose());
-            chooseFile.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            chooseFile.setAcceptAllFileFilterUsed(false);
-            int returnVal = chooseFile.showOpenDialog(this);
-            if (returnVal == chooseFile.APPROVE_OPTION) {
-                File f = chooseFile.getSelectedFile();
-                String fname = f.getAbsolutePath();
-                picture.removeAll();
-                picture.add(new PictureLabel(200,200,fname));
-                picture.revalidate();
-                data.dishPicUrl = fname;
-            }
-        }).build());
-        form.add(new JLabel("是否售卖"));
-        form.add(isSaled);
-        form.add(JButtonBuilder.getInstance().text("确认").listener(e -> {
-            if(name.getText().toString().length() == 0){
-                //
-                JOptionPane.showMessageDialog(this, "请输入菜名");
-            } else if(price.getText().toString().length() == 0){
-                //
-                JOptionPane.showMessageDialog(this, "请输入价格");
-            } else if(!Utility.isNumeric(price.getText().toString())) {
-                JOptionPane.showMessageDialog(this, "价格格式不合法");
-            } else{
-                data.dishName = name.getText();
-                data.dishPrice = Float.valueOf(price.getText());
-                data.dishIsSaled = isSaled.isSelected();
-                data.dishType = (String) type.getSelectedItem();
-                dispose();
-            }
-        }).build());
-        form.add(JButtonBuilder.getInstance().text("取消").listener(e->{
-            dispose();
-        }).build());
 
-        // 设置组件样式
-        picture.setPreferredSize(new Dimension(200,200));
-        picture.setBorder(BorderFactory.createLineBorder(Constants.Color.subtitle));
+        JPanel c = JPanelBuilder.getInstance().opaque(false).layout(new BorderLayout())
+                .border(BorderFactory.createEmptyBorder(20,20,20,20)).build();
+        // 按钮
+        JPanel buttons = JPanelBuilder.getInstance().opaque(false)
+                .layout(new GridLayout(1,2,10,0))
+                .border(BorderFactory.createEmptyBorder(10,10,0,10))
+                .build();
+        buttons.add(JButtonBuilder.getInstance().text("确定")
+                .background(Constants.Color.background).focusPainted(false)
+                .listener(this).build());
+        buttons.add(JButtonBuilder.getInstance().text("取消")
+                .background(Constants.Color.background).focusPainted(false)
+                .listener(this).build());
+        c.add(buttons, BorderLayout.SOUTH);
 
-        // 添加组件
-        container.add("West", picture);
-        container.add("Center", form);
+        // 表单
+        name = new JTextField();
+        price = new JTextField();
+        type = new JComboBox(types);
+        isSaled = new JCheckBox();
+        isSaled.setOpaque(false);
+        c.add(JPanelBuilder.getInstance().opaque(false).layout(new BorderLayout())
+                .add(JPanelBuilder.getInstance().opaque(false).layout(new GridLayout(4,1))
+                        .add(JLabelBuilder.getInstance().text("菜品名称").foreground(Color.white).build())
+                        .add(JLabelBuilder.getInstance().text("菜品价格").foreground(Color.white).build())
+                        .add(JLabelBuilder.getInstance().text("菜品类型").foreground(Color.white).build())
+                        .add(JLabelBuilder.getInstance().text("是否售卖").foreground(Color.white).build())
+                        .preferredSize(new Dimension(80,0))
+                        .build(),BorderLayout.WEST)
+                .add(JPanelBuilder.getInstance().opaque(false).layout(new GridBagLayout())
+                        .add(name, new GBC(0,0).setWeight(1,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER))
+                        .add(price, new GBC(0,1).setWeight(1,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER))
+                        .add(type, new GBC(0,2).setWeight(1,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER))
+                        .add(isSaled, new GBC(0,3).setWeight(1,1).setFill(GBC.HORIZONTAL).setAnchor(GBC.CENTER))
+                        .build(),BorderLayout.CENTER)
+                .build());
+        add(c);
     }
 
-    class FileCanChoose extends FileFilter { //文件过滤器，设置选择对应类型的文件
-        public boolean accept(File file) {
-            String name = file.getName();
-            return(name.toLowerCase().endsWith(".gif")||
-                    name.toLowerCase().endsWith(".jpg")||
-                    name.toLowerCase().endsWith(".bmp")||
-                    name.toLowerCase().endsWith(".png")||
-                    name.toLowerCase().endsWith(".jpeg") ||
-                    file.isDirectory());
-        }
-        public String getDescription() {
-            return "图片文件：.gif、 .jpg、 .bmp、 .png、 .jpeg";
-        }
+    // for modify
+    public DishForm(String[] types, Data data){
+        this(types);
+        name.setText(data.dishName);
+        price.setText(data.dishPrice.toString());
+        type.setSelectedItem(data.dishType);
+        isSaled.setSelected(data.dishIsSaled);
+        picturePicker.setPicture(data.dishPic);
     }
 
 
-    public Data getData() {
+    public Data open(){
+        setVisible(true);
         return data;
     }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource() instanceof JButton){
+            JButton button = (JButton)e.getSource();
+            switch (button.getText()){
+                case "确定":{
+                    if(name.getText().length() == 0){
+                        return;
+                    }
+                    if(price.getText().length() == 0){
+                        return;
+                    }
+                    if(!StringUtils.isNumber(price.getText())){
+                        return;
+                    }
+                    data.dishName = name.getText();
+                    data.dishPrice = Float.valueOf(price.getText());
+                    data.dishType = (String) type.getSelectedItem();
+                    data.dishIsSaled = isSaled.isSelected();
+                    data.dishPicUrl = picturePicker.getUrl();
+                    dispose();
+                } break;
+                case "取消": {
+                    dispose();
+                } break;
+            }
+        }
+    }
 }

@@ -41,44 +41,6 @@ public class Dish {
     // 十二月销售量
     private Integer saledCount12;
 
-    public Dish(String id, String name, Float price, String type, Boolean isSaled, InputStream picture,
-                Integer saledCount1, Integer saledCount2, Integer saledCount3,
-                Integer saledCount4, Integer saledCount5, Integer saledCount6,
-                Integer saledCount7, Integer saledCount8, Integer saledCount9,
-                Integer saledCount10, Integer saledCount11, Integer saledCount12) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.type = type;
-        this.isSaled = isSaled;
-        setPicture(picture);
-        this.saledCount1 = saledCount1;
-        this.saledCount2 = saledCount2;
-        this.saledCount3 = saledCount3;
-        this.saledCount4 = saledCount4;
-        this.saledCount5 = saledCount5;
-        this.saledCount6 = saledCount6;
-        this.saledCount7 = saledCount7;
-        this.saledCount8 = saledCount8;
-        this.saledCount9 = saledCount9;
-        this.saledCount10 = saledCount10;
-        this.saledCount11 = saledCount11;
-        this.saledCount12 = saledCount12;
-    }
-
-    public Dish(String id, String name, Float price, String type, Boolean isSaled, InputStream picture) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.type = type;
-        this.isSaled = isSaled;
-        setPicture(picture);
-    }
-
-    public Dish(String name){
-        this.name = name;
-    }
-
     public Dish() {
     }
 

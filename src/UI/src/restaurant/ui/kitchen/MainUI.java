@@ -4,11 +4,12 @@ import restaurant.service.core.IKitchenService;
 import restaurant.ui.Constants;
 import restaurant.ui.component.*;
 import restaurant.ui.component.border.AdvLineBorder;
+import restaurant.ui.component.builder.JButtonBuilder;
+import restaurant.ui.component.builder.JLabelBuilder;
 import restaurant.ui.component.layout.PageLayout;
 import restaurant.ui.utils.Utility;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;

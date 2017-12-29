@@ -4,14 +4,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 
-public class PictureLabel extends JPanel {
+public class PicturePanel extends JPanel {
     private ImageIcon ii;
-    public PictureLabel(int width, int height, String path) {
-        setPreferredSize(new Dimension(width, height));
-        //
+    public PicturePanel(String path){
         ii = new ImageIcon(path);
     }
-    public PictureLabel(ImageIcon picture) {
+    public PicturePanel(ImageIcon picture) {
         ii = picture;
     }
 

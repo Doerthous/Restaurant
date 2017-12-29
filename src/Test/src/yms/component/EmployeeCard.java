@@ -1,7 +1,7 @@
 package yms.component;
 
 import yms.ColorConstants;
-import restaurant.ui.component.JButtonBuilder;
+import restaurant.ui.component.builder.JButtonBuilder;
 
 import javax.swing.*;
 import javax.swing.border.Border;

@@ -1,18 +1,16 @@
 package restaurant.ui.management;
 
-import restaurant.service.core.IManagementService;
 import restaurant.service.core.vo.Dish;
 import restaurant.ui.Constants;
 import restaurant.ui.component.BasePanel3;
-import restaurant.ui.component.JButtonBuilder;
+import restaurant.ui.component.ConfirmDialog;
+import restaurant.ui.component.builder.JButtonBuilder;
 import restaurant.ui.component.JComboBoxEx;
 import restaurant.ui.component.PageButton;
 import restaurant.ui.component.layout.PageLayout;
 import restaurant.ui.component.thirdpart.ShadowBorder;
-import restaurant.ui.management.component.BusyTableInfo;
 import restaurant.ui.management.component.DishCard;
-import restaurant.ui.management.component.FreeTableInfo;
-import restaurant.ui.management.component.OnlineTable;
+import restaurant.ui.management.component.DishForm;
 import restaurant.ui.utils.Utility;
 
 import javax.swing.*;
@@ -40,7 +38,7 @@ public class DishManageUI extends BasePanel3 implements ActionListener {
         // content
         java.util.List<Dish> dishes = mf.getService().getAllDish();
         for(Dish dish: dishes){
-            getContentLeft().add(new DishCard(dish.getName(), dish.getPrice(), dish.getPicture())
+            getContentLeft().add(new DishCard(dish.getName(), dish.getPrice(), new ImageIcon(dish.getPicture()))
                     .setActionListener(this));
         }
         getContentRightTop().setLayout(new PageLayout().setSingleCol(true));
@@ -50,7 +48,7 @@ public class DishManageUI extends BasePanel3 implements ActionListener {
         // foot
         addFootRight(
                 JButtonBuilder.getInstance().text("新增").background(restaurant.ui.client.Constants.Color.title)
-                        .listener(e -> mf.main()).build()
+                        .listener(e->createDish()).build()
         );
         addFootRight(
                 JButtonBuilder.getInstance().text("返回").background(restaurant.ui.client.Constants.Color.title)
@@ -77,23 +75,49 @@ public class DishManageUI extends BasePanel3 implements ActionListener {
         if(e.getSource() instanceof DishCard){
             DishCard dc = (DishCard)e.getSource();
             if (e.getActionCommand().equals(DishCard.MODIFY)) {
-
+                modifyDish(dc);
             } else if (e.getActionCommand().equals(DishCard.DELETE)){
-                // 此处应该弹框警告
-                int isDelete = JOptionPane.showConfirmDialog(null,
-                        "确定删除","提示",
-                        JOptionPane.YES_NO_CANCEL_OPTION);
-                if(isDelete == JOptionPane.YES_OPTION) {
-                    if (mf.getService().deleteDish(dc.getDishName())) {
-                        // 删除成功
-                        System.out.println("");
-                    } else {
-                        //
-                    }
-                    getContentLeft().remove(dc);
-                    Utility.revalidate(getContentLeft());
-                }
+                deleteDish(dc);
             }
+        }
+    }
+
+    private void createDish(){
+        DishForm d = new DishForm(mf.getService().getDishTypes().toArray(new String[0]));
+        DishForm.Data data = d.open();
+        if(mf.getService().createDish(data.dishName, data.dishPrice, data.dishType,
+                data.dishIsSaled, data.dishPicUrl)){
+            // 提示创建成功
+        } else {
+            // 提示创建失败，失败原因
+        }
+    }
+    private void modifyDish(DishCard dc){
+        Dish dish = mf.getService().getDishByName(dc.getDishName());
+        DishForm.Data data = new DishForm.Data(dish.getName(), dish.getPrice(), dish.getType(), dish.getIsSaled(),
+                new ImageIcon(dish.getPicture()));
+        DishForm d = new DishForm(mf.getService().getDishTypes().toArray(new String[0]), data);
+        data = d.open();
+        if(mf.getService().modifiDish(data.dishName, data.dishPrice, data.dishType,
+                data.dishIsSaled, data.dishPicUrl)){
+            // 提示创建成功
+        } else {
+            // 提示创建失败，失败原因
+        }
+        System.out.println(d.open().toString());
+    }
+    private void deleteDish(DishCard dc){
+        // 此处应该弹框警告
+        int isDelete = new ConfirmDialog("删除后将无法恢复，确定删除吗？").open();
+        if(isDelete == ConfirmDialog.YES_OPTION) {
+            if (mf.getService().deleteDish(dc.getDishName())) {
+                // 删除成功
+                System.out.println("");
+            } else {
+                //
+            }
+            getContentLeft().remove(dc);
+            Utility.revalidate(getContentLeft());
         }
     }
 

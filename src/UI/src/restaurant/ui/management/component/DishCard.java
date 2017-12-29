@@ -1,7 +1,7 @@
 package restaurant.ui.management.component;
 
 import restaurant.ui.client.Constants;
-import restaurant.ui.component.PictureLabel;
+import restaurant.ui.component.PicturePanel;
 import restaurant.ui.component.thirdpart.ShadowBorder;
 
 import javax.swing.*;
@@ -40,7 +40,7 @@ public class DishCard extends JPanel implements ActionListener {
         JPanel jPanel2  = new JPanel(new GridLayout(1,2));
         JLabel name = new JLabel(dishName);
         JLabel price = new JLabel(dishPrice.toString());
-        PictureLabel picture = new PictureLabel(dishPicture);
+        PicturePanel picture = new PicturePanel(dishPicture);
         JButton modify = new JButton(MODIFY);
         JButton delete = new JButton(DELETE);
 

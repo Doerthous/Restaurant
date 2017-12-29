@@ -3,15 +3,14 @@ package restaurant.ui.client;
 import restaurant.service.core.IClientService;
 import restaurant.ui.component.*;
 import restaurant.ui.component.border.AdvLineBorder;
+import restaurant.ui.component.builder.JButtonBuilder;
+import restaurant.ui.component.builder.JLabelBuilder;
 import restaurant.ui.component.layout.PageLayout;
 import restaurant.ui.component.thirdpart.ShadowBorder;
-import restaurant.ui.component.thirdpart.VFlowLayout;
 import restaurant.ui.utils.Utility;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -125,7 +124,7 @@ public class OrderUI extends BasePanel3 {
             JPanel jPanel2  = new JPanel(new BorderLayout());
             JLabel name = new JLabel(dishName);
             JLabel price = new JLabel(dishPrice);
-            PictureLabel picture = new PictureLabel(dishPicture);
+            PicturePanel picture = new PicturePanel(dishPicture);
             JButton dec = new JButton("-");
             this.count = new JLabel(count.toString(), JLabel.CENTER);
             JButton inc = new JButton("+");

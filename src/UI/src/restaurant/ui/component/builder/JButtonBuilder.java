@@ -1,4 +1,4 @@
-package restaurant.ui.component;
+package restaurant.ui.component.builder;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -87,6 +87,10 @@ public class JButtonBuilder {
     }
     public JButtonBuilder icon(Icon icon){
         button.setIcon(icon);
+        return this;
+    }
+    public JButtonBuilder margin(Insets margin){
+        button.setMargin(margin);
         return this;
     }
     public JButton build(){

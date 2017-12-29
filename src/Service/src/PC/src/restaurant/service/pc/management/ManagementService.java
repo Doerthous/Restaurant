@@ -5,12 +5,13 @@ import restaurant.communication.core.IData;
 import restaurant.communication.core.IPeer;
 import restaurant.database.IDb;
 import restaurant.database.po.Detail;
-import restaurant.database.po.Employee;
 import restaurant.database.po.Order;
 import restaurant.service.core.IManagementService;
 import restaurant.service.core.impl.InterModuleCommunication;
 import restaurant.service.core.impl.utils.Debug;
 import restaurant.service.core.vo.Dish;
+import restaurant.service.core.vo.Employee;
+import restaurant.service.pc.vo.PO2VO;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,7 +25,8 @@ public class ManagementService implements IManagementService, ICommandObserver {
     private List<ITableObserver> tos;
     private Map<String, TableInfo> tis;
     // 缓存
-    private List<Dish> dishes;
+    private List<restaurant.database.po.Dish> dishes;
+    private List<restaurant.database.po.Employee> employees;
 
     public ManagementService(IPeer peer, IDb db){
         this.peer = peer;
@@ -51,54 +53,120 @@ public class ManagementService implements IManagementService, ICommandObserver {
     @Override
     public boolean createDish(String name, Float price, String type, Boolean isSaled, String pictureUrl) {
         debug("create new dish: ["+name+", "+price+", "+type+", "+isSaled+", "+pictureUrl+"]");
-        boolean result = false;
-        try {
-            restaurant.database.po.Dish dish = new restaurant.database.po.Dish(name, name,
-                    price, type,isSaled, new FileInputStream(new File(pictureUrl)));
-            result = db.insertDish(dish);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        boolean result;
+        restaurant.database.po.Dish dish = PO2VO.newDishPo(name, name, price, type,isSaled, pictureUrl);
+        result = db.insertDish(dish);
         return result;
     }
     @Override
+    public boolean modifiDish(String name, Float price, String type, Boolean isSaled, String pictureUrl) {
+        debug("create new dish: ["+name+", "+price+", "+type+", "+isSaled+", "+pictureUrl+"]");
+        if(dishes == null){
+            this.dishes = db.getAllDish();
+        }
+        restaurant.database.po.Dish targetDish = null;
+        for(restaurant.database.po.Dish dish : this.dishes){
+            if(dish.getName().equals(name)){
+                targetDish = dish;
+                break;
+            }
+        }
+        restaurant.database.po.Dish dish = PO2VO.setDishPo(name, name, price, type,
+                isSaled, pictureUrl, targetDish);
+        return db.updateDish(dish);
+    }
+    @Override
     public boolean deleteDish(String name) {
-        return db.deleteDish(new restaurant.database.po.Dish(name));
+        return db.deleteDish(PO2VO.newDishPo(name));
     }
     @Override
     public List<Dish> getAllDish() {
-        List<restaurant.database.po.Dish> l = db.getAllDish();
+        this.dishes = db.getAllDish();
         List<Dish> dishes = new ArrayList<>();
-        for(restaurant.database.po.Dish d: l){
-            dishes.add(new Dish(d.getName(), d.getPrice(), d.getPicture(), d.getType()));
-        }
-        if(this.dishes == null){
-            this.dishes = dishes;
+        for(restaurant.database.po.Dish d: this.dishes){
+            dishes.add(PO2VO.dish(d));
         }
         return dishes;
     }
     @Override
     public List<Dish> getDishByType(String type) {
+        if(this.dishes == null){
+            getAllDish();
+        }
         List<Dish> dishes = new ArrayList<>();
-        for(Dish dish: this.dishes){
-            if(dish.getType().equals(type)){
-                dishes.add(dish);
+        for(restaurant.database.po.Dish d: this.dishes){
+            if(d.getType().equals(type)){
+                dishes.add(PO2VO.dish(d));
             }
         }
         return dishes;
     }
     @Override
     public List<String> getDishTypes() {
-        if(dishes == null){
+        if(this.dishes == null){
             getAllDish();
         }
         List<String> types = new ArrayList<>();
-        for(Dish dish: dishes){
+        for(restaurant.database.po.Dish dish: dishes){
             if(!types.contains(dish.getType())){
                 types.add(dish.getType());
             }
         }
         return types;
+    }
+    @Override
+    public Dish getDishByName(String name) {
+        List<restaurant.database.po.Dish> dishes = db.getDishByName(name);
+        if(dishes.size() > 0) {
+            restaurant.database.po.Dish dish = dishes.get(0);
+            return PO2VO.dish(dish);
+        }
+        return null;
+    }
+
+    // employee 相关
+    @Override
+    public List<Employee> getAllEmployee() {
+        this.employees = db.getAllEmployee();
+        List<Employee> employees = new ArrayList<>();
+        for(restaurant.database.po.Employee e: this.employees){
+            employees.add(PO2VO.employee(e));
+        }
+        return employees;
+    }
+    @Override
+    public List<Employee> getEmployeeByPosition(String position) {
+        if(employees == null){
+            getAllEmployee();
+        }
+        List<Employee> employees = new ArrayList<>();
+        for(restaurant.database.po.Employee e: this.employees){
+            if(e.getPosition().equals(position)){
+                employees.add(PO2VO.employee(e));
+            }
+        }
+        return employees;
+    }
+    @Override
+    public List<String> getAllEmployeePositions() {
+        if(employees == null){
+            getAllEmployee();
+        }
+        List<String> positions = new ArrayList<>();
+        for(restaurant.database.po.Employee e: employees){
+            if(!positions.contains(e.getPosition())){
+                positions.add(e.getPosition());
+            }
+        }
+        return positions;
+    }
+    @Override
+    public Employee getEmployeeByCode(String code) {
+        restaurant.database.po.Employee employee = db.getEmployeeById(code);
+        if(employee != null) {
+            return PO2VO.employee(employee);
+        }
+        return null;
     }
 
 
@@ -140,7 +208,7 @@ public class ManagementService implements IManagementService, ICommandObserver {
         // 用数据库验证
         debug(data.account + " login in with password: " + data.password);
         //
-        Employee employee = db.getEmployeeById(data.account);
+        restaurant.database.po.Employee employee = db.getEmployeeById(data.account);
         if(employee == null){
             peer.sendCommand(waiterId, InterModuleCommunication.CommandToWaiter.MANAGEMENT_LOGIN_ACK,
                     InterModuleCommunication.Data.MW.loginAck(data.account,
@@ -160,7 +228,7 @@ public class ManagementService implements IManagementService, ICommandObserver {
         debug(data.account + " change password with password: " +
                 data.password + " to new password: " + data.newPassword);
         //
-        Employee employee = db.getEmployeeById(data.waiterId);
+        restaurant.database.po.Employee employee = db.getEmployeeById(data.waiterId);
         if(employee == null){
             peer.sendCommand(waiterId, InterModuleCommunication.CommandToWaiter.MANAGEMENT_LOGIN_ACK,
                     InterModuleCommunication.Data.MW.changePasswordAck(false, "工号不存在"));

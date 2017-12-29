@@ -1,5 +1,8 @@
 package restaurant.database.po;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 
@@ -27,23 +30,7 @@ public class Employee {
     //密码
     private String password;
     //照片
-    private InputStream photo;
-
-    public Employee(String id, String name, Date birthday, String sex, String nativePlace, String position,
-                    Integer salary, Date hiredate, String contactWay, String address, String password, InputStream photo) {
-        this.id = id;
-        this.name = name;
-        this.birthday = birthday;
-        this.sex = sex;
-        this.nativePlace = nativePlace;
-        this.position = position;
-        this.salary = salary;
-        this.hiredate = hiredate;
-        this.contactWay = contactWay;
-        this.address = address;
-        this.password = password;
-        this.photo = photo;
-    }
+    private byte[] photo;
 
     public Employee() {
     }
@@ -138,11 +125,28 @@ public class Employee {
     }
 
     public InputStream getPhoto() {
-        return photo;
+        if(photo != null) {
+            return new ByteArrayInputStream(photo);
+        }
+        return null;
     }
 
     public void setPhoto(InputStream photo) {
-        this.photo = photo;
+        if(photo != null) {
+            try {
+                this.photo = new byte[1024];
+                int len = photo.available();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                while(len != 0) {
+                    photo.read(this.photo);
+                    baos.write(this.photo);
+                    len = photo.available();
+                }
+                this.photo = baos.toByteArray();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

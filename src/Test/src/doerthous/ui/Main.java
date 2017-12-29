@@ -2,16 +2,11 @@ package doerthous.ui;
 
 
 import restaurant.ui.client.LoginFrame;
-import restaurant.ui.component.JButtonBuilder;
-import restaurant.ui.component.JComboBoxEx;
-import restaurant.ui.component.JLabelBuilder;
-import restaurant.ui.component.RectangleCard;
+import restaurant.ui.component.*;
+import restaurant.ui.component.builder.JButtonBuilder;
 import restaurant.ui.management.component.*;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.util.ArrayList;
 
 public class Main {
     static class LoginFrameTest {
@@ -103,10 +98,62 @@ public class Main {
         public static void main(String[] args) {
             AFrameForJPanelTest f = new AFrameForJPanelTest();
             f.getContentPane().add(JButtonBuilder.getInstance().text("新增菜品").listener(e->{
-                DishForm d = new DishForm(new String[]{"特色菜","荤菜"});
+                doerthous.ui.old.DishForm d = new doerthous.ui.old.DishForm(new String[]{"特色菜","荤菜"});
                 d.setVisible(true);
-                DishForm.Data da = d.getData();
+                doerthous.ui.old.DishForm.Data da = d.getData();
                 System.out.println(da.toString());
+            }).build());
+            f.open();
+        }
+    }
+
+    static class DishForm3Test {
+        public static void main(String[] args) {
+            AFrameForJPanelTest f = new AFrameForJPanelTest();
+            f.getContentPane().add(JButtonBuilder.getInstance().text("新增菜品").listener(e->{
+                DishForm d = new DishForm();
+                System.out.println(d.open().toString());
+            }).build());
+            f.open();
+        }
+    }
+
+    static class EmployeeCardTest {
+        public static void main(String[] args) {
+            AFrameForJPanelTest f = new AFrameForJPanelTest();
+            //f.getContentPane().setLayout(new FlowLayout());
+            f.getContentPane().add(new EmployeeCard("0","77777777777",
+                    "f",null,"177777772","88888888888"));
+            f.open();
+        }
+    }
+
+    static class ConfirmDialogTest {
+        public static void main(String[] args) {
+            int i = new ConfirmDialog("确定吗aasdfsdfsdafsdfsadfsdafsadfasdfasdf？").open();
+            if(i == ConfirmDialog.YES_OPTION){
+                System.out.println("确定");
+            }else {
+                System.out.println("取消");
+            }
+        }
+    }
+
+    static class PicturePickerTest {
+        public static void main(String[] args) {
+            AFrameForJPanelTest f = new AFrameForJPanelTest();
+            //f.getContentPane().setLayout(new FlowLayout());
+            f.getContentPane().add(new PicturePicker());
+            f.open();
+        }
+    }
+
+    static class EmployeeFormTest {
+        public static void main(String[] args) {
+            AFrameForJPanelTest f = new AFrameForJPanelTest();
+            f.getContentPane().add(JButtonBuilder.getInstance().text("新增菜品").listener(e->{
+                EmployeeForm d = new EmployeeForm();
+                System.out.println(d.open().toString());
             }).build());
             f.open();
         }

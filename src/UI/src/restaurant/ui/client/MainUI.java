@@ -1,13 +1,12 @@
 package restaurant.ui.client;
 
-import restaurant.service.core.IClientService;
 import restaurant.ui.component.*;
-import restaurant.ui.component.border.AdvLineBorder;
+import restaurant.ui.component.builder.JButtonBuilder;
+import restaurant.ui.component.builder.JLabelBuilder;
 import restaurant.ui.component.thirdpart.ShadowBorder;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 
 public class MainUI extends BasePanel2 {
 

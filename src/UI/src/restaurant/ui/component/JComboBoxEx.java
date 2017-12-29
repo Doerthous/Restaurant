@@ -1,6 +1,7 @@
 package restaurant.ui.component;
 
 import restaurant.ui.Constants;
+import restaurant.ui.component.builder.JLabelBuilder;
 
 import javax.swing.*;
 import java.awt.*;

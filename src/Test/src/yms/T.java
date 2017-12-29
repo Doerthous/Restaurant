@@ -1,13 +1,8 @@
 package yms;
 
 import doerthous.ui.AFrameForJPanelTest;
-import restaurant.ui.component.JButtonBuilder;
-import yms.component.DishCard;
-import yms.component.EmployeeCard;
 import yms.component.MinSetMeatCard;
-import yms.component.SetMeatCard;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
