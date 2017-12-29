@@ -3,7 +3,7 @@ package yms.component;
 /**
  * Created by YMS on 2017/12/27.
  */
-import restaurant.ui.ColorConstants;
+import restaurant.ui.Constants;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -18,7 +18,7 @@ public class SetDishCard extends JPanel {
     {
         setPreferredSize(new Dimension(width, height));
         setLayout(new BorderLayout());
-        setBackground(ColorConstants.title);
+        setBackground(Constants.Color.title);
         //north
         JPanel north = new JPanel(new BorderLayout());
         north.setOpaque(false);
