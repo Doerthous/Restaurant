@@ -138,7 +138,7 @@ public class SqlServerDb implements IDb {
         PreparedStatement stmt = null;
         try {
             conn = DriverManager.getConnection(url,user,password);
-            String sql = "INSERT INTO EMPLOYEE VALUE(?,?,?,?,?,?,?,?,?,?,?,?)";
+            String sql = "INSERT INTO EMPLOYEE(员工id,姓名,性别,籍贯,职位,薪资,入职时间,联系方式,住址,密码,出生日期,照片) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
             stmt = conn.prepareStatement(sql);
             stmt.setString(1,employee.getId());
             stmt.setString(2,employee.getName());
@@ -179,7 +179,7 @@ public class SqlServerDb implements IDb {
         PreparedStatement stmt = null;
         try {
             conn = DriverManager.getConnection(url,user,password);
-            String sql = "DELETE FROM MENU WHERE 员工id='"+ employee.getId()+"'";
+            String sql = "DELETE FROM EMPLOYEE WHERE 员工id='"+ employee.getId()+"'";
             stmt = conn.prepareStatement(sql);
             int flag = stmt.executeUpdate();
             if (flag == 1)result = true;

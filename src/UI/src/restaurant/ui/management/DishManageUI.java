@@ -23,6 +23,14 @@ public class DishManageUI extends BasePanel3 implements ActionListener {
 
     public DishManageUI(ManagementFrame mf) {
         this.mf = mf;
+        sortRules = new String[]{
+                "按价格升序",
+                "按价格降序",
+                "按销量升序",
+                "按销量降序"
+        };
+        dishTypes = mf.getService().getDishTypes().toArray(new String[]{});
+
         PageLayout layout = new PageLayout();
         getContentLeft().setLayout(layout);
         PageButton pageButton = new PageButton(layout, getContentLeft());
@@ -36,14 +44,14 @@ public class DishManageUI extends BasePanel3 implements ActionListener {
         // getSubtitleLeft().add(createMenuButton("类别管理"));
 
         // content
-        java.util.List<Dish> dishes = mf.getService().getAllDish();
-        for(Dish dish: dishes){
-            getContentLeft().add(new DishCard(dish.getName(), dish.getPrice(), new ImageIcon(dish.getPicture()))
-                    .setActionListener(this));
-        }
+        jcbSortBy = new JComboBoxEx("排序", sortRules)
+                .addActionListener(this);
+        jcbTypes = new JComboBoxEx("类型", dishTypes)
+                .addActionListener(this);
+        loadDish(mf.getService().getDishByTypeSortByPrice(dishTypes[0], true));
         getContentRightTop().setLayout(new PageLayout().setSingleCol(true));
-        getContentRightTop().add(new JComboBoxEx("排序", new String[]{"按价格排序","按销量排序"}));
-        getContentRightTop().add(new JComboBoxEx("类型", mf.getService().getDishTypes().toArray(new String[]{})));
+        getContentRightTop().add(jcbSortBy);
+        getContentRightTop().add(jcbTypes);
 
         // foot
         addFootRight(
@@ -57,7 +65,8 @@ public class DishManageUI extends BasePanel3 implements ActionListener {
     }
 
 
-
+    private JComboBoxEx jcbSortBy;
+    private JComboBoxEx jcbTypes;
     /*
         创建菜单按钮，管理端主页面的四个转页按钮
      */
@@ -79,17 +88,27 @@ public class DishManageUI extends BasePanel3 implements ActionListener {
             } else if (e.getActionCommand().equals(DishCard.DELETE)){
                 deleteDish(dc);
             }
+        } else if(e.getSource() instanceof JComboBoxEx) {
+            sortDish();
         }
     }
 
+    private String[] sortRules; // 这个规则应该由谁管理比较合适？
+    private String[] dishTypes; //
     private void createDish(){
         DishForm d = new DishForm(mf.getService().getDishTypes().toArray(new String[0]));
         DishForm.Data data = d.open();
-        if(mf.getService().createDish(data.dishName, data.dishPrice, data.dishType,
-                data.dishIsSaled, data.dishPicUrl)){
-            // 提示创建成功
-        } else {
-            // 提示创建失败，失败原因
+        if(data != null) {
+            if (mf.getService().createDish(data.dishName, data.dishPrice, data.dishType,
+                    data.dishIsSaled, data.dishPicUrl)) {
+                // 提示创建成功
+                getContentLeft().add(new DishCard(data.dishName, data.dishPrice, new ImageIcon(data.dishPicUrl))
+                        .setActionListener(this));
+                Utility.showTipDialog("增添成功", 2000);
+                Utility.revalidate(getContentLeft());
+            } else {
+                // 提示创建失败，失败原因
+            }
         }
     }
     private void modifyDish(DishCard dc){
@@ -98,27 +117,84 @@ public class DishManageUI extends BasePanel3 implements ActionListener {
                 new ImageIcon(dish.getPicture()));
         DishForm d = new DishForm(mf.getService().getDishTypes().toArray(new String[0]), data);
         data = d.open();
-        if(mf.getService().modifiDish(data.dishName, data.dishPrice, data.dishType,
-                data.dishIsSaled, data.dishPicUrl)){
-            // 提示创建成功
-        } else {
-            // 提示创建失败，失败原因
+        if(data != null) {
+            if (mf.getService().modifiDish(data.dishName, data.dishPrice, data.dishType,
+                    data.dishIsSaled, data.dishPicUrl)) {
+                Utility.showTipDialog("修改成功", 2000);
+                dc.setDishName(data.dishName)
+                        .setDishPrice(data.dishPrice)
+                        .setDishPicture(new ImageIcon(data.dishPicUrl));
+                Utility.revalidate(dc);
+            } else {
+                // 提示修改失败，失败原因
+            }
         }
-        System.out.println(d.open().toString());
     }
     private void deleteDish(DishCard dc){
         // 此处应该弹框警告
-        int isDelete = new ConfirmDialog("删除后将无法恢复，确定删除吗？").open();
+        int isDelete = Utility.showConfirmDialog("删除后将无法恢复，确认删除吗？");
         if(isDelete == ConfirmDialog.YES_OPTION) {
             if (mf.getService().deleteDish(dc.getDishName())) {
-                // 删除成功
-                System.out.println("");
+                Utility.showTipDialog("删除成功",2000);
             } else {
-                //
+                // 提示失败，失败原因
             }
             getContentLeft().remove(dc);
             Utility.revalidate(getContentLeft());
         }
+    }
+    private void sortDish(){
+        String type = (String) jcbTypes.getSelectedItem();
+        String sortBy = (String) jcbSortBy.getSelectedItem();
+        if(sortBy.equals(sortRules[0])){
+            loadDish(mf.getService().getDishByTypeSortByPrice(type, true));
+            return;
+        }
+        if(sortBy.equals(sortRules[1])){
+            loadDish(mf.getService().getDishByTypeSortByPrice(type, false));
+            return;
+        }
+        if(sortBy.equals(sortRules[2])){
+            loadDish(mf.getService().getDishByTypeSortBySaledCount(type, true));
+            return;
+        }
+        if(sortBy.equals(sortRules[3])){
+            loadDish(mf.getService().getDishByTypeSortBySaledCount(type, false));
+            return;
+        }
+    }
+
+    private void loadDish(java.util.List<Dish> dishes){
+        getContentLeft().removeAll();
+        for(Dish dish: dishes){
+            getContentLeft().add(new DishCard(dish.getName(), dish.getPrice(), new ImageIcon(dish.getPicture()))
+                    .setActionListener(this));
+        }
+        Utility.revalidate(getContentLeft());
+    }
+
+    private void loadDishAnotherWay(java.util.List<Dish> dishes){
+        Component[] components = getContentLeft().getComponents();
+        int i = 0;
+        int dishCount = dishes.size();
+        for(; i < components.length; ++i){
+            if(i < dishCount && components[i] instanceof DishCard){
+                DishCard dc = (DishCard)components[i];
+                Dish dish = dishes.get(i);
+                dc.setDishName(dish.getName());
+                dc.setDishPrice(dish.getPrice());
+                dc.setDishPicture(new ImageIcon(dish.getPicture()));
+                Utility.revalidate(dc);
+            } else if(i >= dishCount) {
+                getContentLeft().remove(components[i]);
+            }
+        }
+        for(; i < dishCount; ++i){
+            Dish dish = dishes.get(i);
+            getContentLeft().add(new DishCard(dish.getName(), dish.getPrice(),
+                    new ImageIcon(dish.getPicture())).setActionListener(this));
+        }
+        Utility.revalidate(getContentLeft());
     }
 
 }

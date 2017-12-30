@@ -194,8 +194,9 @@ public class Dish {
                 int len = picture.available();
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 while(len != 0) {
-                    picture.read(this.picture);
+                    int count = picture.read(this.picture);
                     baos.write(this.picture);
+                    for(int i = 0; i < count; ++i); // delay
                     len = picture.available();
                 }
                 this.picture = baos.toByteArray();

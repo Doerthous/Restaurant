@@ -30,8 +30,9 @@ public class JComboBoxEx extends RectangleCard {
         add(jcb, BorderLayout.CENTER);
     }
 
-    public void addActionListener(ActionListener listener){
+    public JComboBoxEx addActionListener(ActionListener listener){
         listeners.add(listener);
+        return this;
     }
     public Object getSelectedItem(){
         return jcb.getSelectedItem();

@@ -28,13 +28,16 @@ public class ManagementFrame extends BaseFrame implements ActionListener {
     private MainUI mainUI;
     private DishManageUI dishManageUI;
     private EmployeeManageUI employeeManageUI;
+    private TableManageUI tableManageUI;
     public void initUICompoent(){
         mainUI = new MainUI(this);
         dishManageUI = new DishManageUI(this);
         employeeManageUI = new EmployeeManageUI(this);
+        tableManageUI = new TableManageUI(this);
         add("Main", mainUI);
         add("DishManage", dishManageUI);
         add("EmployeeManage", employeeManageUI);
+        add("TableManage", tableManageUI);
     }
 
 
@@ -53,6 +56,7 @@ public class ManagementFrame extends BaseFrame implements ActionListener {
 
 
     public void main(){
+        mainUI.load();
         show("Main");
     }
     public void dishManage(){
@@ -60,5 +64,8 @@ public class ManagementFrame extends BaseFrame implements ActionListener {
     }
     public void employeeManage(){
         show("EmployeeManage");
+    }
+    public void tableManage() {
+        show("TableManage");
     }
 }

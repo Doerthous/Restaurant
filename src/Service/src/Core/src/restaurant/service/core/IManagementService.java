@@ -3,6 +3,7 @@ package restaurant.service.core;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import restaurant.service.core.vo.Dish;
 import restaurant.service.core.vo.Employee;
+import restaurant.service.core.vo.Table;
 
 import java.util.List;
 import java.util.Map;
@@ -15,32 +16,38 @@ public interface IManagementService {
     /*
         新增菜品
      */
-    boolean createDish(String name, Float price, String type, Boolean isSaled, String pictureUrl);
-    boolean modifiDish(String name, Float price, String type, Boolean isSaled, String pictureUrl);
-    /*
-        删除菜品
-     */
-    boolean deleteDish(String name);
-    /*
-        获取所有菜品
-     */
+    Boolean createDish(String name, Float price, String type, Boolean isSaled, String pictureUrl);
+    Boolean modifiDish(String name, Float price, String type, Boolean isSaled, String pictureUrl);
+    Boolean deleteDish(String name);
     List<Dish> getAllDish();
-    /*
-        根据类型获取菜品
-     */
     List<Dish> getDishByType(String type);
-    /*
-        获取菜品类型
-     */
+    List<Dish> getDishByTypeSortByPrice(String type, Boolean asc);
+    List<Dish> getDishByTypeSortBySaledCount(String type, Boolean asc);
     List<String> getDishTypes();
     Dish getDishByName(String name);
     /*
-        员工管理部分
+        职工
      */
+    String createEmployee(String name, String position, Integer salary, String sex, String password,
+                           String phone, String nativePlace, String photoUrl);
+    Boolean modifiEmployee(String id, String name, String position, Integer salary, String sex,
+                           String password, String phone, String nativePlace, String photoUrl);
+    Boolean deleteEmployee(String id);
     List<Employee> getAllEmployee();
     List<Employee> getEmployeeByPosition(String position);
+    List<Employee> getEmployeeByPositionAndSex(String position, String sex);
     List<String> getAllEmployeePositions();
     Employee getEmployeeByCode(String code);
+    List<Employee> getOnlineWaiter();
+
+
+    // table 相关
+    String createTable(String type, Integer floor, Integer capacity);
+    Boolean modifiTable(String id, String type, Integer floor, Integer capacity);
+    Boolean deleteTable(String id);
+    List<Table> getAllTable();
+    Table getTableById(String id);
+    List<String> getTableTypes();
     /*
        通知服务员传菜
     */
@@ -69,6 +76,13 @@ public interface IManagementService {
         Float getTotalCost();
         String getOrderId(); //
         Map<String, Integer> getOrder();
+        Integer getNotificationCount();
+        ITableNotification getNotification();
+        interface ITableNotification {
+            enum Type{CLIENT,KITCHEN};
+            Type getType();
+            String getContent();
+        }
     }
     ITableInfo getTableInfo(String tableId);
     /*

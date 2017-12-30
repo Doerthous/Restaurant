@@ -19,4 +19,8 @@ public class PicturePanel extends JPanel {
             g.drawImage(ii.getImage(), 0, 0, getWidth(), getHeight(), ii.getImageObserver());
         }
     }
+    public PicturePanel setPicture(ImageIcon picture){
+        ii = picture;
+        return this;
+    }
 }

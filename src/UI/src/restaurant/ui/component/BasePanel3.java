@@ -22,6 +22,7 @@ public class BasePanel3 extends BasePanel2 {
         getContentRight().add(crt, BorderLayout.CENTER);
         getContentRight().add(crb, BorderLayout.SOUTH);
         getContentRight().setBorder(new AdvLineBorder().setLeftColor(Constants.Color.subtitle).setLeft(1));
+        getContentRightBottom().setBorder(new AdvLineBorder().setTopColor(Constants.Color.subtitle).setTop(1));
     }
     public BasePanel3(int rightWidth, int topHeight){
         super(rightWidth);

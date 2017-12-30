@@ -2,6 +2,7 @@ package restaurant.service.pc.vo;
 
 import restaurant.service.core.vo.Dish;
 import restaurant.service.core.vo.Employee;
+import restaurant.service.core.vo.Table;
 
 import java.io.*;
 import java.util.Date;
@@ -29,7 +30,6 @@ public class PO2VO {
                 e.getSex(), pic, e.getContactWay(),
                 e.getNativePlace(), e.getPassword(), e.getSalary());
     }
-
     // po 转 vo
     public static Dish dish(restaurant.database.po.Dish d){
         return dish(d, 0);
@@ -42,6 +42,10 @@ public class PO2VO {
             }
         }
         return new Dish(d.getName(), d.getPrice(), pic, d.getType(), d.getSaled());
+    }
+    //
+    public static Table table(restaurant.database.po.Seat s){
+        return new Table(s.getId(), s.getType(), s.getFloor(), s.getCapacity());
     }
 
     private static restaurant.database.po.Dish newDishPo(
@@ -56,16 +60,7 @@ public class PO2VO {
         dp.setPrice(price);
         dp.setType(type);
         dp.setSaled(isSaled);
-        if(pictureUrl != null) {
-            try {
-                dp.setPicture(new FileInputStream(new File(pictureUrl)));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                dp.setPicture(new ByteArrayInputStream(NULL_IMAGE.getBytes()));
-            }
-        } else {
-            dp.setPicture(new ByteArrayInputStream(NULL_IMAGE.getBytes()));
-        }
+        dp.setPicture(getFileInputStream(pictureUrl));
         dp.setSaledCount1(saledCount1);
         dp.setSaledCount2(saledCount2);
         dp.setSaledCount3(saledCount3);
@@ -103,16 +98,7 @@ public class PO2VO {
             d.setPrice(price);
             d.setType(type);
             d.setSaled(isSaled);
-            if(pictureUrl != null) {
-                try {
-                    d.setPicture(new FileInputStream(new File(pictureUrl)));
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                    d.setPicture(new ByteArrayInputStream(NULL_IMAGE.getBytes()));
-                }
-            } else {
-                d.setPicture(new ByteArrayInputStream(NULL_IMAGE.getBytes()));
-            }
+            d.setPicture(getFileInputStream(pictureUrl));
         }
         return d;
     }
@@ -133,26 +119,60 @@ public class PO2VO {
         employee.setContactWay(contactWay);
         employee.setAddress(address);
         employee.setPassword(password);
-        if(photoUrl != null) {
-            try {
-                employee.setPhoto(new FileInputStream(new File(photoUrl)));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                employee.setPhoto(new ByteArrayInputStream(NULL_IMAGE.getBytes()));
-            }
-        } else {
-            employee.setPhoto(new ByteArrayInputStream(NULL_IMAGE.getBytes()));
-        }
+        employee.setPhoto(getFileInputStream(photoUrl));
         return employee;
+    }
+
+    public static restaurant.database.po.Employee newEmployeePo(String id){
+        return newEmployeePo(id, null, null, null, null,
+                null, null, null, null);
     }
 
     public static restaurant.database.po.Employee newEmployeePo(
             String id, String name, String photoUrl, String position, Integer salary,
             String password, String sex, String nativePlace, String contactWay) {
-        return newEmployeePo(id, name, null, sex, nativePlace, position,
-                salary, null, contactWay, null, password, photoUrl);
+        return newEmployeePo(id, name, new Date(), sex, nativePlace, position,
+                salary, new Date(), contactWay, "", password, photoUrl);
     }
 
+    public static restaurant.database.po.Employee setEmployeePo(
+            String id, String name, String position, Integer salary, String sex,
+            String password, String phone, String nativePlace, String photoUrl,
+            restaurant.database.po.Employee e) {
+        // e.setId(id);
+        e.setName(name);
+        e.setPosition(position);
+        e.setSalary(salary);
+        e.setSex(sex);
+        e.setPassword(password);
+        e.setContactWay(phone);
+        e.setNativePlace(nativePlace);
+        e.setPhoto(getFileInputStream(photoUrl));
+        return e;
+    }
+
+    public static restaurant.database.po.Seat newSeatPo(String id, String type, Integer floor,
+                                                        Integer capacity){
+        restaurant.database.po.Seat sp = new restaurant.database.po.Seat();
+        sp.setId(id);
+        sp.setType(type);
+        sp.setFloor(floor);
+        sp.setCapacity(capacity);
+        sp.setStatus("");
+        sp.setUsedtimes(0);
+        return sp;
+    }
+    public static restaurant.database.po.Seat newSeatPo(String id){
+        return newSeatPo(id, null, null, null);
+    }
+    public static restaurant.database.po.Seat setSeatPo(String id, String type, Integer floor,
+                                                        Integer capacity, restaurant.database.po.Seat s){
+        // s.setId(id);
+        s.setType(type);
+        s.setFloor(floor);
+        s.setCapacity(capacity);
+        return s;
+    }
 
     // utils
     private static byte[] streamToByteArray(InputStream stream, int delay){
@@ -170,5 +190,19 @@ public class PO2VO {
             }
         }
         return data;
+    }
+    private static InputStream getFileInputStream(String url){
+        InputStream is;
+        if(url != null) {
+            try {
+                is = new FileInputStream(new File(url));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                is = new ByteArrayInputStream(NULL_IMAGE.getBytes());
+            }
+        } else {
+            is = new ByteArrayInputStream(NULL_IMAGE.getBytes());
+        }
+        return is;
     }
 }

@@ -87,10 +87,7 @@ public class ClientService implements IClientService, ICommandObserver{
         List l = new ArrayList();
         l.add("全部");
         for(Dish pd: menu){
-            String type = pd.getType()
-                    .replace("\n","")
-                    .replace("\r","")
-                    .replace(" ","");
+            String type = pd.getType();
             if(!l.contains(type)){
                 l.add(type);
             }

@@ -1,12 +1,12 @@
 package restaurant.ui.management.component;
 
 import restaurant.ui.Constants;
+import restaurant.ui.component.PicturePicker;
 import restaurant.ui.component.builder.JButtonBuilder;
 import restaurant.ui.component.builder.JLabelBuilder;
 import restaurant.ui.component.builder.JPanelBuilder;
 import restaurant.ui.utils.GBC;
 import restaurant.ui.utils.StringUtils;
-import restaurant.ui.utils.Utility;
 
 import javax.swing.*;
 import java.awt.*;
@@ -61,8 +61,8 @@ public class DishForm extends JDialog implements ActionListener {
 
         setModal(true);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null);
         setSize(500,300);
+        setLocationRelativeTo(null);
         setLayout(new BorderLayout());
         getContentPane().setBackground(Constants.Color.subtitle);
 
@@ -149,6 +149,7 @@ public class DishForm extends JDialog implements ActionListener {
                     dispose();
                 } break;
                 case "取消": {
+                    data = null;
                     dispose();
                 } break;
             }

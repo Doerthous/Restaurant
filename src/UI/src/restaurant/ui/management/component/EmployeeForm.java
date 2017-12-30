@@ -3,11 +3,11 @@ package restaurant.ui.management.component;
 
 import org.apache.commons.lang3.StringUtils;
 import restaurant.ui.Constants;
+import restaurant.ui.component.PicturePicker;
 import restaurant.ui.component.builder.JButtonBuilder;
 import restaurant.ui.component.builder.JLabelBuilder;
 import restaurant.ui.component.builder.JPanelBuilder;
 import restaurant.ui.utils.GBC;
-import restaurant.ui.utils.Utility;
 
 import javax.swing.*;
 import java.awt.*;
@@ -71,8 +71,8 @@ public class EmployeeForm extends JDialog implements ActionListener {
 
         setModal(true);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null);
         setSize(500,300);
+        setLocationRelativeTo(null);
         setLayout(new BorderLayout());
         getContentPane().setBackground(Constants.Color.subtitle);
 
@@ -165,7 +165,7 @@ public class EmployeeForm extends JDialog implements ActionListener {
                     data.name = name.getText();
                     data.position = position.getText();
                     data.sex = (String) sex.getSelectedItem();
-                    data.salary = salary.getText().length() == 0 ? null : Integer.valueOf(salary.getText().length());
+                    data.salary = salary.getText().length() == 0 ? null : Integer.valueOf(salary.getText());
                     data.nativePlace = nativePlace.getText();
                     data.phone = phone.getText();
                     data.password = password.getText();
@@ -173,6 +173,7 @@ public class EmployeeForm extends JDialog implements ActionListener {
                     dispose();
                 } break;
                 case "取消": {
+                    data = null;
                     dispose();
                 } break;
             }

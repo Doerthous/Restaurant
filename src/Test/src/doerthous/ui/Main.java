@@ -5,7 +5,10 @@ import restaurant.ui.client.LoginFrame;
 import restaurant.ui.component.*;
 import restaurant.ui.component.builder.JButtonBuilder;
 import restaurant.ui.management.component.*;
+import tutorial.advance.Anima;
+import tutorial.advance.Anima2;
 
+import javax.swing.*;
 import java.awt.*;
 
 public class Main {
@@ -23,43 +26,6 @@ public class Main {
                 }
             }).setVisible(true);
         }
-    }
-
-    static class ManagementOnlineTableTest{
-        public static void main(String[] args) {
-            AFrameForJPanelTest f = new AFrameForJPanelTest();
-            f.getContentPane().setLayout(new FlowLayout());
-            f.add(new OnlineTable("00").addActionListener(e-> System.out.println("00")));
-            f.open();
-        }
-    }
-
-    static class ManagementFreeTableInfoTest {
-        public static void main(String[] args) {
-            AFrameForJPanelTest f = new AFrameForJPanelTest();
-            f.getContentPane().setLayout(new FlowLayout());
-            FreeTableInfo fti = new FreeTableInfo("f", e->{
-                System.out.println(((FreeTableInfo)e.getSource()).getCustomerCount());
-            });
-            fti.setPreferredSize(new Dimension(200,200));
-            f.add(fti);
-            f.open();
-        }
-
-    }
-
-    static class ManagementBusyTableInfoTest {
-        public static void main(String[] args) {
-            AFrameForJPanelTest f = new AFrameForJPanelTest();
-            f.getContentPane().setLayout(new FlowLayout());
-            BusyTableInfo fti = new BusyTableInfo("f", 0,0f, e->{
-                System.out.println(((BusyTableInfo)e.getSource()).getTableId());
-            });
-            fti.setPreferredSize(new Dimension(200,200));
-            f.add(fti);
-            f.open();
-        }
-
     }
 
     static class ManagementDishCardTest {
@@ -128,6 +94,17 @@ public class Main {
         }
     }
 
+    static class TableCardTest {
+        public static void main(String[] args) {
+            AFrameForJPanelTest f = new AFrameForJPanelTest();
+            //f.getContentPane().setLayout(new FlowLayout());
+            f.getContentPane().setLayout(new FlowLayout());
+            f.getContentPane().add(new TableCard("0","7777",
+                    1,1));
+            f.open();
+        }
+    }
+
     static class ConfirmDialogTest {
         public static void main(String[] args) {
             int i = new ConfirmDialog("确定吗aasdfsdfsdafsdfsadfsdafsadfasdfasdf？").open();
@@ -136,6 +113,12 @@ public class Main {
             }else {
                 System.out.println("取消");
             }
+        }
+    }
+
+    static class TipDialogTest {
+        public static void main(String[] args) {
+            new TipDialog("确定吗aasdfsdfsdafsdfsadfsdafsadfasdfasdf？", 2000).open();
         }
     }
 
@@ -155,6 +138,36 @@ public class Main {
                 EmployeeForm d = new EmployeeForm();
                 System.out.println(d.open().toString());
             }).build());
+            f.open();
+        }
+    }
+
+    static class TableFormTest {
+        public static void main(String[] args) {
+            AFrameForJPanelTest f = new AFrameForJPanelTest();
+            f.getContentPane().add(JButtonBuilder.getInstance().text("新增菜品").listener(e->{
+                TableForm d = new TableForm();
+                System.out.println(d.open().toString());
+            }).build());
+            f.open();
+        }
+    }
+
+    static class AnimaTest {
+        public static void main(String[] args) {
+            AFrameForJPanelTest f = new AFrameForJPanelTest();
+            Anima anima = new Anima();
+            anima.add(new JButton("f"));
+            f.getContentPane().add(anima);
+            f.open();
+        }
+    }
+
+    static class Anima2Test {
+        public static void main(String[] args) {
+            AFrameForJPanelTest f = new AFrameForJPanelTest();
+            Anima2 anima = new Anima2();
+            f.getContentPane().add(anima);
             f.open();
         }
     }

@@ -3,6 +3,7 @@ package restaurant.ui.management.component;
 import restaurant.ui.client.Constants;
 import restaurant.ui.component.PicturePanel;
 import restaurant.ui.component.thirdpart.ShadowBorder;
+import restaurant.ui.utils.Utility;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,9 +13,9 @@ import java.awt.event.ActionListener;
 public class DishCard extends JPanel implements ActionListener {
     public static final String MODIFY = "修改";
     public static final String DELETE = "删除";
-    private String dishName;
-    private Float dishPrice;
-    private ImageIcon dishPicture;
+    private JLabel name;
+    private JLabel price;
+    private PicturePanel picture;
     private ActionListener listener;
 
     public DishCard(String dishName, Float dishPrice, ImageIcon dishPicture) {
@@ -22,10 +23,6 @@ public class DishCard extends JPanel implements ActionListener {
     }
 
     public DishCard(int width, int height, String dishName, Float dishPrice, ImageIcon dishPicture) {
-        this.dishName = dishName;
-        this.dishPrice = dishPrice;
-        this.dishPicture = dishPicture;
-
         // 设置样式
         setPreferredSize(new Dimension(width, height));
         setLayout(new BorderLayout());
@@ -38,9 +35,9 @@ public class DishCard extends JPanel implements ActionListener {
         // 创建组件
         JPanel jPanel1  = new JPanel(new BorderLayout());
         JPanel jPanel2  = new JPanel(new GridLayout(1,2));
-        JLabel name = new JLabel(dishName);
-        JLabel price = new JLabel(dishPrice.toString());
-        PicturePanel picture = new PicturePanel(dishPicture);
+        name = new JLabel(dishName);
+        price = new JLabel(dishPrice.toString());
+        picture = new PicturePanel(dishPicture);
         JButton modify = new JButton(MODIFY);
         JButton delete = new JButton(DELETE);
 
@@ -80,6 +77,18 @@ public class DishCard extends JPanel implements ActionListener {
         }
     }
     public String getDishName(){
-        return dishName;
+        return name.getText();
+    }
+    public DishCard setDishName(String name){
+        this.name.setText(name);
+        return this;
+    }
+    public DishCard setDishPrice(Float price){
+        this.price.setText(price.toString());
+        return this;
+    }
+    public DishCard setDishPicture(ImageIcon picture){
+        this.picture.setPicture(picture);
+        return this;
     }
 }
