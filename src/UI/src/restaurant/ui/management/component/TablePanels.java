@@ -104,9 +104,13 @@ public class TablePanels implements ActionListener, IManagementService.ITableObs
             } break;
             case "通知":{
                 loadNotification();
+                ot.setNotification("");
                 listener.actionPerformed(new ActionEvent(this, 1, "通知"));
             } break;
             case "结账":{
+                notifications = new ArrayList<>();
+                loadNotification();
+                fti.initUIData();
                 info.remove(bti);
                 info.add(fti);
                 Utility.revalidate(info);
@@ -115,7 +119,7 @@ public class TablePanels implements ActionListener, IManagementService.ITableObs
             } break;
             case "指派":{
                 new NF();
-            }
+            } break;
         }
     }
 
@@ -129,19 +133,25 @@ public class TablePanels implements ActionListener, IManagementService.ITableObs
 
     @Override
     public void dishFinish(String dishName, String tableId) {
-        notifications.add(Notification.kitchen(dishName));
-        loadNotification();
+        if(this.tableId.equals(tableId)) {
+            notifications.add(Notification.kitchen(dishName));
+            ot.setNotification(" ("+notifications.size()+")");
+            loadNotification();
+        }
     }
 
     @Override
     public void requestService(String tableId) {
-        notifications.add(Notification.client());
-        loadNotification();
+        if(this.tableId.equals(tableId)) {
+            notifications.add(Notification.client());
+            ot.setNotification(" ("+notifications.size()+")");
+            loadNotification();
+        }
     }
 
     @Override
     public void newOrder(String tableId) {
-
+        bti.setJlTotCst(mf.getService().getTotalConsumption(tableId).toString()); // 慢拍
     }
 
 
@@ -192,6 +202,10 @@ public class TablePanels implements ActionListener, IManagementService.ITableObs
 
         public String getCustomerCount(){
             return jtf.getText();
+        }
+
+        public void initUIData(){
+            jtf.setText("");
         }
     }
     private class BTI extends JPanel implements ActionListener {
@@ -253,11 +267,14 @@ public class TablePanels implements ActionListener, IManagementService.ITableObs
     }
     public class OT extends RectangleCard implements MouseListener {
         private java.util.List<ActionListener> listeners;
+        private JLabel jlNotification;
         public OT(String tableId) {
             super(new Dimension(100,100));
             setLayout(new BorderLayout(0,0));
             listeners = new ArrayList<>();
             addMouseListener(this);
+            jlNotification = new JLabel();
+            add(jlNotification, BorderLayout.SOUTH);
             add(JLabelBuilder.getInstance().text(tableId)
                     .mouseListener(this).build());
         }
@@ -266,15 +283,16 @@ public class TablePanels implements ActionListener, IManagementService.ITableObs
             return this;
         }
 
-        public String getTableId(){
-            return tableId;
-        }
-
         public void actionPerformed(ActionEvent e) {
             e = new ActionEvent(this, 1, tableId);
             for(ActionListener listener: listeners){
                 listener.actionPerformed(e);
             }
+        }
+
+        public void setNotification(String notification){
+            jlNotification.setText(notification);
+            Utility.revalidate(this);
         }
 
         @Override

@@ -14,6 +14,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class TableManageUI extends BasePanel3 implements ActionListener {
+    public static final int ACTION_FIRST = 1;
+    public static final int TABLE_CREATE = 1;
+    public static final int ACTION_LAST = 1;
     private ManagementFrame mf;
 
     public TableManageUI(ManagementFrame mf) {
@@ -64,6 +67,7 @@ public class TableManageUI extends BasePanel3 implements ActionListener {
                         data.tableCapacity).setActionListener(this));
                 Utility.showTipDialog("增添成功", 2000);
                 Utility.revalidate(getContentLeft());
+                mf.actionPerformed(new ActionEvent(this, TABLE_CREATE, id));
             } else {
                 // 提示创建失败，失败原因
             }

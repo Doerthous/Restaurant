@@ -45,7 +45,10 @@ public class PO2VO {
     }
     //
     public static Table table(restaurant.database.po.Seat s){
-        return new Table(s.getId(), s.getType(), s.getFloor(), s.getCapacity());
+        if(s != null) {
+            return new Table(s.getId(), s.getType(), s.getFloor(), s.getCapacity());
+        }
+        return null;
     }
 
     private static restaurant.database.po.Dish newDishPo(
@@ -79,7 +82,6 @@ public class PO2VO {
     public static restaurant.database.po.Dish newDishPo(
             String id, String name, Float price, String type, Boolean isSaled,
             String pictureUrl) {
-        restaurant.database.po.Dish dp = new restaurant.database.po.Dish();
         return newDishPo(id, name, price, type, isSaled, pictureUrl,
                 0, 0, 0, 0,
                 0, 0, 0, 0,
@@ -140,14 +142,16 @@ public class PO2VO {
             String password, String phone, String nativePlace, String photoUrl,
             restaurant.database.po.Employee e) {
         // e.setId(id);
-        e.setName(name);
-        e.setPosition(position);
-        e.setSalary(salary);
-        e.setSex(sex);
-        e.setPassword(password);
-        e.setContactWay(phone);
-        e.setNativePlace(nativePlace);
-        e.setPhoto(getFileInputStream(photoUrl));
+        if(e != null) {
+            e.setName(name);
+            e.setPosition(position);
+            e.setSalary(salary);
+            e.setSex(sex);
+            e.setPassword(password);
+            e.setContactWay(phone);
+            e.setNativePlace(nativePlace);
+            e.setPhoto(getFileInputStream(photoUrl));
+        }
         return e;
     }
 
@@ -167,10 +171,12 @@ public class PO2VO {
     }
     public static restaurant.database.po.Seat setSeatPo(String id, String type, Integer floor,
                                                         Integer capacity, restaurant.database.po.Seat s){
-        // s.setId(id);
-        s.setType(type);
-        s.setFloor(floor);
-        s.setCapacity(capacity);
+        if(s != null) {
+            // s.setId(id);
+            s.setType(type);
+            s.setFloor(floor);
+            s.setCapacity(capacity);
+        }
         return s;
     }
 

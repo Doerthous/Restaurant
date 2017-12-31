@@ -201,6 +201,14 @@ public class MainUI extends BasePanel {
                 this.orderData.add(new UIData(tableId, dishName, o.get(dishName), 0));
                 updateDishCount(dishName, getDishRemainCount(dishName));
             }
+            Component[] components = table.getComponents();
+            for(Component component: components){
+                if(component instanceof WaitTableCard){
+                    if(((WaitTableCard)component).getText().equals(tableId)){
+                        return;
+                    }
+                }
+            }
             table.add(new WaitTableCard(tableId, e->loadTableOrderDetail(tableId)));
             Utility.revalidate(table);
         }

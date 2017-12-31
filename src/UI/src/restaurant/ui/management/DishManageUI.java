@@ -37,10 +37,8 @@ public class DishManageUI extends BasePanel3 implements ActionListener {
         getFootLeft().add(pageButton);
 
         // subtitle
-        getSubtitleLeft().setLayout(new PageLayout().setSingleRow(true)
-                .setHgap(0).setVgap(10).setPadding(new Insets(2,15,0,0)));
-        getSubtitleLeft().add(createMenuButton("菜单管理"));
-        getSubtitleLeft().add(createMenuButton("套餐管理"));
+        addSubtitleLeftButton("菜单管理", this);
+        addSubtitleLeftButton("套餐管理", this);
         // getSubtitleLeft().add(createMenuButton("类别管理"));
 
         // content
@@ -67,17 +65,7 @@ public class DishManageUI extends BasePanel3 implements ActionListener {
 
     private JComboBoxEx jcbSortBy;
     private JComboBoxEx jcbTypes;
-    /*
-        创建菜单按钮，管理端主页面的四个转页按钮
-     */
-    private JButton createMenuButton(String text){
-        return JButtonBuilder.getInstance().text(text)
-                .listener(this).background(Constants.Color.background)
-                .border(BorderFactory.createCompoundBorder(
-                        ShadowBorder.newBuilder().buildSpecial(new Insets(0,0,2,0)),
-                        BorderFactory.createEmptyBorder(15,15,15,15))
-                ).build();
-    }
+
 
     @Override
     public void actionPerformed(ActionEvent e) {

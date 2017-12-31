@@ -9,6 +9,9 @@ import java.awt.event.ActionListener;
 
 
 public class ManagementFrame extends BaseFrame implements ActionListener {
+    public static final int ACTION_FIRST = 1;
+    public static final int TABLE_CREATE = 1;
+    public static final int ACTION_LAST = 1;
     public ManagementFrame(IManagementService service){
         this.service = service;
         initUICompoent();
@@ -50,13 +53,18 @@ public class ManagementFrame extends BaseFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
+        if(e.getSource() instanceof TableManageUI){
+            switch (e.getID()){
+                case TableManageUI.TABLE_CREATE:{
+                    mainUI.actionPerformed(new ActionEvent(this, TABLE_CREATE, e.getActionCommand()));
+                } break;
+            }
+        }
     }
 
 
 
     public void main(){
-        mainUI.load();
         show("Main");
     }
     public void dishManage(){

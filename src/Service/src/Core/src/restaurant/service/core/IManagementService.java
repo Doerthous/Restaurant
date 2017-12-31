@@ -9,10 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface IManagementService {
-/*    int DISH_FINISH = 0;
-    int CUSTOMER_REQUEST = 1;*/
-
-
     /*
         新增菜品
      */
@@ -65,27 +61,6 @@ public interface IManagementService {
      */
     void closeTable(String tableId);
     /*
-        餐桌管理
-     */
-    interface ITableInfo {
-        enum State {BUSY, FREE};
-        String getTableId();
-        State getTableState();
-        // 以下方法只有在餐桌使用时才有效
-        Integer getCustomerCount();
-        Float getTotalCost();
-        String getOrderId(); //
-        Map<String, Integer> getOrder();
-        Integer getNotificationCount();
-        ITableNotification getNotification();
-        interface ITableNotification {
-            enum Type{CLIENT,KITCHEN};
-            Type getType();
-            String getContent();
-        }
-    }
-    ITableInfo getTableInfo(String tableId);
-    /*
         通知UI层
      */
     interface ITableObserver {
@@ -96,4 +71,13 @@ public interface IManagementService {
     }
     void addTableObserver(ITableObserver observer);
     void removeTableObserver(ITableObserver observer);
+
+
+    /*
+        订单相关
+     */
+    Float getTotalConsumption(String tableId);
+    Map<String, Integer> getOrderDetail(String tableId);
+
+
 }
