@@ -1,0 +1,30 @@
+<component name="ArtifactManager">
+  <artifact name="client:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/client_jar</output-path>
+    <root id="root">
+      <element id="archive" name="UI.jar">
+        <element id="directory" name="META-INF">
+          <element id="file-copy" path="$PROJECT_DIR$/src/UI/src/restaurant/ui/client/META-INF/MANIFEST.MF" />
+        </element>
+        <element id="module-output" name="UI" />
+        <element id="module-output" name="Service" />
+        <element id="module-output" name="Communication" />
+        <element id="module-output" name="Database" />
+        <element id="module-output" name="Communication-Core" />
+        <element id="module-output" name="Communication-PC" />
+        <element id="module-output" name="Test" />
+        <element id="module-output" name="Old" />
+        <element id="module-output" name="Service-Core" />
+        <element id="module-output" name="Service-PC" />
+      </element>
+      <element id="library" level="project" name="sqljdbc42" />
+      <element id="library" level="application" name="log4j-core-2.10.0" />
+      <element id="library" level="module" name="JUnit4" module-name="Test" />
+      <element id="library" level="application" name="mysql-connector-java-5.1.45" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/UI/lib/filters-2.0.235-1.jar" />
+      <element id="library" level="project" name="commons-lang3-3.7" />
+      <element id="library" level="module" name="android" module-name="Communication" />
+      <element id="library" level="application" name="log4j-api-2.10.0" />
+    </root>
+  </artifact>
+</component>
