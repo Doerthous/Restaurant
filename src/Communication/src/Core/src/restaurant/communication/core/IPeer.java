@@ -3,6 +3,8 @@ package restaurant.communication.core;
 public interface IPeer {
     String BROADCAST_ID = "broadcast";
     String CMD_ID_IS_ALREADY_IN_USED = IPeer.class.getName() + "[IIAIU]";
+    String CMD_ID_IS_NOT_ONLINE = IPeer.class.getName() + "[IINO]";
+    String CMD_INIT_COMPLETED = IPeer.class.getName() + "[IC]";
     /*
         阻塞（底层初始化）
      */

@@ -3,9 +3,11 @@ package restaurant.ui.component;
 import restaurant.ui.Constants;
 import restaurant.ui.component.border.AdvLineBorder;
 import restaurant.ui.component.builder.JButtonBuilder;
+import restaurant.ui.component.builder.JLabelBuilder;
 import restaurant.ui.component.builder.JPanelBuilder;
 import restaurant.ui.component.layout.PageLayout;
 import restaurant.ui.component.thirdpart.ShadowBorder;
+import restaurant.ui.utils.Utility;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -18,10 +20,10 @@ public class BasePanel3 extends BasePanel2 {
     private JPanel crt;
     private JPanel crb;
     public BasePanel3(){
-        this(100);
+        this(120);
     }
     public BasePanel3(int bottomHeight){
-        getSubtitleLeft().setLayout(new PageLayout().setSingleRow(true)
+        sl.setLayout(new PageLayout().setSingleRow(true)
                 .setHgap(0).setVgap(10).setPadding(new Insets(2,15,0,0)));
 
         crt = JPanelBuilder.getInstance().layout(new BorderLayout()).opaque(false).build();
@@ -43,7 +45,10 @@ public class BasePanel3 extends BasePanel2 {
         setVisible(true);
     }
     public void addSubtitleLeftButton(String text, ActionListener listener){
-
+        if(!(sl.getLayout() instanceof PageLayout)){
+            sl.setLayout(new PageLayout().setSingleRow(true)
+                    .setHgap(0).setVgap(10).setPadding(new Insets(2,15,0,0)));
+        }
         Border moveIn = BorderFactory.createCompoundBorder(
                 ShadowBorder.newBuilder().buildSpecial(new Insets(2,0,0,0)),
                 BorderFactory.createEmptyBorder(15,15,15,15));
@@ -70,5 +75,16 @@ public class BasePanel3 extends BasePanel2 {
         });
 
         getSubtitleLeft().add(button);
+    }
+    public void setSubtitleLeft(String title){
+        getSubtitleLeft().removeAll();
+        if(!(sl.getLayout() instanceof BorderLayout)){
+            sl.setLayout(new BorderLayout());
+        }
+        getSubtitleLeft().add(
+                JLabelBuilder.getInstance().text(title).horizontalAlignment(JLabel.CENTER)
+                        .foreground(Color.white).font(restaurant.ui.client.Constants.Font.font1).build()
+        );
+        Utility.revalidate(getSubtitleLeft());
     }
 }

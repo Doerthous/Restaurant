@@ -25,10 +25,10 @@ public class TableManager implements ICommandObserver {
     public TableManager(IPeer peer, IDb db) {
         this.peer = peer;
         this.db = db;
+        peer.addCommandObserver(this, IPeer.CMD_ID_IS_NOT_ONLINE);
         peer.addCommandObserver(this, InterModuleCommunication.CommandToManagement.KITCHEN_DISH_FINISHED);
         peer.addCommandObserver(this, InterModuleCommunication.CommandToManagement.CLIENT_REQUEST_SERVICE);
         peer.addCommandObserver(this, InterModuleCommunication.CommandToManagement.CLIENT_TABLE_ONLINE);
-        peer.addCommandObserver(this, InterModuleCommunication.CommandToManagement.CLIENT_NEW_ORDER);
         tableObservers = new ArrayList<>();
     }
 
@@ -115,18 +115,76 @@ public class TableManager implements ICommandObserver {
     public Table getTableById(String tableId){
         return PO2VO.table(db.getSeatById(tableId));
     }
+    public List<Table> getTableByType(String type) {
+        if(tables == null){
+            getAllTable();
+        }
+        List<Table> tables = new ArrayList<>();
+        for(restaurant.database.po.Seat table: this.tables){
+            if(table.getType().equals(type)){
+                tables.add(PO2VO.table(table));
+            }
+        }
+        return tables;
+    }
+    public List<Table> getTableByFloor(Integer floor) {
+        if(tables == null){
+            getAllTable();
+        }
+        List<Table> tables = new ArrayList<>();
+        for(restaurant.database.po.Seat table: this.tables){
+            if(table.getFloor().equals(floor)){
+                tables.add(PO2VO.table(table));
+            }
+        }
+        return tables;
+    }
+    public List<Table> getTableByTypeAndFloor(String type, Integer floor) {
+        if(tables == null){
+            getAllTable();
+        }
+        List<Table> tables = new ArrayList<>();
+        for(restaurant.database.po.Seat table: this.tables){
+            if(table.getType().equals(type) &&
+                    table.getFloor().equals(floor)){
+                tables.add(PO2VO.table(table));
+            }
+        }
+        return tables;
+    }
     public List<String> getTableTypes() {
         if(tables == null){
             getAllTable();
         }
         List<String> types = new ArrayList<>();
-        types.add("全部");
         for(restaurant.database.po.Seat e: tables){
             if(!types.contains(e.getType())){
                 types.add(e.getType());
             }
         }
         return types;
+    }
+    public List<String> getAllTableNumbers() {
+        if(tables == null){
+            getAllTable();
+        }
+        List<String> tableNumbers = new ArrayList<>();
+        for(restaurant.database.po.Seat table: tables){
+            tableNumbers.add(table.getId());
+        }
+        return tableNumbers;
+    }
+    public List<String> getTableFloors() {
+        if(tables == null){
+            getAllTable();
+        }
+        List<String> tableFloors = new ArrayList<>();
+        for(restaurant.database.po.Seat table: tables){
+            if(!tableFloors.contains(table.getFloor().toString())) {
+                tableFloors.add(table.getFloor().toString());
+            }
+        }
+        return tableFloors;
     }
 
 
@@ -150,19 +208,28 @@ public class TableManager implements ICommandObserver {
     @Override
     public void update(IData data) {
         String cmd = data.getCommand();
+        if(IPeer.CMD_ID_IS_NOT_ONLINE.equals(cmd)){
+            for(IManagementService.ITableObserver tableObserver : tableObservers) {
+                tableObserver.offline(data.getToId());
+            }
+            return;
+        }
         if (InterModuleCommunication.CommandToManagement.KITCHEN_DISH_FINISHED.equals(cmd)){
             // 能发出此条消息，说明table登陆成功，即fromId等于tableId，通知监听器
             InterModuleCommunication.Data.MK d = (InterModuleCommunication.Data.MK) data.getData();
             for(IManagementService.ITableObserver tableObserver : tableObservers) {
                 tableObserver.dishFinish(d.dishName, d.tableId);
-                d.tableId = data.getFromId(); //
             }
-        } else if(InterModuleCommunication.CommandToManagement.CLIENT_REQUEST_SERVICE.equals(cmd)) {
+            return;
+        }
+        if(InterModuleCommunication.CommandToManagement.CLIENT_REQUEST_SERVICE.equals(cmd)) {
             // 能发出此条消息，说明table登陆成功，即fromId等于tableId，通知监听器
             for(IManagementService.ITableObserver tableObserver : tableObservers) {
                 tableObserver.requestService(data.getFromId());
             }
-        } else if(InterModuleCommunication.CommandToManagement.CLIENT_TABLE_ONLINE.equals(cmd)) {
+            return;
+        }
+        if(InterModuleCommunication.CommandToManagement.CLIENT_TABLE_ONLINE.equals(cmd)) {
             // 验证table的登陆，这里的fromId与tableId不一致，fromId是临时id
             InterModuleCommunication.Data.MC mc = (InterModuleCommunication.Data.MC)data.getData();
             if(db.getSeatById(mc.tableId) == null){
@@ -174,12 +241,7 @@ public class TableManager implements ICommandObserver {
                 }
             }
             peer.sendCommand(data.getFromId(), InterModuleCommunication.CommandToClient.MANAGEMENT_TABLE_ONLINE_ACK, mc);
-        } else if(InterModuleCommunication.CommandToManagement.CLIENT_NEW_ORDER.equals(cmd)) {
-            // 能发出此条消息，说明table登陆成功，即fromId等于tableId
-            String tableId = data.getFromId();
-            for(IManagementService.ITableObserver tableObserver : tableObservers) {
-                tableObserver.newOrder(tableId);
-            }
+            return;
         }
     }
 }

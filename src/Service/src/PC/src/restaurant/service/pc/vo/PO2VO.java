@@ -1,11 +1,14 @@
 package restaurant.service.pc.vo;
 
+import restaurant.service.core.vo.Order;
 import restaurant.service.core.vo.Dish;
 import restaurant.service.core.vo.Employee;
 import restaurant.service.core.vo.Table;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /*
     放到core会增加core与关系库的依赖
@@ -30,6 +33,13 @@ public class PO2VO {
                 e.getSex(), pic, e.getContactWay(),
                 e.getNativePlace(), e.getPassword(), e.getSalary());
     }
+    public static List<Employee> employee(List<restaurant.database.po.Employee> es){
+        List<Employee> ves = new ArrayList<>();
+        for(restaurant.database.po.Employee e: es){
+            ves.add(employee(e));
+        }
+        return ves;
+    }
     // po 转 vo
     public static Dish dish(restaurant.database.po.Dish d){
         return dish(d, 0);
@@ -43,12 +53,16 @@ public class PO2VO {
         }
         return new Dish(d.getName(), d.getPrice(), pic, d.getType(), d.getSaled());
     }
-    //
+    // po 转 vo
     public static Table table(restaurant.database.po.Seat s){
         if(s != null) {
             return new Table(s.getId(), s.getType(), s.getFloor(), s.getCapacity());
         }
         return null;
+    }
+    // po 转 vo
+    public static Order order(restaurant.database.po.Order p){
+       return new Order(p.getId(), p.getSeatId(), p.getDate().toString(), null);
     }
 
     private static restaurant.database.po.Dish newDishPo(
@@ -178,6 +192,28 @@ public class PO2VO {
             s.setCapacity(capacity);
         }
         return s;
+    }
+
+    public static restaurant.database.po.Order newOrderPo(String id, String tableId, Date date, Float expend) {
+        restaurant.database.po.Order order = new restaurant.database.po.Order();
+        order.setId(id);
+        order.setSeatId(tableId);
+        order.setDate(date);
+        order.setExpend(expend);
+        return order;
+    }
+    public static restaurant.database.po.Order newOrderPo(String id) {
+        return newOrderPo(id, null, null, null);
+    }
+    public static restaurant.database.po.Detail newDetailPo(String orderId, String dishId, Integer count) {
+        restaurant.database.po.Detail detail = new restaurant.database.po.Detail();
+        detail.setOrderId(orderId);
+        detail.setDishId(dishId);
+        detail.setAmount(count);
+        return detail;
+    }
+    public static restaurant.database.po.Detail newDetailPo(String orderId) {
+        return newDetailPo(orderId, null, null);
     }
 
     // utils

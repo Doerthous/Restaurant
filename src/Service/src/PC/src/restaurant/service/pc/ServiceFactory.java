@@ -20,20 +20,20 @@ public class ServiceFactory {
     static String url = "jdbc:sqlserver://192.168.155.1:1433;DatabaseName=OrderDish";
     static String user = "ODuser";
     static String password = "1234567890";
-    /*
-        餐桌id这里暂且这样设置，具体方案再定
-     */
+
     public static IClientService getClientService() {
-        IDb db = DbFactory.getDb(DbFactory.DbType.SqlServer);
-        db.init(url, user, password);
+        IDb db = DbFactory.getDb(DbFactory.DbType.Mysql);
+        //db.init(url, user, password);
+        db.init("localhost", (short)3306, "restaurant", "root", "123456");
         return new ClientService(PeerFactory.getPeer(), db);
     }
     public static IKitchenService getKitchenService() {
         return new KitchenService(PeerFactory.getPeer());
     }
     public static IManagementService getManagementService(){
-        IDb db = DbFactory.getDb(DbFactory.DbType.SqlServer);
-        db.init(url, user, password);
+        IDb db = DbFactory.getDb(DbFactory.DbType.Mysql);
+        //db.init(url, user, password);
+        db.init("localhost", (short)3306, "restaurant", "root", "123456");
         return new ManagementService(PeerFactory.getPeer(), db);
     }
 

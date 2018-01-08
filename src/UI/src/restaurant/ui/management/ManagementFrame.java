@@ -11,7 +11,8 @@ import java.awt.event.ActionListener;
 public class ManagementFrame extends BaseFrame implements ActionListener {
     public static final int ACTION_FIRST = 1;
     public static final int TABLE_CREATE = 1;
-    public static final int ACTION_LAST = 1;
+    public static final int TABLE_DELETE = 2;
+    public static final int ACTION_LAST = 2;
     public ManagementFrame(IManagementService service){
         this.service = service;
         initUICompoent();
@@ -32,15 +33,18 @@ public class ManagementFrame extends BaseFrame implements ActionListener {
     private DishManageUI dishManageUI;
     private EmployeeManageUI employeeManageUI;
     private TableManageUI tableManageUI;
+    private OrderManagerUI orderManagerUI;
     public void initUICompoent(){
         mainUI = new MainUI(this);
         dishManageUI = new DishManageUI(this);
         employeeManageUI = new EmployeeManageUI(this);
         tableManageUI = new TableManageUI(this);
+        orderManagerUI = new OrderManagerUI(this);
         add("Main", mainUI);
         add("DishManage", dishManageUI);
         add("EmployeeManage", employeeManageUI);
         add("TableManage", tableManageUI);
+        add("OrderManage", orderManagerUI);
     }
 
 
@@ -57,6 +61,9 @@ public class ManagementFrame extends BaseFrame implements ActionListener {
             switch (e.getID()){
                 case TableManageUI.TABLE_CREATE:{
                     mainUI.actionPerformed(new ActionEvent(this, TABLE_CREATE, e.getActionCommand()));
+                } break;
+                case TableManageUI.TABLE_DELETE: {
+                    mainUI.actionPerformed(new ActionEvent(this, TABLE_DELETE, e.getActionCommand()));
                 } break;
             }
         }
@@ -76,4 +83,6 @@ public class ManagementFrame extends BaseFrame implements ActionListener {
     public void tableManage() {
         show("TableManage");
     }
+    public void orderManage() { show("OrderManage"); }
+
 }

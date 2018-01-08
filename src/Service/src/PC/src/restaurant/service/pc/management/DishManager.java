@@ -8,6 +8,7 @@ import restaurant.service.pc.vo.PO2VO;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class DishManager {
     private IDb db;
@@ -19,9 +20,29 @@ public class DishManager {
     }
 
 
+    private static boolean isDigits(String str){
+        return Pattern.compile("^\\d+$").matcher(str).find();
+    }
+    public String newDishId(){
+        int max = 0;
+        for(restaurant.database.po.Dish dish:dishes){
+            if(isDigits(dish.getId())){
+                int id = Integer.valueOf(dish.getId());
+                if(id > max){
+                    max = id;
+                }
+            }
+        }
+        String newId = String.valueOf(max+1);
+        int l = 11 - newId.length();
+        String prefix = "";
+        for (int i = 0; i < l; ++i){
+            prefix += "0";
+        }
+        return prefix+newId;
+    }
     public Boolean createDish(String name, Float price, String type, Boolean isSaled, String pictureUrl) {
-        restaurant.database.po.Dish dish = PO2VO.newDishPo(name, name, price, type,isSaled, pictureUrl);
-        //debug("New dish: " + dish.toString());
+        restaurant.database.po.Dish dish = PO2VO.newDishPo(newDishId(), name, price, type,isSaled, pictureUrl);
         if(db.insertDish(dish)){
             dishes.add(dish);
             return true;
@@ -70,17 +91,33 @@ public class DishManager {
         }
         List<Dish> dishes = new ArrayList<>();
         for(restaurant.database.po.Dish d: this.dishes){
-            if(type.equals("全部") || d.getType().equals(type)){
+            if(d.getType().equals(type)){
                 dishes.add(PO2VO.dish(d));
             }
         }
         return dishes;
     }
+    public List<Dish> getDishSortByPrice(Boolean asc) {
+        List<restaurant.database.po.Dish> dishes = db.getDishByPrice(asc);
+        List<Dish> vdish = new ArrayList<>();
+        for(restaurant.database.po.Dish dish : dishes){
+            vdish.add(PO2VO.dish(dish));
+        }
+        return vdish;
+    }
+    public List<Dish> getDishSortBySaledCount(Boolean asc) {
+        List<restaurant.database.po.Dish> dishes = db.getDishBySales(asc);
+        List<Dish> vdish = new ArrayList<>();
+        for(restaurant.database.po.Dish dish : dishes){
+            vdish.add(PO2VO.dish(dish));
+        }
+        return vdish;
+    }
     public List<Dish> getDishByTypeSortByPrice(String type, Boolean asc) {
         List<restaurant.database.po.Dish> dishes = db.getDishByPrice(asc);
         List<Dish> vdish = new ArrayList<>();
         for(restaurant.database.po.Dish dish : dishes){
-            if(type.equals("全部") || dish.getType().equals(type)){
+            if(dish.getType().equals(type)){
                 vdish.add(PO2VO.dish(dish));
             }
         }
@@ -90,7 +127,7 @@ public class DishManager {
         List<restaurant.database.po.Dish> dishes = db.getDishBySales(asc);
         List<Dish> vdish = new ArrayList<>();
         for(restaurant.database.po.Dish dish : dishes){
-            if(type.equals("全部") || dish.getType().equals(type)){
+            if(dish.getType().equals(type)){
                 vdish.add(PO2VO.dish(dish));
             }
         }
@@ -101,7 +138,6 @@ public class DishManager {
             getAllDish();
         }
         List<String> types = new ArrayList<>();
-        types.add("全部");
         for(restaurant.database.po.Dish dish: dishes){
             if(!types.contains(dish.getType())){
                 types.add(dish.getType());

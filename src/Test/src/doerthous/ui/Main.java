@@ -157,7 +157,6 @@ public class Main {
         public static void main(String[] args) {
             AFrameForJPanelTest f = new AFrameForJPanelTest();
             Anima anima = new Anima();
-            anima.add(new JButton("f"));
             f.getContentPane().add(anima);
             f.open();
         }
@@ -166,8 +165,54 @@ public class Main {
     static class Anima2Test {
         public static void main(String[] args) {
             AFrameForJPanelTest f = new AFrameForJPanelTest();
+            f.getContentPane().setLayout(new FlowLayout());
             Anima2 anima = new Anima2();
-            f.getContentPane().add(anima);
+            JButton button = new JButton("test");
+            button.addActionListener(e->{
+                f.getContentPane().add(anima);
+                f.getContentPane().revalidate();
+            });
+            f.getContentPane().add(button);
+            f.open();
+        }
+    }
+
+    static class OTITest {
+        public static void main(String[] args) {
+            AFrameForJPanelTest f = new AFrameForJPanelTest();
+            OTI oti = new OTI();
+            f.getContentPane().add(oti);
+            f.open();
+        }
+
+        static class OTI extends JPanel {
+            public OTI() {
+                setLayout(new BorderLayout());
+                setOpaque(false);
+                add(new JLabel("餐桌未上线", JLabel.CENTER));
+            }
+        }
+    }
+
+    static class BasePanel4Test {
+        public static void main(String[] args) {
+            AFrameForJPanelTest f = new AFrameForJPanelTest();
+            f.getContentPane();
+            BasePanel4 anima = new BasePanel4();
+            JButton button = new JButton("test");
+            button.addActionListener(e->{
+                anima.setNotification("");
+            });
+            anima.addFootRight(button);
+            f.add(anima);
+            f.open();
+        }
+    }
+
+    static class JTextFieldExTest {
+        public static void main(String[] args) {
+            AFrameForJPanelTest f = new AFrameForJPanelTest();
+            f.add(new JTextFieldEx("t", e -> {}));
             f.open();
         }
     }

@@ -1,6 +1,7 @@
 package restaurant.communication.core.impl;
 
 import java.io.Serializable;
+import java.net.ConnectException;
 
 public interface ISocketWrapper {
     /*
@@ -19,7 +20,7 @@ public interface ISocketWrapper {
         void receive(IData data);
     }
 
-    void sendByTcp(IData data);
+    void sendByTcp(IData data) throws ConnectException;
     void sendByUdp(IData data);
     String listenByTcp(IAddress address, IAction action);
     String listenByUdp(IAddress address, IAction action);

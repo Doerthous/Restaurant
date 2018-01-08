@@ -8,6 +8,7 @@ import restaurant.communication.core.utils.Debug;
 import restaurant.communication.core.utils.MapOperation;
 
 import java.io.Serializable;
+import java.net.ConnectException;
 import java.util.*;
 
 import static java.lang.Thread.sleep;
@@ -17,6 +18,9 @@ public class Peer implements IPeer, ISocketWrapper.IAction {
     private static final String WHERE_IS_ID_ACK = Peer.class.getName()+"[WIIA]";
     private static final String ID_ONLINE = Peer.class.getName()+"[ION]";
     private static final String ID_OFFLINE = Peer.class.getName()+"[IOFF]";
+    private static final String WRONG_ID = Peer.class.getName()+"[WI]";
+    private static final IData INIT_COMPLETED = new restaurant.communication.core.impl.Data(null,null,CMD_INIT_COMPLETED,null);
+    private static final IData ID_IS_ALREADY_IN_USED = new restaurant.communication.core.impl.Data(null,null,CMD_ID_IS_ALREADY_IN_USED,null);
     private static String BROADCAST_ADDR = "255.255.255.255";
     private static int BROADCAST_PORT = 14444;
     private ISocketWrapper socketWrapper;
@@ -35,7 +39,7 @@ public class Peer implements IPeer, ISocketWrapper.IAction {
     public Peer(ISocketWrapper socketWrapper, IIPTools ipTools){
         this.socketWrapper = socketWrapper;
         this.ipTools = ipTools;
-        this.id = "";
+        this.id = null;//"";
         this.isPause = true;
         this.ip = "";
         id2ip = new HashMap<>();
@@ -60,13 +64,16 @@ public class Peer implements IPeer, ISocketWrapper.IAction {
                 SocketData.packAddress(ip, port), this);
         debug("listen by tcp: ["+ip+":"+port+"]");
         debug("listen by udp: ["+ip+":"+BROADCAST_PORT+"]");
+
+        // notify observer init completed
+        updateCommandObserver(CMD_INIT_COMPLETED, INIT_COMPLETED);
     }
 
     @Override
     public void start(String id) {
         if(id != null && !id.equals(this.id)) {
             continueMessageHandle();
-            sendCommand(BROADCAST_ID, ID_ONLINE, 
+            sendCommand(BROADCAST_ID, ID_ONLINE,
                     new Bundle()
                     .putString("old id", this.id)
                     .putString("new id", id)
@@ -78,6 +85,7 @@ public class Peer implements IPeer, ISocketWrapper.IAction {
 
     @Override
     public void stop() {
+        sendCommand(BROADCAST_ID, ID_OFFLINE, null);
         socketWrapper.killListener(tcpListenerId);
         socketWrapper.killListener(udpListenerId);
         lanIpIdentify.stop();
@@ -99,23 +107,31 @@ public class Peer implements IPeer, ISocketWrapper.IAction {
     }
     @Override
     public void sendCommand(String id, String command, Object data) {
-        if(!isPause) {
-            whereIsId(id);
-            IData idata = new restaurant.communication.core.impl.Data(this.id, id, command, data);
-            if (id.equals(BROADCAST_ID)) {
-                ISocketWrapper.IData socketData = SocketData.packData(ip, port,
-                        BROADCAST_ADDR, BROADCAST_PORT, idata);
-                debug.println(new AddressDebug(this.id, ip, port).toString() + ": send to " +
-                        new AddressDebug(id, BROADCAST_ADDR, BROADCAST_PORT) + " by udp");
-                socketWrapper.sendByUdp(socketData);
-            } else {
-                ISocketWrapper.IData socketData = SocketData.packData(ip, port,
-                        id2ip.get(id), id2port.get(id), idata);
-                debug.println(new AddressDebug(this.id, ip, port).toString() + ": send to " +
-                        new AddressDebug(id, id2ip.get(id), id2port.get(id)) + " by tcp");
-                socketWrapper.sendByTcp(socketData);
+        new Thread(()->{
+            if(!isPause && whereIsId(id)) {
+                IData idata = new restaurant.communication.core.impl.Data(this.id, id, command, data);
+                if (id.equals(BROADCAST_ID)) {
+                    ISocketWrapper.IData socketData = SocketData.packData(ip, port,
+                            BROADCAST_ADDR, BROADCAST_PORT, idata);
+                    debug.println(new AddressDebug(this.id, ip, port).toString() + ": send to " +
+                            new AddressDebug(id, BROADCAST_ADDR, BROADCAST_PORT) + " by udp");
+                    socketWrapper.sendByUdp(socketData);
+                } else {
+                    ISocketWrapper.IData socketData = SocketData.packData(ip, port,
+                            id2ip.get(id), id2port.get(id), idata);
+                    debug.println(new AddressDebug(this.id, ip, port).toString() + ": send to " +
+                            new AddressDebug(id, id2ip.get(id), id2port.get(id)) + " by tcp");
+                    try {
+                        socketWrapper.sendByTcp(socketData);
+                    } catch (ConnectException e) { // 不在线
+                        debug(id + " is not online");
+                        updateCommandObserver(CMD_ID_IS_NOT_ONLINE,
+                                new restaurant.communication.core.impl.Data(this.id, id,
+                                        CMD_ID_IS_NOT_ONLINE, null));
+                    }
+                }
             }
-        }
+        }).start();
     }
     @Override
     public void addCommandObserver(ICommandObserver observer, String command) {
@@ -138,38 +154,46 @@ public class Peer implements IPeer, ISocketWrapper.IAction {
     public void receive(ISocketWrapper.IData data) {
         if(data.getData() instanceof IData) {
             IData idata = (IData) data.getData();
-            // 如未暂停则进行消息处理
-            if(!isPause) {
-                // 处理内部消息
-                String cmd = idata.getCommand();
-                if (WHERE_IS_ID.equals(cmd)) {
-                    whereIsIdMessage(idata);
-                    return;
+            if(idata.getToId().equals(id) || idata.getToId().equals(IPeer.BROADCAST_ID)) { // 只接受自己id和广播
+                // 如未暂停则进行消息处理
+                if (!isPause) {
+                    // 处理内部消息
+                    String cmd = idata.getCommand();
+                    if (WHERE_IS_ID.equals(cmd)) {
+                        whereIsIdMessage(idata);
+                        return;
+                    }
+                    if (WHERE_IS_ID_ACK.equals(cmd)) {
+                        whereIsIdAckMessage(idata);
+                        return;
+                    }
+                    if (ID_ONLINE.equals(cmd)) {
+                        idChangeMessage(idata);
+                        return;
+                    }
+                    if (ID_OFFLINE.equals(cmd)) {
+                        idOfflineMessage(idata.getFromId());
+                        return;
+                    }
+                    if (WRONG_ID.equals(cmd)) {
+                        wrongIdMessage(idata);
+                        return;
+                    }
+                    // 非内部消息传给监听者处理
+                    updateObservers(idata);
                 }
-                if (WHERE_IS_ID_ACK.equals(cmd)) {
-                    whereIsIdAckMessage(idata);
-                    return;
-                }
-                if (ID_ONLINE.equals(cmd)) {
-                    idChangeMessage(idata);
-                    return;
-                }
-                // 非内部消息传给监听者处理
-                updateObservers(idata);
-                // 判断对方持有的己方id是否过期
-                if(!idata.getToId().equals(id)){
-                    sendCommand(idata.getFromId(), ID_ONLINE, new Bundle()
-                            .putString("old id", idata.getToId())
-                            .putString("new id", id)
-                            .putString("ip", ip)
-                            .putInteger("port", port));
-                }
+            } else { // 通知发送方错误id
+                sendCommand(idata.getFromId(), WRONG_ID, idata);
+                debug(idata.getFromId() +" send message with wrong id["+idata.getToId()+"] to me");
             }
         }
     }
     private void updateObservers(IData data){
+        updateCommandObserver(data.getCommand(), data);
+    }
+    private void updateCommandObserver(String command, IData data){
         List<ICommandObserver> l = (List<ICommandObserver>)
-                MapOperation.getOrDefault(observers, data.getCommand(), new ArrayList<>());
+                MapOperation.getOrDefault(observers, command, new ArrayList<>());
         for (ICommandObserver observer : l) {
             observer.update(data);
         }
@@ -194,23 +218,31 @@ public class Peer implements IPeer, ISocketWrapper.IAction {
     private void debug(String message){
         debug.println(new AddressDebug(id, ip, port).toString() +": "+message);
     }
-    private void whereIsId(String id){
-        Map<String, String> data;
+    private boolean whereIsId(String id){
+        int count = 10;
         if(!id.equals(BROADCAST_ID) && !id2ip.keySet().contains(id)){
             Bundle bundle = new Bundle()
                     .putString("source ip", ip)
                     .putInteger("source tcp port", port)
                     .putString("target id", id);
-            while(!id2ip.keySet().contains(id)){
+            while(!id2ip.keySet().contains(id) && count > 0){
                 sendCommand(BROADCAST_ID, WHERE_IS_ID, bundle);
                 debug("where is " + id + "[" + BROADCAST_ID + "," + BROADCAST_ADDR+"]");
                 try {
                     sleep(1000);
+                    --count;
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
+            if(count == 0){
+                updateCommandObserver(CMD_ID_IS_NOT_ONLINE,
+                        new restaurant.communication.core.impl.Data(this.id, id,
+                                CMD_ID_IS_NOT_ONLINE, null));
+                return false;
+            }
         }
+        return true;
     }
     private void idChangeMessage(IData data){
         Bundle d = (Bundle) data.getData();
@@ -222,23 +254,22 @@ public class Peer implements IPeer, ISocketWrapper.IAction {
         if(newId.equals(id)){
             if(!this.ip.equals(ip) && !this.port.equals(port)) {
                 pauseMessageHandle();
-                updateObservers(new restaurant.communication.core.impl.Data(data.getFromId(), data.getToId(),
-                        IPeer.CMD_ID_IS_ALREADY_IN_USED, null));
+                updateCommandObserver(CMD_ID_IS_ALREADY_IN_USED, ID_IS_ALREADY_IN_USED);
             }
         } else {
             // 通知同id者
             if (id2ip.keySet().contains(newId)) {
-                sendCommand(newId, ID_ONLINE, data.getData());
+                String sIp = id2ip.get(newId);
+                Integer sPort = id2port.get(newId);
+                if(!sIp.equals(ip) && !sPort.equals(port)) {
+                    sendCommand(newId, ID_ONLINE, data.getData());
+                }
             }
             // 更新信息
-            if (id2ip.keySet().contains(oldId)) {
-                // 删除旧信息
-                id2ip.remove(oldId);
-                id2port.remove(oldId);
-            }
             // 添加新信息
             id2ip.put(newId, ip);
             id2port.put(newId, port);
+            idOfflineMessage(oldId);
         }
     }
     private void whereIsIdMessage(IData data){
@@ -276,6 +307,29 @@ public class Peer implements IPeer, ISocketWrapper.IAction {
             }
         }
     }
+    private void idOfflineMessage(String offlineId){
+        removeId(offlineId);
+        debug(offlineId+" offline");
+    }
+    private void wrongIdMessage(IData data){
+        if(data.getData() instanceof IData) {
+            IData idata = (IData) data.getData();
+            // 发消息给错误id
+            debug("wrong message to " + data.getFromId() + ", expect id: " +idata.getToId());
+            removeId(idata.getToId());
+            // 消息重发
+            sendCommand(idata.getToId(), idata.getCommand(), idata.getData());
+        }
+    }
+    private void removeId(String id){
+        if(id2ip.keySet().contains(id)){
+            id2ip.remove(id);
+        }
+        if(id2port.keySet().contains(id)){
+            id2port.remove(id);
+        }
+    }
+
 
     /*
         确认ip
@@ -302,8 +356,13 @@ public class Peer implements IPeer, ISocketWrapper.IAction {
                                 debug.println("receive broadcast");
                                 for (ISocketWrapper.IAddress ipp : d.ipps) {
                                     if (ipp.getIp().equals(data.getSourceAddress().getIp())) {
-                                        sw.sendByTcp(SocketData.packData("", 0, 
-                                                ipp.getIp(), ipp.getPort(), ipp.getIp()));
+                                        try {
+                                            sw.sendByTcp(SocketData.packData("", 0,
+                                                    ipp.getIp(), ipp.getPort(), ipp.getIp()));
+                                        } catch (ConnectException e) {
+                                            debug.println("bad address while confirming address: ["+
+                                            ipp.getIp()+":"+ipp.getPort()+"]");
+                                        }
                                         debug.println(ipp.getIp() + " " + ipp.getPort());
                                         break;
                                     }
@@ -330,8 +389,13 @@ public class Peer implements IPeer, ISocketWrapper.IAction {
                     debug.println("\t target ip " + data.getTargetAddress().getIp());
                     for (ISocketWrapper.IAddress ipp : d.ipps) {
                         if (ipp.getIp().equals(data.getSourceAddress().getIp())) {
-                            sw.sendByTcp(SocketData.packData("", 0,
-                                    ipp.getIp(), ipp.getPort(), ipp.getIp()));
+                            try {
+                                sw.sendByTcp(SocketData.packData("", 0,
+                                        ipp.getIp(), ipp.getPort(), ipp.getIp()));
+                            } catch (ConnectException e) {
+                                debug.println("bad address while confirming address: ["+
+                                        ipp.getIp()+":"+ipp.getPort()+"]");
+                            }
                             debug.println(ipp.getIp() + " " + ipp.getPort());
                             break;
                         }

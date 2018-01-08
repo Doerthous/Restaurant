@@ -11,7 +11,6 @@
     <orderEntry type="module" module-name="UI" />
     <orderEntry type="module" module-name="Database" />
     <orderEntry type="module" module-name="Service" />
-    <orderEntry type="library" name="log4j-api-2.10.0" level="application" />
     <orderEntry type="module" module-name="Old" />
     <orderEntry type="module" module-name="Service-Core" />
     <orderEntry type="module" module-name="Service-PC" />
@@ -27,5 +26,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="log4j-core-2.10.0" level="application" />
+    <orderEntry type="library" name="log4j-api-2.10.0" level="application" />
   </component>
 </module>

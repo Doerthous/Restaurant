@@ -1,10 +1,13 @@
 package restaurant.service.core;
 
 import com.sun.org.apache.xpath.internal.operations.Bool;
+import restaurant.service.core.sc.EmployeeSearchCondition;
 import restaurant.service.core.vo.Dish;
 import restaurant.service.core.vo.Employee;
+import restaurant.service.core.vo.Order;
 import restaurant.service.core.vo.Table;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +20,8 @@ public interface IManagementService {
     Boolean deleteDish(String name);
     List<Dish> getAllDish();
     List<Dish> getDishByType(String type);
+    List<Dish> getDishSortByPrice(Boolean asc);
+    List<Dish> getDishSortBySaledCount(Boolean asc);
     List<Dish> getDishByTypeSortByPrice(String type, Boolean asc);
     List<Dish> getDishByTypeSortBySaledCount(String type, Boolean asc);
     List<String> getDishTypes();
@@ -30,10 +35,9 @@ public interface IManagementService {
                            String password, String phone, String nativePlace, String photoUrl);
     Boolean deleteEmployee(String id);
     List<Employee> getAllEmployee();
-    List<Employee> getEmployeeByPosition(String position);
-    List<Employee> getEmployeeByPositionAndSex(String position, String sex);
     List<String> getAllEmployeePositions();
     Employee getEmployeeByCode(String code);
+    List<Employee> getEmployee(EmployeeSearchCondition esc);
     List<Employee> getOnlineWaiter();
 
 
@@ -43,7 +47,12 @@ public interface IManagementService {
     Boolean deleteTable(String id);
     List<Table> getAllTable();
     Table getTableById(String id);
+    List<Table> getTableByType(String type);
+    List<Table> getTableByFloor(Integer floor);
+    List<Table> getTableByTypeAndFloor(String type, Integer floor);
     List<String> getTableTypes();
+    List<String> getAllTableNumbers();
+    List<String> getTableFloors();
     /*
        通知服务员传菜
     */
@@ -65,6 +74,7 @@ public interface IManagementService {
      */
     interface ITableObserver {
         void online(String tableId);
+        void offline(String tableId);
         void dishFinish(String dishName, String tableId);
         void requestService(String tableId);
         void newOrder(String tableId);
@@ -76,8 +86,15 @@ public interface IManagementService {
     /*
         订单相关
      */
+    Boolean deleteOrder(String orderId);
+    List<Order> getAllOrder();
+    Order getOrderById(String id);
+    List<Order> getOrderByTableId(String tableId);
+    List<Order> getOrderByDateRange(Date begin, Date end);
+    List<Order> getOrderByTableIdAndDateRange(String tableId, Date begin, Date end);
     Float getTotalConsumption(String tableId);
     Map<String, Integer> getOrderDetail(String tableId);
+
 
 
 }

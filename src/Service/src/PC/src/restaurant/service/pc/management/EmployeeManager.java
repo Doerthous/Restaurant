@@ -5,6 +5,7 @@ import restaurant.communication.core.IData;
 import restaurant.communication.core.IPeer;
 import restaurant.database.IDb;
 import restaurant.service.core.impl.InterModuleCommunication;
+import restaurant.service.core.sc.EmployeeSearchCondition;
 import restaurant.service.core.vo.Employee;
 import restaurant.service.pc.vo.PO2VO;
 
@@ -27,6 +28,7 @@ public class EmployeeManager implements ICommandObserver {
         peer.addCommandObserver(this, InterModuleCommunication.CommandToManagement.WAITER_LOGIN);
         peer.addCommandObserver(this, InterModuleCommunication.CommandToManagement.WAITER_CHANGE_PASSWORD);
         peer.addCommandObserver(this, InterModuleCommunication.CommandToManagement.WAITER_ISSUE_REPORT);
+        peer.addCommandObserver(this, IPeer.CMD_ID_IS_NOT_ONLINE);
     }
 
     // 数据库操作
@@ -92,37 +94,11 @@ public class EmployeeManager implements ICommandObserver {
         }
         return false;
     }
-    public List<restaurant.service.core.vo.Employee> getAllEmployee() {
+    public List<Employee> getAllEmployee() {
         this.employees = db.getAllEmployee();
         List<restaurant.service.core.vo.Employee> employees = new ArrayList<>();
         for(restaurant.database.po.Employee e: this.employees){
             employees.add(PO2VO.employee(e));
-        }
-        return employees;
-    }
-    public List<restaurant.service.core.vo.Employee> getEmployeeByPosition(String position) {
-        if(employees == null){
-            getAllEmployee();
-        }
-        List<restaurant.service.core.vo.Employee> employees = new ArrayList<>();
-        for(restaurant.database.po.Employee e: this.employees){
-            if(position.equals("全部")|| e.getPosition().equals(position)){
-                employees.add(PO2VO.employee(e));
-            }
-        }
-        return employees;
-    }
-    public List<restaurant.service.core.vo.Employee> getEmployeeByPositionAndSex(String position, String sex) {
-        if(employees == null){
-            getAllEmployee();
-        }
-        List<restaurant.service.core.vo.Employee> employees = new ArrayList<>();
-        for(restaurant.database.po.Employee e: this.employees){
-            if(position.equals("全部")|| e.getPosition().equals(position)){
-                if(sex.equals("全部") || sex.equals(e.getSex())) {
-                    employees.add(PO2VO.employee(e));
-                }
-            }
         }
         return employees;
     }
@@ -131,7 +107,6 @@ public class EmployeeManager implements ICommandObserver {
             getAllEmployee();
         }
         List<String> positions = new ArrayList<>();
-        positions.add("全部");
         for(restaurant.database.po.Employee e: employees){
             if(!positions.contains(e.getPosition())){
                 positions.add(e.getPosition());
@@ -139,12 +114,63 @@ public class EmployeeManager implements ICommandObserver {
         }
         return positions;
     }
-    public restaurant.service.core.vo.Employee getEmployeeByCode(String code) {
+    public Employee getEmployeeByCode(String code) {
         restaurant.database.po.Employee employee = db.getEmployeeById(code); // 如果不返回空，怎么表示不存在的数据？
         if(employee != null) {
             return PO2VO.employee(employee);
         }
         return null;
+    }
+    public List<Employee> getEmployee(EmployeeSearchCondition esc) {
+        if(this.employees == null){
+            getAllEmployee();
+        }
+        List<restaurant.database.po.Employee> employees = this.employees;
+        List<restaurant.database.po.Employee> temp = new ArrayList<>();
+        if(!esc.getCode().equals(EmployeeSearchCondition.FILTER_ALL)){
+            for(restaurant.database.po.Employee employee: employees){
+                if(employee.getId().equals(esc.getCode())){
+                    temp.add(employee);
+                }
+            }
+        } else {
+            temp = employees;
+        }
+        employees = temp;
+        temp = new ArrayList<>();
+        if(!esc.getName().equals(EmployeeSearchCondition.FILTER_ALL)){
+            for(restaurant.database.po.Employee employee: employees){
+                if(employee.getName().equals(esc.getName())){
+                    temp.add(employee);
+                }
+            }
+        } else {
+            temp = employees;
+        }
+        employees = temp;
+        temp = new ArrayList<>();
+        if(!esc.getSex().equals(EmployeeSearchCondition.FILTER_ALL)){
+            for(restaurant.database.po.Employee employee: employees){
+                if(employee.getSex().equals(esc.getSex())){
+                    temp.add(employee);
+                }
+            }
+        } else {
+            temp = employees;
+        }
+        employees = temp;
+        temp = new ArrayList<>();
+        if(!esc.getPosition().equals(EmployeeSearchCondition.FILTER_ALL)){
+            for(restaurant.database.po.Employee employee: employees){
+                if(employee.getPosition().equals(esc.getPosition())){
+                    temp.add(employee);
+                }
+            }
+        } else {
+            temp = employees;
+        }
+        employees = temp;
+        return PO2VO.employee(employees);
     }
 
 
@@ -205,6 +231,14 @@ public class EmployeeManager implements ICommandObserver {
             }
         } else if(InterModuleCommunication.CommandToManagement.WAITER_ISSUE_REPORT.equals(cmd)) {
             //
+        } else if(IPeer.CMD_ID_IS_NOT_ONLINE.equals(cmd)){
+            String waiterId = data.getToId();
+            for(Employee employee : onlineWaiters){
+                if(employee.getCode().equals(waiterId)){
+                    onlineWaiters.remove(employee);
+                    break;
+                }
+            }
         }
     }
 }

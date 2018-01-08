@@ -6,7 +6,7 @@ import restaurant.ui.component.*;
 import restaurant.ui.component.border.AdvLineBorder;
 import restaurant.ui.component.builder.JButtonBuilder;
 import restaurant.ui.component.builder.JLabelBuilder;
-import restaurant.ui.component.layout.PageLayout;
+import restaurant.ui.component.builder.JPanelBuilder;
 import restaurant.ui.utils.Utility;
 
 import javax.swing.*;
@@ -40,11 +40,8 @@ public class MainUI extends BasePanel {
      */
 
     private JPanel remainDish;
-    private PageButton dishPB;
     private JPanel table;
-    private PageButton tablePB;
     private JPanel orderDetail;
-    private PageButton orderPB;
     private void initUIComponent(){
         // subtitle
         getSubtitle().setLayout(new GridLayout(1,3));
@@ -59,36 +56,26 @@ public class MainUI extends BasePanel {
 
         // content
         getContent().setLayout(new GridLayout(1,3));
-        PageLayout pageLayout = new PageLayout().setHgap(2).setSingleCol(true)
-                .setPadding(new Insets(5,10,0,10));
-        remainDish = new JPanel(pageLayout);
-        dishPB = new PageButton(pageLayout, remainDish);
-        remainDish.setOpaque(false);
+        remainDish = JPanelBuilder.getInstance().opaque(false).build();
+        PagePanel pp1 = new PagePanel(remainDish, new PageTitle("菜品名称", "需求数量"));
         //
-        pageLayout = new PageLayout().setHgap(5).setSingleCol(true)
-                .setPadding(new Insets(5,10,0,10));
-        table = new JPanel(pageLayout);
-        tablePB = new PageButton(pageLayout, table);
-        table.setOpaque(false);
-        table.setBorder(new AdvLineBorder().setLeft(1).setLeftColor(Constants.Color.subtitle)
+        table = JPanelBuilder.getInstance().opaque(false).build();
+        PagePanel pp2 = new PagePanel(table, new PageTitle("餐桌号", "等待时间"));
+        pp2.setBorder(new AdvLineBorder().setLeft(1).setLeftColor(Constants.Color.subtitle)
                 .setRight(1).setRightColor(Constants.Color.subtitle));
         //
-        pageLayout = new PageLayout().setHgap(2).setSingleCol(true)
-                .setPadding(new Insets(5,10,0,10));
-        orderDetail = new JPanel(pageLayout);
-        orderPB = new PageButton(pageLayout, orderDetail);
-        orderDetail.setOpaque(false);
-        //
-        getContent().add(remainDish);
-        getContent().add(table);
-        getContent().add(orderDetail);
+        orderDetail = JPanelBuilder.getInstance().opaque(false).build();
+        PagePanel pp3 = new PagePanel(orderDetail, new PageTitle("菜品名称", "需求\\已完成"));
+        getContent().add(pp1);
+        getContent().add(pp2);
+        getContent().add(pp3);
 
 
         // font
         getFoot().setLayout(new GridLayout(1,3));
-        getFoot().add(dishPB);
-        getFoot().add(tablePB);
-        getFoot().add(orderPB);
+        getFoot().add(pp1.getPageButton());
+        getFoot().add(pp2.getPageButton());
+        getFoot().add(pp3.getPageButton());
     }
 
 

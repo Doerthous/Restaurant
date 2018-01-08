@@ -1,6 +1,7 @@
 package restaurant.database.impl;
 
-import org.junit.Test; 
+import com.sun.org.apache.xpath.internal.operations.Or;
+import org.junit.Test;
 import org.junit.Before; 
 import org.junit.After;
 import restaurant.database.DbFactory;
@@ -332,7 +333,12 @@ public void testUpdateDish() throws Exception {
     public void testInsertOrder() throws Exception {
         IDb db = DbFactory.getDb(DbFactory.DbType.SqlServer);
         db.init("jdbc:sqlserver://192.168.155.1:1433;DatabaseName=OrderDish", "ODuser","1234567890");
-        Boolean result = db.insertOrder(new Order("20171227001001",new Date(),"001",(float)250));
+        Order order = new Order();
+        order.setId("20171227001001");
+        order.setDate(new Date());
+        order.setSeatId("001");
+        order.setExpend(250f);
+        Boolean result = db.insertOrder(order);
         assertTrue(result);
     }
 
@@ -340,7 +346,7 @@ public void testUpdateDish() throws Exception {
     public void testInsertDetail() throws Exception {
         IDb db = DbFactory.getDb(DbFactory.DbType.SqlServer);
         db.init("jdbc:sqlserver://192.168.155.1:1433;DatabaseName=OrderDish", "ODuser","1234567890");
-        Boolean result = db.insertDetial(new Detail("20171227001001","m040",2));
+        Boolean result = db.insertDetail(new Detail("20171227001001","m040",2));
         assertTrue(result);
     }
 }

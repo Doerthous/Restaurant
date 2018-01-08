@@ -15,13 +15,6 @@ public class Order {
     //消费金额
     private Float expend;
 
-    public Order(String id, Date date, String seatId, Float expend) {
-        this.id = id;
-        this.date = date;
-        this.seatId = seatId;
-        this.expend = expend;
-    }
-
     public Order() {
     }
 

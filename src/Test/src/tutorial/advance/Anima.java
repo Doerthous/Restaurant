@@ -55,4 +55,6 @@ public class Anima extends RectangleCard implements ActionListener {
         else//更新当前一帧
             repaint();
     }
+
+
 }

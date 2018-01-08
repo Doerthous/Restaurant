@@ -62,6 +62,7 @@ public class OrderUI extends BasePanel3 {
                     .build();
             center.add(button);
         }
+        getSubtitleLeft().setLayout(new BorderLayout());
         getSubtitleLeft().add(center);
 
         // content
@@ -82,7 +83,7 @@ public class OrderUI extends BasePanel3 {
         // content
         orderDetail = new JPanel();
         orderDetail.setBackground(Constants.Color.background);
-        PagePanel pagePanel = new PagePanel(orderDetail);
+        PagePanel pagePanel = new PagePanel(orderDetail, new PageTitle("菜品名称","数量"));
         pagePanel.setPageButtonBackground(Constants.Color.title);
         getContentRightTop().add(pagePanel);
 

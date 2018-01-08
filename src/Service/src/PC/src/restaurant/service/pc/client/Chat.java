@@ -14,9 +14,6 @@ import java.util.List;
 
 import static java.lang.Thread.sleep;
 
-/*
-    ui 乱入
- */
 public class Chat implements ICommandObserver {
     @Override
     public void update(IData data) {
@@ -97,14 +94,14 @@ public class Chat implements ICommandObserver {
         id2session = new HashMap<>();
         observers = new ArrayList<>();
         this.peer = peer;
-        this.peer.addCommandObserver(this, ONLINE_TABLE_CONFIRM);
-        this.peer.addCommandObserver(this, ONLINE_TABLE_CONFIRM_ACK);
-        this.peer.addCommandObserver(this, CHAT);
         debug = new Debug(getClass());
         debug.on();
     }
     public void start(){
         // online table confirm
+        this.peer.addCommandObserver(this, ONLINE_TABLE_CONFIRM);
+        this.peer.addCommandObserver(this, ONLINE_TABLE_CONFIRM_ACK);
+        this.peer.addCommandObserver(this, CHAT);
         ThreadTools.loopThread(5, 1000, ()->{
             peer.sendCommand(IPeer.BROADCAST_ID, ONLINE_TABLE_CONFIRM, null);
             debug("who is online?");

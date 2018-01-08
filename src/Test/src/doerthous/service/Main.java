@@ -26,6 +26,11 @@ public class Main {
                 }
 
                 @Override
+                public void offline(String tableId) {
+
+                }
+
+                @Override
                 public void dishFinish(String dishName, String tableId) {
                     System.out.println(tableId + "'s " + dishName+" finished");
                     Scanner scanner = new Scanner(System.in);

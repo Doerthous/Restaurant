@@ -7,15 +7,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../Database/lib/sqljdbc42.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="library" name="sqljdbc42" level="project" />
+    <orderEntry type="library" name="mysql-connector-java-5.1.45" level="application" />
   </component>
 </module>

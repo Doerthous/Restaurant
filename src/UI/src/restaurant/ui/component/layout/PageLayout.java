@@ -33,8 +33,10 @@ public class PageLayout implements LayoutManager {
     @Override
     public void layoutContainer(Container parent) {
         synchronized (parent.getTreeLock()) {
-            layout(parent);
-            parent.revalidate();
+            if(parent.getComponentCount() > 0) {
+                layout(parent);
+                parent.revalidate();
+            }
         }
     }
 
@@ -189,10 +191,10 @@ public class PageLayout implements LayoutManager {
             pc
      */
     private List<List<Integer>> layoutPage(Component[] cs, int bi, int hl, int wl, int vg, int hg) {
-        java.util.List<java.util.List<Integer>> ret = new ArrayList<>();
+        List<List<Integer>> ret = new ArrayList<>();
         int rh = hl;
         while(rh > 0) {
-            java.util.List<Integer> d = layoutRow(cs, bi, hl, wl, rh, vg, hg);
+            List<Integer> d = layoutRow(cs, bi, hl, wl, rh, vg, hg);
             int rbi = d.get(0);
             int rei = d.get(d.size() - 1);
             if(rbi <= rei){ // sucess lay out a row
@@ -228,13 +230,13 @@ public class PageLayout implements LayoutManager {
         int hl = ch - padding.top - padding.bottom;
         Component[] cs = container.getComponents();
         setChildComponentForSingle(cs, cw, ch);
-        java.util.List<java.util.List<Integer>> page = new ArrayList<>();
+        List<List<Integer>> page = new ArrayList<>();
         if(hl > 0 && wl > 0 && cs.length > 0) {
             int ei = 0;
             while (ei < cs.length && pageCount-1 != targetPage) {
                 page = layoutPage(container.getComponents(), ei,
                         hl, wl, vgap, hgap);
-                java.util.List<Integer> lastRow = page.get(page.size() - 1);
+                List<Integer> lastRow = page.get(page.size() - 1);
                 ei = lastRow.get(lastRow.size() - 1)+1;
                 ++pageCount;
             }
@@ -266,15 +268,25 @@ public class PageLayout implements LayoutManager {
 
     private void layout(Container container){
         List<List<Integer>> page = getPageData(container, currPage);
+        if(page.size() == 1) { // no page data
+            return;
+        }
         int count = page.get(page.size()-1).get(0);
         if(currPage > count){
             currPage = count;
         }
         Component[] comps = container.getComponents();
-        for (Component comp : comps){
-            comp.setVisible(false);
-        }
         page.remove(page.size()-1);
+        List<Integer> firstRow = page.get(0);
+        List<Integer> lastRow = page.get(page.size()-1);
+        int firstVisibleIndex = firstRow.get(0);
+        int lastVisibleIndex = lastRow.get(lastRow.size()-1);
+        for(int i = 0; i < comps.length; ++i){
+            if(firstVisibleIndex <= i && i <= lastVisibleIndex){
+                continue;
+            }
+            comps[i].setVisible(false);
+        }
         int hl = (int) container.getSize().getHeight() - padding.top - padding.bottom;
         int wl = (int) container.getSize().getWidth() - padding.left - padding.right;
         int y = 0;

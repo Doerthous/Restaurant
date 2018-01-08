@@ -1,10 +1,8 @@
 package restaurant.database.impl;
 
 
-import com.sun.org.apache.regexp.internal.RE;
-import javafx.scene.Parent;
-import jdk.nashorn.internal.objects.NativeUint8Array;
 import restaurant.database.IDb;
+import restaurant.database.impl.mapping.*;
 import restaurant.database.po.*;
 
 import java.io.*;
@@ -12,7 +10,6 @@ import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.SimpleFormatter;
 
 public class SqlServerDb implements IDb {
     private final static String DRIVE_NAME = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
@@ -22,6 +19,18 @@ public class SqlServerDb implements IDb {
     @Override
     public void init(String url, String user, String password) {
         this.url = url;
+        this.user = user;
+        this.password = password;
+        try {
+            Class.forName(DRIVE_NAME);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void init(String host, Short port, String database, String user, String password) {
+        this.url = "jdbc:sqlserver://" + host + ":"+port + ";DatabaseName=" + database;
         this.user = user;
         this.password = password;
         try {
@@ -511,6 +520,13 @@ public class SqlServerDb implements IDb {
         return result;
     }
 
+
+
+
+
+
+
+
     @Override
     public Boolean insertOrder(Order order) {
         Boolean result = false;
@@ -544,7 +560,39 @@ public class SqlServerDb implements IDb {
     }
 
     @Override
-    public Boolean insertDetial(Detail detail) {
+    public Boolean deleteOrder(Order order) {
+        Wrapper<Order> wrapper = new Wrapper<>(url, user, password);
+        Wrapper.DeleteMapping<Order> dm = new OrderDMDeleteById();
+        Integer rows = wrapper.delete("DELETE FROM ORDERS WHERE 订单id=?", order,  dm);
+        return rows > 0;
+    }
+
+    @Override
+    public List<Order> getAllOrder() {
+        Wrapper<Order> wrapper = new Wrapper<>(url, user, password);
+        return wrapper.search("SELECT * FROM ORDERS", new OrderRM());
+    }
+
+    @Override
+    public List<Order> getOrderByTableId(String tableId) {
+        return null;
+    }
+
+    @Override
+    public Order getOrderById(String orderId) {
+        Wrapper<Order> wrapper = new Wrapper<>(url, user, password);
+        Order order = new Order();
+        order.setId(orderId);
+        List<Order> l = wrapper.search("SELECT * FROM ORDERS WHERE 订单id=?", order, new OrderSMSearchById(), new OrderRM());
+        if(l.size() > 0){
+            return l.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public Boolean insertDetail(Detail detail) {
         Boolean result = false;
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -571,6 +619,23 @@ public class SqlServerDb implements IDb {
             }
         }
         return result;
+    }
+
+    @Override
+    public Boolean deleteDetail(Detail detail) {
+        Wrapper<Detail> wrapper = new Wrapper<>(url, user, password);
+        Wrapper.DeleteMapping<Detail> dm = new DetailDMDeleteByOrderId();
+        Integer rows = wrapper.delete("DELETE FROM DETAILS WHERE 订单id=?", detail,  dm);
+        return rows > 0;
+    }
+
+    @Override
+    public List<Detail> getDetailByOrderId(String id) {
+        Wrapper<Detail> wrapper = new Wrapper<>(url, user, password);
+        Detail detail = new Detail();
+        detail.setOrderId(id);
+        return wrapper.search("SELECT * FROM DETAILS WHERE 订单id=?",
+                detail, new DetailSMSearchByOrderId(), new DetailRM());
     }
 
     public List<Seat> getSeatByColumn(String sql){
@@ -699,27 +764,5 @@ public class SqlServerDb implements IDb {
         return ems;
     }
 
-
-
-    public Boolean insertSpecificOrder(List list){
-        Boolean result = false;
-        return result;
-    }
-    /*private FileInputStream filetoInputStream(File file) throws FileNotFoundException {
-        return new FileInputStream(file);
-    }*/
-
-    /*public File inputstreamtofile(InputStream ins) throws IOException {
-        File file = File.createTempFile("temp","txt");
-        OutputStream os = new FileOutputStream(file);
-        int bytesRead = 0;
-        byte[] buffer = new byte[8192];
-        while ((bytesRead = ins.read(buffer, 0, 8192)) != -1) {
-            os.write(buffer, 0, bytesRead);
-        }
-        os.close();
-        ins.close();
-        return  file;
-    }*/
 
 }

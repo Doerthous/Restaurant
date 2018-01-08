@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/src/Communication/Communication.iml" filepath="$PROJECT_DIR$/src/Communication/Communication.iml" />
       <module fileurl="file://$PROJECT_DIR$/src/Communication/src/Core/Communication-Core.iml" filepath="$PROJECT_DIR$/src/Communication/src/Core/Communication-Core.iml" />
       <module fileurl="file://$PROJECT_DIR$/src/Communication/src/PC/Communication-PC.iml" filepath="$PROJECT_DIR$/src/Communication/src/PC/Communication-PC.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/DataSet/DataSet.iml" filepath="$PROJECT_DIR$/src/DataSet/DataSet.iml" />
       <module fileurl="file://$PROJECT_DIR$/src/Database/Database.iml" filepath="$PROJECT_DIR$/src/Database/Database.iml" />
       <module fileurl="file://$PROJECT_DIR$/src/Communication/src/Old/Old.iml" filepath="$PROJECT_DIR$/src/Communication/src/Old/Old.iml" />
       <module fileurl="file://$PROJECT_DIR$/Restaurant.iml" filepath="$PROJECT_DIR$/Restaurant.iml" />

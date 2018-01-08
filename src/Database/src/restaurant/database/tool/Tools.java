@@ -1,7 +1,12 @@
 package restaurant.database.tool;
 
+import restaurant.database.impl.Wrapper;
+import restaurant.database.impl.mapping.DishRM;
+import restaurant.database.po.Dish;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
+
 
 public class Tools {
     public static void main(String [] args) {
@@ -17,5 +22,8 @@ public class Tools {
             e.printStackTrace();
             System.out.print("连接失败");
         }
+
+        Wrapper w = new Wrapper<Dish>(dbURL, userName, userPwd);
+        w.search("select * from MENU", new DishRM());
     }
 }

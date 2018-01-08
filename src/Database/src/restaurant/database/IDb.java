@@ -8,6 +8,7 @@ import java.util.List;
 public interface IDb {
     String serverIp = "192.168.155.1";
     void init(String url, String user, String password);
+    void init(String host, Short port, String database, String user, String password);
     /*
         员工表操作
      */
@@ -65,6 +66,10 @@ public interface IDb {
     //查询操作
     //增删操作
     Boolean insertOrder(Order order);
+    Boolean deleteOrder(Order order);
+    List<Order> getAllOrder();
+    List<Order> getOrderByTableId(String  tableId);
+    Order getOrderById(String orderId);
     //修改操作
 
 
@@ -75,6 +80,8 @@ public interface IDb {
     */
     //查询操作
     //增删操作
-    Boolean insertDetial(Detail detail);
+    Boolean insertDetail(Detail detail);
+    Boolean deleteDetail(Detail detail);
+    List<Detail> getDetailByOrderId(String id);
     //修改操作
 }

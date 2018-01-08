@@ -14,7 +14,6 @@ public class Dish {
     public Dish(String name, Float price, byte[]  picture, String type, Boolean isSaled) {
         this.name = name;
         this.price = price;
-        this.picture = null;
         this.picture = picture;
         this.type = type;
         this.isSaled = isSaled;

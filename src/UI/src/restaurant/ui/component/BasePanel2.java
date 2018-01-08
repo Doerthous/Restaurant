@@ -1,12 +1,14 @@
 package restaurant.ui.component;
 
+import restaurant.ui.component.builder.JButtonBuilder;
 import restaurant.ui.component.builder.JPanelBuilder;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 
 public class BasePanel2 extends BasePanel {
-    private JPanel sl;
+    protected JPanel sl;
     private JPanel sr;
     private JPanel cl;
     private JPanel cr;
@@ -62,7 +64,12 @@ public class BasePanel2 extends BasePanel {
         fr.add(component);
         fr.setVisible(true);
     }
-
+    public void addFootRightButton(String text, ActionListener listener){
+        addFootRight(JButtonBuilder.getInstance().text(text)
+                .background(restaurant.ui.client.Constants.Color.title)
+                .margin(new Insets(0,0,0,0))
+                .listener(listener).build());
+    }
     public void setRightWidth(int rightWidth){
         setVisible(false);
         // subtitle

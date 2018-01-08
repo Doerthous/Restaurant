@@ -3,6 +3,7 @@ package restaurant.ui.management.component;
 import doerthous.other.cli.CLI;
 import restaurant.service.core.IManagementService;
 import restaurant.service.core.vo.Employee;
+import restaurant.service.core.vo.Table;
 import restaurant.ui.Constants;
 import restaurant.ui.component.PagePanel;
 import restaurant.ui.component.RectangleCard;
@@ -20,13 +21,13 @@ import java.util.ArrayList;
 
 public class TablePanels implements ActionListener, IManagementService.ITableObserver{
     private ManagementFrame mf;
-    private String tableId;
+    private Table table;
     private OT ot;
     private FTI fti;
     private BTI bti;
     private Boolean isOnline;
     private JPanel info;
-    private JPanel notification;
+    private PagePanel notification;
     private JPanel n;
     private ActionListener listener;
 
@@ -53,10 +54,10 @@ public class TablePanels implements ActionListener, IManagementService.ITableObs
     private int targetIndex;
 
 
-    public TablePanels(String tableId, ManagementFrame mf) {
-        this.tableId = tableId;
+    public TablePanels(Table table, ManagementFrame mf) {
         this.mf = mf;
         this.isOnline = false;
+        this.table = table;
         mf.getService().addTableObserver(this);
         notifications = new ArrayList<>();
 
@@ -64,13 +65,15 @@ public class TablePanels implements ActionListener, IManagementService.ITableObs
         fti.setListener(this);
         bti = new BTI();
         bti.setListener(this);
-        ot = new OT(tableId);
+        ot = new OT(table);
         info = new JPanel(new BorderLayout());
         info.setOpaque(false);
-        info.add(fti);
+        info.add(new OTI());
+        //info.add(fti);
         n = new JPanel();
         n.setOpaque(false);
         notification = new PagePanel(n);
+        notification.setPageButtonBackground(Constants.Color.title);
     }
 
     public OT getOt() {
@@ -83,6 +86,10 @@ public class TablePanels implements ActionListener, IManagementService.ITableObs
 
     public JPanel getNotification() {
         return notification;
+    }
+
+    public String getTableId() {
+        return table.getId();
     }
 
     public void setActionListener(ActionListener listener){
@@ -99,7 +106,7 @@ public class TablePanels implements ActionListener, IManagementService.ITableObs
                     info.add(bti);
                     Utility.revalidate(info);
                     ot.setBackground(Color.red);
-                    mf.getService().openTable(tableId, Integer.valueOf(fti.getCustomerCount()));
+                    mf.getService().openTable(table.getId(), Integer.valueOf(fti.getCustomerCount()));
                 }
             } break;
             case "通知":{
@@ -115,7 +122,8 @@ public class TablePanels implements ActionListener, IManagementService.ITableObs
                 info.add(fti);
                 Utility.revalidate(info);
                 ot.setBackground(Color.green);
-                mf.getService().closeTable(tableId);
+                ot.setNotification("");
+                mf.getService().closeTable(table.getId());
             } break;
             case "指派":{
                 new NF();
@@ -125,15 +133,35 @@ public class TablePanels implements ActionListener, IManagementService.ITableObs
 
     @Override
     public void online(String tableId) {
-        if(this.tableId.equals(tableId)){
+        String tid = table.getId();
+        if(tid.equals(tableId)){
             isOnline = true;
             ot.setBackground(Color.green);
+            info.removeAll();
+            info.add(fti);
+            Utility.revalidate(info);
+        }
+    }
+
+    @Override
+    public void offline(String tableId) {
+        String tid = table.getId();
+        if(tid.equals(tableId)){
+            isOnline = false;
+            ot.setBackground(Constants.Color.title);
+            notifications = new ArrayList<>();
+            loadNotification();
+            fti.initUIData();
+            info.remove(bti);
+            info.add(fti);
+            Utility.revalidate(info);
         }
     }
 
     @Override
     public void dishFinish(String dishName, String tableId) {
-        if(this.tableId.equals(tableId)) {
+        String tid = table.getId();
+        if(tid.equals(tableId)) {
             notifications.add(Notification.kitchen(dishName));
             ot.setNotification(" ("+notifications.size()+")");
             loadNotification();
@@ -142,7 +170,8 @@ public class TablePanels implements ActionListener, IManagementService.ITableObs
 
     @Override
     public void requestService(String tableId) {
-        if(this.tableId.equals(tableId)) {
+        String tid = table.getId();
+        if(tid.equals(tableId)) {
             notifications.add(Notification.client());
             ot.setNotification(" ("+notifications.size()+")");
             loadNotification();
@@ -151,10 +180,17 @@ public class TablePanels implements ActionListener, IManagementService.ITableObs
 
     @Override
     public void newOrder(String tableId) {
-        bti.setJlTotCst(mf.getService().getTotalConsumption(tableId).toString()); // 慢拍
+        bti.setJlTotCst(mf.getService().getTotalConsumption(tableId).toString());
     }
 
 
+    private class OTI extends JPanel {
+        public OTI() {
+            setLayout(new BorderLayout());
+            setOpaque(false);
+            add(new JLabel("餐桌未上线", JLabel.CENTER));
+        }
+    }
     private class FTI extends JPanel implements ActionListener {
         private ActionListener listener;
         private JButton jb;
@@ -174,7 +210,7 @@ public class TablePanels implements ActionListener, IManagementService.ITableObs
             jtf = new JTextField();
             JLabel jl1 = new JLabel("餐桌号：");
             JLabel jl2 = new JLabel("顾客数：");
-            JLabel jlTableId = new JLabel(tableId);
+            JLabel jlTableId = new JLabel(table.getId());
             panel = new JPanel(new GridBagLayout());
             panel.setOpaque(false);
 
@@ -226,7 +262,7 @@ public class TablePanels implements ActionListener, IManagementService.ITableObs
             JLabel jl1 = new JLabel("餐桌号：");
             JLabel jl2 = new JLabel("顾客数：");
             JLabel jl3 = new JLabel("总消费：");
-            JLabel jlTableId = new JLabel(tableId);
+            JLabel jlTableId = new JLabel(table.getId());
             jlCusCnt = new JLabel();
             jlTotCst = new JLabel();
 
@@ -268,14 +304,14 @@ public class TablePanels implements ActionListener, IManagementService.ITableObs
     public class OT extends RectangleCard implements MouseListener {
         private java.util.List<ActionListener> listeners;
         private JLabel jlNotification;
-        public OT(String tableId) {
+        public OT(Table table) {
             super(new Dimension(100,100));
             setLayout(new BorderLayout(0,0));
             listeners = new ArrayList<>();
             addMouseListener(this);
             jlNotification = new JLabel();
             add(jlNotification, BorderLayout.SOUTH);
-            add(JLabelBuilder.getInstance().text(tableId)
+            add(JLabelBuilder.getInstance().text(table.getId())
                     .mouseListener(this).build());
         }
         public OT addActionListener(ActionListener listener){
@@ -284,7 +320,7 @@ public class TablePanels implements ActionListener, IManagementService.ITableObs
         }
 
         public void actionPerformed(ActionEvent e) {
-            e = new ActionEvent(this, 1, tableId);
+            e = new ActionEvent(this, 1, table.getId());
             for(ActionListener listener: listeners){
                 listener.actionPerformed(e);
             }
@@ -297,7 +333,7 @@ public class TablePanels implements ActionListener, IManagementService.ITableObs
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            ActionEvent e1 = new ActionEvent(this, 1, tableId);
+            ActionEvent e1 = new ActionEvent(this, 1, table.getId());
             for(ActionListener listener: listeners){
                 listener.actionPerformed(e1);
             }
@@ -334,7 +370,7 @@ public class TablePanels implements ActionListener, IManagementService.ITableObs
             getContentPane().setBackground(Constants.Color.background);
             panel = new JPanel();
             panel.setOpaque(false);
-            add(new PagePanel(panel));
+            add(new PagePanel(panel).setPageButtonBackground(Constants.Color.title));
             JPanel buttons = new JPanel(new GridBagLayout());
             buttons.setOpaque(false);
             JButton ok = new JButton("确定");
@@ -358,18 +394,18 @@ public class TablePanels implements ActionListener, IManagementService.ITableObs
                 if(component instanceof WaiterCard){
                     WaiterCard wc = (WaiterCard)component;
                     if(wc.isChecked()) {
-                        System.out.println(wc.getCode());
                         Notification notification = notifications.get(targetIndex);
                         if(notification.type.equals(Notification.CLIENT)){
-                            mf.getService().customerCall(tableId, wc.getCode());
+                            mf.getService().customerCall(table.getId(), wc.getCode());
                         } else {
-                            mf.getService().dishFinish(tableId, notification.content, wc.getCode());
+                            mf.getService().dishFinish(table.getId(), notification.content, wc.getCode());
                         }
                     }
-                    notifications.remove(targetIndex);
-                    loadNotification();
                 }
             }
+
+            notifications.remove(targetIndex);
+            loadNotification();
             close();
         }
 

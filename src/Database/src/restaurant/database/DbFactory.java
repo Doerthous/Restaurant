@@ -1,5 +1,6 @@
 package restaurant.database;
 
+import restaurant.database.impl.MysqlDb;
 import restaurant.database.impl.SqlServerDb;
 
 public class DbFactory {
@@ -10,10 +11,13 @@ public class DbFactory {
     };
 
     public static IDb getDb(DbType type){
-        IDb db = null;
+        IDb db;
         switch (type){
             case SqlServer:{
                 db = new SqlServerDb();
+            } break;
+            case Mysql: {
+                db = new MysqlDb();
             } break;
             default:{
                 throw new UnsupportedOperationException();

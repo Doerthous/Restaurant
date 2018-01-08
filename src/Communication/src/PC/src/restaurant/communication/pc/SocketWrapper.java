@@ -62,7 +62,7 @@ public class SocketWrapper implements ISocketWrapper {
     }
 
     @Override
-    public void sendByTcp(ISocketWrapper.IData data) {
+    public void sendByTcp(ISocketWrapper.IData data) throws ConnectException {
         Socket other = null;
         ObjectOutputStream out = null;
         try {
@@ -70,7 +70,11 @@ public class SocketWrapper implements ISocketWrapper {
             out = new ObjectOutputStream(other.getOutputStream());
             out.writeObject(data);
             out.writeObject(null);
-        } catch(Exception e){
+        } catch (ConnectException e){
+            throw e;
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         } finally {
             try {
